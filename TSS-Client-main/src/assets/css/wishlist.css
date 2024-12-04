@@ -1,0 +1,98 @@
+/* Wishlist  */
+.wishlist-card {
+  position: relative;
+  border: none;
+  border-radius: 0px;
+  overflow: hidden;
+}
+
+.wishlist-card .card-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.wishlist-card .icon {
+  position: absolute;
+  top: 12px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.wishlist-card .trash-icon {
+  left: 18px;
+}
+
+.wishlist-card .heart-icon {
+  right: 18px;
+}
+
+.wishlist-card .image {
+  height: 20rem;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.wishlist-card .image:hover {
+  transform: scale(1.05);
+}
+
+.wishlist-card .add-to-cart {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  transform: translate(0%, 0%);
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.wishlist-card:hover .add-to-cart {
+  opacity: 1;
+}
+
+.wishlist-card .product-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.wishlist-card .price {
+  font-size: 1rem;
+  color: #555;
+}
+.wishlist-card .product-title,
+.price {
+  text-decoration: none;
+}
+
+/* Ratings and review section  */
+.review-head {
+  justify-content: space-between;
+  width: 100%;
+  display: flex;
+}
+.reviews p {
+  margin: 5px;
+}
+.review-body .column {
+  background-color: lightgrey;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .review-body .column {
+    height: auto;
+  }
+}

@@ -1,0 +1,10 @@
+.leaflet-container {
+    height: 60vh;
+    width: 95%;
+    margin: auto;
+    margin-top: 20px;
+    border-width: 1px;
+    /* border-style: groove; */
+    /* border-color: black; */
+    /* box-shadow: 5px; */
+}

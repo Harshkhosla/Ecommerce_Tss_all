@@ -1,0 +1,27 @@
+.auth .active {
+  font-weight: bold;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+.auth .col {
+  font-size: 1.35rem;
+  cursor: pointer;
+}
+
+.loginbtn {
+  text-align: center;
+  font-size: 1.1rem;
+  width: 7rem;
+}
+.password-strength-indicator.weak {
+  color: red;
+}
+.password-strength-indicator.fair {
+  color: orange;
+}
+.password-strength-indicator.good {
+  color: yellow;
+}
+.password-strength-indicator.strong {
+  color: green;
+}

@@ -1,0 +1,105 @@
+.looksdata img {
+  height: 20rem;
+}
+.catslide img {
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  position: relative;
+}
+.catslide .cat1Text {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  color: white;
+  text-align: center;
+}
+.cat1Title {
+  font-size: 1.5rem;
+}
+.cat1subTitle1 {
+  font-size: 1.2rem;
+  opacity: 75%;
+}
+.cat1subTitle2 {
+  font-size: 2rem;
+}
+
+.catslide .col-md-12,
+.cat2 .col-md-6,
+.cat4 .col-md-6,
+.cat3 .col-md-12,
+.cat5 .col-md-12 {
+  padding: 0;
+}
+.cat2 img,
+.cat4 img {
+  width: 100%;
+  height: 100%;
+}
+.cat2 h4,
+.cat4 h4 {
+  margin: 4rem;
+  line-height: 2rem;
+  text-align: justify;
+}
+.cat3,
+.cat5 {
+  position: relative;
+}
+.cat3 img,
+.cat5 img {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.cat3 p,
+.cat5 .cat5text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  text-align: center;
+  font-size: 1.8rem;
+  color: white;
+}
+.cat5 .btn {
+  margin-top: 0.2rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  font-size: 1.1rem;
+}
+.cat5text h5 {
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  font-size: 2rem;
+}
+
+/* Mobile View */
+@media screen and (max-width: 768px) {
+  .looksdata img {
+    height: 12rem;
+  }
+  .catslide img {
+    height: 25rem;
+  }
+  .cat2 img,
+  .cat4 img {
+    height: 15rem;
+  }
+  .cat2 h4,
+  .cat4 h4,
+  .cat3 p {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .cat3 img,
+  .cat5 img {
+    height: 20rem;
+  }
+}

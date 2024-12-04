@@ -1,0 +1,117 @@
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 750px;
+    background-image: url(./login.png);
+    background-size: 100% 100%;
+    background-position: center;
+}
+
+.login_box {
+    margin-top: -90px;
+}
+
+.login_form {
+    position: relative;
+    top: 35px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.result {
+    margin-top: 20px;
+    margin-left: -40px;
+    font-weight: bold;
+}
+
+.logo {
+    width: 300px;
+    height: 150px;
+}
+
+.login_header {
+    position: relative;
+    right: 40px;
+    padding-top: 50px;
+}
+
+.login_header h1 {
+    font-size: 35px;
+    font-weight: 1000 !important;
+}
+
+.signup {
+    position: relative;
+    font-size: 14px;
+    color: gray;
+    padding-top: 10px;
+    top: 3px;
+}
+
+.signup a {
+    color: #c93a0e;
+    text-decoration-line: none;
+}
+
+.input {
+    display: grid;
+    position: relative;
+    right: 40px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    /* font-weight: 500 !important; */
+}
+
+.input input {
+    position: relative;
+    height: 50px;
+    width: 383px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    padding: 0.5rem;
+    top: 4px;
+
+}
+
+.input_edit {
+    letter-spacing: 0px;
+    font-size: 14px;
+    outline: none;
+
+}
+
+.login_button {
+    background-color: #c93a0e;
+    color: white;
+    width: 125px;
+    height: 50px;
+    border-radius: 5px;
+    border: none;
+    position: relative;
+    right: 40px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.15s ease-out;
+}
+
+.login_button:hover {
+    background-color: #c93a0e;
+}
+
+.submit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+}
+
+.forgot {
+    position: relative;
+    right: 39px;
+    color: #c93a0e;
+    font-size: 14px;
+    text-decoration-line: none;
+}
