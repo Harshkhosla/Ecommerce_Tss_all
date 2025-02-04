@@ -39,10 +39,10 @@ pauseOnHover
         <Router>
           {/* top-header */}
           <Routes>
-            {/* <Route exact path="/" element={<Login />} />
+            <Route exact path="/" element={<Login />} />
             <Route exact path="/register" element={<Register />} />
-            <Route exact path="/reset" element={<Forgot />} /> */}
-            {/* <Route exact path="/Signup" element={<Signup />} /> */}
+            <Route exact path="/reset" element={<Forgot />} />
+            <Route exact path="/Signup" element={<Signup />} />
             <Route path="/home/*" element={<Home />} />
           </Routes>
         </Router>
