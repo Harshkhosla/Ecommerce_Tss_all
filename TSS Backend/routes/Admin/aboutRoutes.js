@@ -48,6 +48,8 @@ router.get('/', async (req, res) => {
     if (!canReadProducts) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
+    console.log(req.body);
+    
     const aboutData = await About.findOne();
     res.status(200).json(aboutData);
   } catch (error) {
@@ -57,29 +59,18 @@ router.get('/', async (req, res) => {
 });
 
 // Update
-router.put('/', upload.fields([
-  { name: 'AboutBanner.image', maxCount: 1 },
-  { name: 'MissionSection.image', maxCount: 1 },
-  { name: 'VisionSection.image', maxCount: 1 },
-  { name: 'SEOArea.images', maxCount: 1 },
-]), async (req, res) => {
+router.put('/', upload.none(), async (req, res) => {
   try {
     const authToken = req.headers.authorization || req.headers.Authorization;
-    console.log(authToken);
     if (!authToken) {
         return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
         return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
-    // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
-    console.log(userPermissionsArray);
-    // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
         permission.catg === 'Content' && permission.update
     );
@@ -88,35 +79,13 @@ router.put('/', upload.fields([
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
     const updatedData = req.body;
-    const files = req.files;
-
-    req.body.image=req.file && req.file.filename ?req.file.filename:null
-    if(!req.body.image){
-        delete req.body.image
-    }
-// console.log(updatedData['SEOArea.images']);
-    // Iterate over the fields dynamically
-    for (const field of [
-      'AboutBanner.image',
-      'MissionSection.image',
-      'VisionSection.image',
-      'SEOArea.images',
-    ]) {
-      // Check if files[field] exists before accessing it
-      if (files[field]) {
-        updatedData[field] = `http://64.227.186.165/tss_files/about/${files[field][0].filename}`;
-      }
-    }
-
+    console.log(updatedData);
     const existingAbout = await About.findOne();
 
-    // You can now use updatedData to update the document in your database
     if (!existingAbout) {
-      // If no about data exists, create a new one
       const newAbout = await About.create(updatedData);
       res.status(201).json(newAbout);
     } else {
-      // Update the existing about data
       const updatedAbout = await About.findByIdAndUpdate(existingAbout._id, updatedData, { new: true });
       res.status(200).json(updatedAbout);
     }

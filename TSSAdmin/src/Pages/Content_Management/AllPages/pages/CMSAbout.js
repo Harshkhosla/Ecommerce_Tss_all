@@ -3,7 +3,7 @@ import TopHeader from "../../../../UI/TopHeader/TopHeader";
 import { Form, Link, useLocation, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { getAbout_cms_meta, updateAbout_cms_meta, updateUser } from "../../../User_Management/features/userSlice";
+import { getAbout_cms_meta, updateAbout_cms_meta, updateUser, uploadImages } from "../../../User_Management/features/userSlice";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
@@ -21,11 +21,8 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
   setExpand("contentManagement")
   const head = "About Us";
 
-  //   const dispatch = useDispatch();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  //   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
   const [loading, setLoading] = useState(false);
@@ -41,7 +38,7 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
   }, [dispatch]);
 
   const seoData = useSelector((state) => state.userManagement.getAbout_cms_meta);
-  // console.log(data);
+  console.log(data,'savkjsdvn');
 
 
   // //Social Media
@@ -60,7 +57,7 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
   const [description5, setDescription5] = useState(data.VisionSection.description);
   const [metatitle, setMetaTitle] = useState('')
   const [metadesc, setMetaDesc] = useState('')
-  const [metakeywords, setMetaKeywords] = useState()
+  const [metakeywords, setMetaKeywords] = useState('')
   const [photo, setPhoto] = useState();
   const [photo3, setPhoto3] = useState();
   const [photo4, setPhoto4] = useState();
@@ -119,23 +116,70 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
     setDescription5(event.target.value);
   };
 
-  const handlePhotoChange = (event) => {
-    let img = event.target.files[0]
-    setPhoto(img);
-  };
 
-  const handlePhoto3Change = (event) => {
-    let img = event.target.files[0]
-    setPhoto3(img);
-  };
-  const handlePhoto4Change = (event) => {
-    let img = event.target.files[0]
-    setPhoto4(img);
-  };
-  const handleMetaPhotoChange = (event) => {
-    let img = event.target.files[0]
-    setMetaPhoto(img);
-  };
+  
+    const handlePhotoChange = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setPhoto(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+  
+    
+
+
+    const handlePhoto3Change = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setPhoto3(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+  
+
+
+    const handlePhoto4Change = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setPhoto4(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+  
+
+
+
+
+    const handleMetaPhotoChange = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setMetaPhoto(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+
+  
 
   const handlePhotoRemove = () => {
     setPhoto(null);
@@ -143,24 +187,17 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
   const handlePhoto3Remove = () => {
     setPhoto3(null);
   };
+
+  
   const handlePhoto4Remove = () => {
     setPhoto4(null);
   };
   const handleMetaPhotoRemove = () => {
     setMetaPhoto(null);
   };
-  // const bgImg = (event)=>{
-  //     let img = event.target.files[0]
-
-  //     setBgImg(img);
-  // }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // console.log(URL.createObjectURL(photo4));
-    // console.log(URL.createObjectURL(photo3));
-    // console.log(URL.createObjectURL(photo));
 
     const formData = new FormData();
     if (photo) formData.append("AboutBanner.image", photo);
@@ -185,26 +222,15 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
   };
   const handleSeoSubmit = async (event) => {
     event.preventDefault();
-
-
-    // formData.append("email", mailID);
-    // formData.append("contact_number", contactNo);
-    // formData.append("tel", telNo);
-    // formData.append("address", address);
-    // formData.append("office_address", officeAddress);
     const formData = new FormData();
     if (metadesc) formData.append("SEOArea.MetaDescription", metadesc);
-    if (metaphoto) formData.append("SEOArea.images", metaphoto);
+    if (metaphoto) formData.append("SEOArea.image", metaphoto);
     if (metatitle) formData.append("SEOArea.MetaTitle", metatitle);
     if (metakeywords)  formData.append("SEOArea.MetaKeywords", metakeywords);
-    // formData.append("metaKey", metakeywords);
-
 
     setLoading(true);
-    // await dispatch(editContactPage_cms(formData));
     await dispatch(editPagesAboutUs_cms(formData))
     setLoading(false);
-
     window.location.reload();
   };
 
@@ -253,7 +279,7 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
                     <div className="flex gap-2 items-center">
                       <div className="w-20 h-20 rounded overflow-hidden">
                         <img
-                          src={URL.createObjectURL(photo)}
+                          src={photo}
                           alt="User profile"
                           className="w-full h-full object-cover"
                         />
@@ -371,7 +397,7 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
                     <div className="flex items-center mt-2 gap-2">
                       <div className="w-20 h-20 rounded overflow-hidden">
                         <img
-                          src={URL.createObjectURL(photo3)}
+                          src={photo3}
                           alt="User profile"
                           className="w-full h-full object-cover"
                         />
@@ -438,7 +464,7 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
                     <div className="flex items-center mt-2 gap-2">
                       <div className="w-20 h-20 rounded overflow-hidden">
                         <img
-                          src={URL.createObjectURL(photo4)}
+                          src={photo4}
                           alt="User profile"
                           className="w-full h-full object-cover"
                         />
@@ -546,7 +572,7 @@ const CMSAbout = ({ setActiveTab, setExpand }) => {
                   <div className="flex gap-2 mt-2 items-center">
                     <div className="w-20 h-20 rounded overflow-hidden">
                       <img
-                        src={URL.createObjectURL(metaphoto)}
+                        src={metaphoto}
                         alt="User profile"
                         className="w-full h-full object-cover"
                       />

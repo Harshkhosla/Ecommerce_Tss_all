@@ -3,7 +3,7 @@ import TopHeader from "../../../../UI/TopHeader/TopHeader";
 import { Form, Link, useLocation, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { editContactPage_cms, getContactUs_cms_meta, updateContactUs_cms_meta, updateUser } from "../../../User_Management/features/userSlice";
+import { editContactPage_cms, getContactUs_cms_meta, updateContactUs_cms_meta, updateUser, uploadImages } from "../../../User_Management/features/userSlice";
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
@@ -89,10 +89,19 @@ const CMSContactUs = ({ setActiveTab, setExpand }) => {
     setMetaKeywords(event.target.value);
   };
 
-  const handleMetaPhotoChange = (event) => {
-    let img = event.target.files[0]
-    setMetaPhoto(img);
-  };
+     const handleMetaPhotoChange = async (event) => {
+        const files = event.target.files;
+        if (!files.length) return;
+        setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        if (uploadImages.fulfilled.match(resultAction)) {
+          setMetaPhoto(resultAction?.payload?.[0]);
+        } else {
+          console.error("Upload failed:", resultAction.payload);
+        }
+        setLoading(false);
+      };
+    
   const handleMetaPhotoRemove = () => {
     setMetaPhoto(null);
   };
@@ -107,40 +116,29 @@ const CMSContactUs = ({ setActiveTab, setExpand }) => {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append("email", mailID);
-    formData.append("contactNo", contactNo);
-    formData.append("tel", telNo);
-    formData.append("address", address);
-    formData.append("officeAddress", officeAddress);
-    formData.append("SEOArea.metaDescription", metadesc);
-    formData.append("SEOArea.images", metaphoto);
-    formData.append("SEOArea.metaTitle", metatitle);
-    formData.append("SEOArea.metaKeywords", metakeywords);
-
-
-
-
-
+    if (mailID) formData.append("email", mailID);
+    if (contactNo) formData.append("contactNo", contactNo);
+    if (telNo) formData.append("tel", telNo);
+    if (address) formData.append("address", address);
+    if (officeAddress) formData.append("officeAddress", officeAddress);
+    if (metadesc) formData.append("SEOArea.metaDescription", metadesc);
+    if (metaphoto) formData.append("SEOArea.images", metaphoto);
+    if (metatitle) formData.append("SEOArea.metaTitle", metatitle);
+    if (metakeywords) formData.append("SEOArea.metaKeywords", metakeywords);
+    
     setLoading(true);
     await dispatch(editContactPage_cms(formData));
     setLoading(false);
-    // navigate("/home/pages")
-    // window.location.reload();
+    navigate("/home/pages")
+    window.location.reload();
   };
   const handleSeoSubmit = async (event) => {
     event.preventDefault();
-
-
-    // formData.append("email", mailID);
-    // formData.append("contact_number", contactNo);
-    // formData.append("tel", telNo);
-    // formData.append("address", address);
-    // formData.append("office_address", officeAddress);
     const formData = new FormData();
-    formData.append("SEOArea.MetaDescription", metadesc);
-    formData.append("SEOArea.images", metaphoto);
-    formData.append("SEOArea.MetaTitle", metatitle);
-    formData.append("SEOArea.MetaKeywords", metakeywords);
+    if (metadesc) formData.append("SEOArea.metaDescription", metadesc);
+    if (metaphoto) formData.append("SEOArea.images1", metaphoto);
+    if (metatitle) formData.append("SEOArea.metaTitle", metatitle);
+    if (metakeywords) formData.append("SEOArea.metaKeywords", metakeywords);
    
     setLoading(true);
     await dispatch(editContactPage_cms(formData));
@@ -302,7 +300,7 @@ const CMSContactUs = ({ setActiveTab, setExpand }) => {
                   <div className="flex gap-2 mt-2 items-center">
                     <div className="w-20 h-20 rounded overflow-hidden">
                       <img
-                        src={URL.createObjectURL(metaphoto)}
+                        src={metaphoto}
                         alt="User profile"
                         className="w-full h-full object-cover"
                       />

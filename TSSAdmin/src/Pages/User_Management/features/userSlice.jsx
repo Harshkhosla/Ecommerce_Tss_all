@@ -1898,28 +1898,19 @@ export const editPagesAboutUs_cms = createAsyncThunk(
     try {
       const response = await axios({
         method: "put",
-        url: `${tssurl}/about`, // Change the End points
-        // url: `http://localhost:5100/about`, // Change the End points
+        url: `${tssurl}/about`,
         data: formData,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-          // "X-CSRFToken": csrfToken,
-          // "mid": "as7ash7qw23dds99783",
-          // "amt": "1000",
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
         },
       });
-      // console.log(response);
-      // alert("Data updated successfully");
     } catch (error) {
       if (error.response.status === 403) {
-        // Handle 403 Forbidden error with a toast message
         toast.error("Access forbidden. You do not have permission to perform this action.");
       } else {
         // console.log("Not submitting data");
       }
-      // console.log("Not submitting data", error);
       return rejectWithValue(error.response.data);
     }
   }
