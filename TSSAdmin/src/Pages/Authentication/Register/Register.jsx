@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { tssurl } from "../../../UI/port";
 
 function Register() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ function Register() {
     const jsonData = JSON.stringify(updateData);
     // console.log(jsonData);
 
-    axios.post(`https://tssapis.devcorps.in/user/register`, { username, email, password })
+    axios.post(`${tssurl}/user/register`, { username, email, password })
       .then((response) => {
         // console.log(response)
         setUsername("");

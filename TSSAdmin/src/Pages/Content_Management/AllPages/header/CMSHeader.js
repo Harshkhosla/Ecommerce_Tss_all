@@ -3,7 +3,7 @@ import TopHeader from "../../../../UI/TopHeader/TopHeader";
 import { Form, Link, useLocation, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { get_header_data_cms, updateUser, update_header_data_cms } from "../../../User_Management/features/userSlice";
+import { get_header_data_cms, updateUser, update_header_data_cms, uploadImages } from "../../../User_Management/features/userSlice";
 import { Grid } from "react-loader-spinner";
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
@@ -180,23 +180,33 @@ const CMSHeader = ({ setActiveTab, setExpand }) => {
     setPhoto(null);
   };
 
-  const handlePhotoChange = (event) => {
-    let img = event.target.files[0];
-    setPhoto(img);
+  // const handlePhotoChange = (event) => {
+  //   let img = event.target.files[0];
+  //   setPhoto(img);
+  // };
+
+  const handlePhotoChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setPhoto(resultAction?.payload?.[0]); 
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
+  
+  
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const formData = new FormData();
     if (masterLinks) formData.append("header", JSON.stringify(masterLinks));
-    // photo.map((image, index) => (
     if (photo) formData.append("brand_logo", photo);
-    // ));
-    // console.log(links);
-    // console.log(photo + "okok");
     setLoading(true);
-    // console.log(formData, "sample harsh");
     await dispatch(update_header_data_cms(formData));
     setLoading(false);
     navigate("/home/header");
@@ -243,7 +253,7 @@ const CMSHeader = ({ setActiveTab, setExpand }) => {
               <div className="flex items-center gap-2 mt-2">
                 <div className="w-20 h-20 rounded overflow-hidden">
                   <img
-                    src={URL.createObjectURL(photo)}
+                    src={photo}
                     alt="User profile"
                     className="w-full h-full object-cover"
                   />

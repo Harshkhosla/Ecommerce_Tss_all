@@ -149,18 +149,12 @@ router.put("/header", upload.single("brand_logo"), async (req, res) => {
       // Update the header text if provided
       if (header) {
         headerr.header = header;
-      }
-
-      // Update the brand logo if a file is uploaded
-      if (req.file) {
-        const filename = req.file.filename;
         headerr.brand_logo = {
-          url: `http://64.227.186.165/tss_files/home/${filename}`,
+          url: brand_logo,
         };
+
       }
     }
-
-    // Save the changes to the database
     await headerr.save();
 
     res.status(200).json({ message: "Header updated successfully", headerr });

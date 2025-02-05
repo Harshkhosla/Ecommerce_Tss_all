@@ -32,24 +32,19 @@ function generateUniqueId() {
   return Math.random().toString(36).substr(2, 9); // You might want to use a more robust method in a production environment
 }
 
-router.post('/banners', upload.single('banner_image'), async (req, res) => {
+router.post('/banners', upload.none(), async (req, res) => {
   try {
     const authToken = req.headers.authorization || req.headers.Authorization;
     console.log(authToken);
     if (!authToken) {
         return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
         return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
-    // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
-    console.log(userPermissionsArray);
-    // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
         permission.catg === 'Content' && permission.create
     );
@@ -57,20 +52,11 @@ router.post('/banners', upload.single('banner_image'), async (req, res) => {
     if (!canReadProducts) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
-    const { banner_title, sub_title ,Butt_title} = req.body;
-    // const buffer = req.file.buffer;
-    req.body.image=req.file && req.file.filename ?req.file.filename:null
-    if(!req.body.image){
-        delete req.body.image
-    }
-    const uniqueFileName1 = req.file.filename;
-    console.log(uniqueFileName1);
-    // console.log();
+    const { banner_title, sub_title ,Butt_title , banner_image} = req.body;
 
-    const url = `http://64.227.186.165/tss_files/banner/${req.file.filename}`;
     const banner = new Banner({
-      banner_id: generateUniqueId(), // You need to implement this function
-      banner_image: {  url: url }, // Set the path accordingly
+      banner_id: generateUniqueId(), 
+      banner_image: {  url: banner_image }, 
       banner_title,
       Butt_title,
       sub_title,
@@ -162,24 +148,18 @@ router.get('/:id', async (req, res) => {
 
 
 
-router.patch('/:id', upload.single('banner_image'), async (req, res) => {
+router.patch('/:id', upload.none(), async (req, res) => {
   try {
     const authToken = req.headers.authorization || req.headers.Authorization;
-    console.log(authToken);
     if (!authToken) {
         return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
         return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
-    // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
-    console.log(userPermissionsArray);
-    // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
         permission.catg === 'Content' && permission.update
     );
@@ -187,28 +167,19 @@ router.patch('/:id', upload.single('banner_image'), async (req, res) => {
     if (!canReadProducts) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
-    const { banner_title, sub_title, Butt_title } = req.body;
+    const { banner_title, sub_title, Butt_title ,banner_image } = req.body;
 
-    // Check if a new image is provided
-    console.log(req.file);
-    const banner_image = req.file
-      ? {
-          url: `http://64.227.186.165/tss_files/banner/${req.file.filename}`,
-        }
-        : undefined;
-    // console.log(`http://64.227.186.165/tss_files/banner/${req.file.originalname}`);
-
-    // Find the existing banner data
+    console.log(req.body,'dsvkhjsdvb');
+    
     const existingBanner = await Banner.findOne({ banner_id: req.params.id });
 
-    // Update only the banner fields that are present in the request
     const updatedBanner = await Banner.findOneAndUpdate(
       { banner_id: req.params.id },
       {
         ...(banner_title && { banner_title }),
         ...(sub_title && { sub_title }),
         ...(Butt_title && { Butt_title }),
-        ...(banner_image && { banner_image }),
+        ...(banner_image && { banner_image: { url: banner_image } }),
       },
       { new: true }
     );

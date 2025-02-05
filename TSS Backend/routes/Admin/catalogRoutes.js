@@ -211,25 +211,20 @@ router.put('/:catalog_id', upload.fields([
     if (!authToken) {
         return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
         return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
-    // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
-    // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
         permission.catg === 'Content' && permission.update
     );
-
     if (!canReadProducts) {
         return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
     console.log("req.body",req.files)
-    const catalogData = {}; // Initialize an empty object to store updated fields
+    const catalogData = {}; 
     const CatalogFiles=req.files
 
     const bodyData=req.body

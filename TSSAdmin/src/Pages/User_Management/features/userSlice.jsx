@@ -4,7 +4,7 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import cookie from "js-cookie";
-import { tssurl, url1, url2, url3, url4 } from "../../../UI/port";
+import { tssurl, tssurl2, url1, url2, url3, url4 } from "../../../UI/port";
 
 //create action
 
@@ -32,7 +32,7 @@ export const createUser = createAsyncThunk(
     try {
       const response = await axios({
         method: "post",
-        url: `https://tssapis.devcorps.in/admin/user_management/create`,
+        url: `${tssurl}/admin/user_management/create`,
         data: formData,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
@@ -132,33 +132,24 @@ export const getPrivacy_cms = createAsyncThunk(
 export const addBanner = createAsyncThunk(
   "addBanner",
   async (formData, { rejectWithValue }) => {
-    
+
     try {
-      // console.log(formData,"lllol");
       const response = await axios({
         method: "put",
         url: `${tssurl}/catalog/${formData?.data}`,
-        // url: `http://localhost:5100/banner/banners`,
         data: formData.formData,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-          // "X-CSRFToken": csrfToken,
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
         },
       });
-      // console.log(response);
-      // alert("User created successfully");
       return response.data;
     } catch (error) {
       if (error.response.status === 403) {
-        // Handle 403 Forbidden error with a toast message
         toast.error("Access forbidden. You do not have permission to perform this action.");
       } else {
         // console.log("Not submitting data");
       }
-      // // console.log(csrfToken)
-      // console.log("Not submitting data");
       return rejectWithValue(error.response.data);
     }
   }
@@ -495,7 +486,7 @@ export const addNewProductCategory_hsm = createAsyncThunk(
           // "X-CSRFToken": csrfToken,
         },
       });
-           // console.log(...formData);
+      // console.log(...formData);
       // alert("Data created successfully");
       // console.log(response);
       return response.data;
@@ -614,7 +605,7 @@ export const getUser = createAsyncThunk(
     try {
       const response = await axios({
         method: "get",
-        url: `https://tssapis.devcorps.in/admin/user_management/list`,
+        url: `${tssurl2}/admin/user_management/list`,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
           // "Access-Control-Allow-Origin": "*",
@@ -781,7 +772,7 @@ export const getallVisitors = createAsyncThunk(
     try {
       // const response = await axios.get(${tssurl}/product, {
 
-      const response = await axios.get(`https://tssapis.devcorps.in/client/visitors/getvisitor`, {
+      const response = await axios.get(`${tssurl2}/client/visitors/getvisitor`, {
 
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
@@ -805,7 +796,7 @@ export const getactivitylogs = createAsyncThunk(
     try {
       // const response = await axios.get(${tssurl}/product, {
       const response = await axios.get(`${tssurl}/user/login-signup-counts`, {
-      // const response = await axios.get(`http://localhost:5000/admin/user/login-signup-counts`, {
+        // const response = await axios.get(`http://localhost:5000/admin/user/login-signup-counts`, {
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
           "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
@@ -929,7 +920,7 @@ export const getPromoCard_cms = createAsyncThunk(
       });
       // console.log(response.data);
       return response.data;
-      
+
     } catch (error) {
       if (error.response.status === 403) {
         // Handle 403 Forbidden error with a toast message
@@ -1256,7 +1247,7 @@ export const getLooks_cms = createAsyncThunk(
 
 export const getalllook = createAsyncThunk(
   "getalllok",
-  async (CatId,{ rejectWithValue }) => {
+  async (CatId, { rejectWithValue }) => {
     // console.log(CatId,"catid in userslice");
     // debugger;
     // console.log("hello");
@@ -1275,7 +1266,7 @@ export const getalllook = createAsyncThunk(
       });
       // console.log(response.data);
       return response.data;
-    } 
+    }
     catch (error) {
       if (error.response.status === 403) {
         // Handle 403 Forbidden error with a toast message
@@ -1298,7 +1289,7 @@ export const updateUser = createAsyncThunk(
     try {
       const response = await axios({
         method: "put",
-        url: `https://tssapis.devcorps.in/admin/user_management/${userId}`,
+        url: `${tssurl}/user_management/${userId}`,
         // url: `http://localhost:5100/user_management/${userId}`,
         data: formData,
         headers: {
@@ -1327,7 +1318,7 @@ export const updateUser = createAsyncThunk(
 
 export const Addlook = createAsyncThunk(
   "addlook",
-  async ( formData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
       // debugger;
       const response = await axios({
@@ -1360,7 +1351,7 @@ export const Addlook = createAsyncThunk(
 );
 export const Editlook = createAsyncThunk(
   "Editlook",
-  async ( {formData,cat}, { rejectWithValue }) => {
+  async ({ formData, cat }, { rejectWithValue }) => {
     // console.log("cat",cat)
     // debugger
     try {
@@ -1374,29 +1365,48 @@ export const Editlook = createAsyncThunk(
           // "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           "Content-Type": "multipart/formdata",
           "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-          // "X-CSRFToken": csrfToken,
         },
       });
-      // console.log(response);
-      // alert("Data updated successfully");
     } catch (error) {
       if (error.response.status === 403) {
-        // Handle 403 Forbidden error with a toast message
         toast.error("Access forbidden. You do not have permission to perform this action.");
       } else {
         // console.log("Not submitting data");
       }
-      // console.log(formData)
-      // console.log("Not submitting data");
       return rejectWithValue(error.response.data);
     }
   }
 );
 
 
+export const AddeBanner = createAsyncThunk(
+  "AddeBanner",
+  async (formData , { rejectWithValue }) => {
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${tssurl}/banner/banners`,
+        //  url: `http://localhost:5100/looks/${cat}`,
+        data: formData,
+        headers: {
+          authorization: `${localStorage.getItem("jwt")}`,
+          "Content-Type": "multipart/formdata"
+        },
+      });
+    } catch (error) {
+      if (error.response.status === 403) {
+        toast.error("Access forbidden. You do not have permission to perform this action.");
+      } else {
+        // console.log("Not submitting data");
+      }
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const deleteLook = createAsyncThunk(
   "deleteLook",
-  async ( cat, { rejectWithValue }) => {
+  async (cat, { rejectWithValue }) => {
     // console.log("cathari",cat)
     // debugger
     try {
@@ -1956,23 +1966,15 @@ export const updateHome_cms_meta = createAsyncThunk(
         url: `${tssurl}/home`, // Change the End points
         data: formData,
         headers: {
-          "authorization": `${localStorage.getItem('jwt')}`,
-
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-          // "X-CSRFToken": csrfToken,
-
+          "authorization": `${localStorage.getItem('jwt')}`
         },
       });
-      // console.log(response);
-      // alert("Data updated successfully");
     } catch (error) {
       if (error.response.status === 403) {
-        // Handle 403 Forbidden error with a toast message
         toast.error("Access forbidden. You do not have permission to perform this action.");
       } else {
         // console.log("Not submitting data");
       }
-      // console.log("Not submitting data", error);
       return rejectWithValue(error.response.data);
     }
   }
@@ -2111,12 +2113,11 @@ export const update_header_data_cms = createAsyncThunk(
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-
+          // "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
         },
       });
-      // console.log(response);
       // alert("Data updated successfully");
+      toast.success("Data updated successfully");
     } catch (error) {
       if (error.response.status === 403) {
         // Handle 403 Forbidden error with a toast message
@@ -2154,7 +2155,6 @@ export const updateUserDept_cms = createAsyncThunk(
       } else {
         // console.log("Not submitting data");
       }
-      // console.log("Not submitting data", error);
       return rejectWithValue(error.response.data);
     }
   }
@@ -2332,7 +2332,7 @@ export const CRM = createAsyncThunk("CRM", async (_, { rejectWithValue }) => {
   // console.log("hello");
   try {
     const response = await axios.get(`${tssurl}/user/`, {
-    // const response = await axios.get(`http://localhost:5210/admin/user/`, {
+      // const response = await axios.get(`http://localhost:5210/admin/user/`, {
       headers: {
         "authorization": `${localStorage.getItem('jwt')}`,
         "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
@@ -2427,7 +2427,7 @@ export const HSM_allProduct = createAsyncThunk(
           "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
         },
       });
-      
+
       return response.data;
     } catch (error) {
       // console.log("Not submitting data");
@@ -2439,7 +2439,7 @@ export const HSM_allProduct = createAsyncThunk(
 
 export const updateHSMProduct = createAsyncThunk(
   "updateHSMProduct",
-  async ({pid,allData}) => {
+  async ({ pid, allData }) => {
     // console.log(pid);
     // debugger
     // const{pid,formdata}=formdata;
@@ -3165,7 +3165,7 @@ export const RoleManagement = createAsyncThunk(
 export const DeleteUser = createAsyncThunk("DeleteUser", async (uid) => {
   try {
     const response = await axios.delete(
-      `https://tssapis.devcorps.in/user_management/${uid}`, {
+      `${tssurl2}/user_management/${uid}`, {
       headers: {
         "authorization": `${localStorage.getItem('jwt')}`,
         "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
@@ -3177,13 +3177,13 @@ export const DeleteUser = createAsyncThunk("DeleteUser", async (uid) => {
       toast.success("User is deleted successfully");
       return response.data;
     }
-  }catch (error) {
+  } catch (error) {
     // Handle error during the API request
     console.error('Error deleting product:', error);
     toast.error('Not a valid access');
     throw error; // Rethrow the error to ensure it is propagated
   }
-  
+
 });
 
 export const deleteBlog_cms = createAsyncThunk("deleteBlog_cms", async (blog_id) => {
@@ -3201,7 +3201,7 @@ export const deleteBlog_cms = createAsyncThunk("deleteBlog_cms", async (blog_id)
       toast.success("Blog is deleted successfully");
       return response.data;
     }
-  }catch (error) {
+  } catch (error) {
     // Handle error during the API request
     console.error('Error deleting product:', error);
     toast.error('Not a valid access');
@@ -3281,7 +3281,7 @@ export const DeleteSuspendUser = createAsyncThunk(
       toast.error('Not a valid access');
       throw error; // Rethrow the error to ensure it is propagated
     }
-    
+
   }
 );
 
@@ -3318,7 +3318,7 @@ export const DeletePage = createAsyncThunk("DeletePage", async (pageid) => {
     toast.error('Not a valid access');
     throw error; // Rethrow the error to ensure it is propagated
   }
-  
+
 });
 
 // Delete a Project and featured Project
@@ -3339,13 +3339,13 @@ export const DeleteProject = createAsyncThunk(
         toast.success('Project is deleted successfully');
         return response.data;
       }
-    }  catch (error) {
+    } catch (error) {
       // Handle error during the API request
       console.error('Error deleting product:', error);
       toast.error('Not a valid access');
       throw error; // Rethrow the error to ensure it is propagated
     }
-   
+
   }
 );
 
@@ -3366,14 +3366,14 @@ export const DeleteProject_seo = createAsyncThunk(
         toast.success('project is deleted successfully');
         return response.data;
       }
-      
+
     } catch (error) {
       // Handle error during the API request
       console.error('Error deleting product:', error);
       toast.error('Not a valid access');
       throw error; // Rethrow the error to ensure it is propagated
     }
-    
+
   }
 );
 
@@ -3389,7 +3389,7 @@ export const DeleteProduct = createAsyncThunk(
           'API-Key': '90bd6f5b-033f-42e7-8e92-2a443dfa42f8',
         },
       });
-      
+
 
       if (response.data) {
         // Product deleted successfully
@@ -3413,12 +3413,12 @@ export const DeleteProducts = createAsyncThunk(
       const response = await axios.delete(
         `${tssurl}/catalog/${pageId}`,
         // `http://localhost:5100/catalog/${pageId}`,
-         {
-        headers: {
-          "authorization": `${localStorage.getItem('jwt')}`,
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-        },
-      }
+        {
+          headers: {
+            "authorization": `${localStorage.getItem('jwt')}`,
+            "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
+          },
+        }
       );
       if (response.data) {
         // Product deleted successfully
@@ -3452,7 +3452,7 @@ export const DeletePromotion = createAsyncThunk(
         toast.success('Promotion is deleted successfully');
         return response.data;
       }
-    }  catch (error) {
+    } catch (error) {
       // Handle error during the API request
       console.error('Error deleting product:', error);
       toast.error('Not a valid access');
@@ -3530,8 +3530,8 @@ export const DeleteMember = createAsyncThunk("DeleteMember", async (id) => {
       toast.success('Member is deleted successfully');
       return response.data;
     }
-    
-  }catch (error) {
+
+  } catch (error) {
     // Handle error during the API request
     console.error('Error deleting product:', error);
     toast.error('Not a valid access');
@@ -3584,7 +3584,7 @@ export const DeleteProductCategory = createAsyncThunk(
         return response.data;
       }
 
-    }catch (error) {
+    } catch (error) {
       // Handle error during the API request
       console.error('Error deleting product:', error);
       toast.error('Not a valid access');
@@ -3616,7 +3616,7 @@ export const DeleteServiceCategory = createAsyncThunk(
       toast.error('Not a valid access');
       throw error; // Rethrow the error to ensure it is propagated
     }
-   
+
   }
 );
 // MPM Delete a category
@@ -3643,8 +3643,8 @@ export const DeleteServicePackage = createAsyncThunk(
       toast.error('Not a valid access');
       throw error; // Rethrow the error to ensure it is propagated
     }
-    
-    
+
+
   }
 );
 
@@ -3724,8 +3724,8 @@ export const DeleteDeal = createAsyncThunk("DeleteDeal", async (dealId) => {
     toast.error('Not a valid access');
     throw error; // Rethrow the error to ensure it is propagated
   }
- 
-  
+
+
 });
 
 // Delete a role
@@ -3770,7 +3770,7 @@ export const DeleteRelation = createAsyncThunk(
         toast.success('Relation is deleted successfully');
         return response.data;
       }
-    }catch (error) {
+    } catch (error) {
       // Handle error during the API request
       console.error('Error deleting product:', error);
       toast.error('Not a valid access');
@@ -3844,7 +3844,7 @@ export const hsmCreateProduct = createAsyncThunk(
     try {
       const response = await axios({
         method: "post",
-          url: `${tssurl}/product`,
+        url: `${tssurl}/product`,
         // url: `http://localhost:5100/product`,
         data: jsonData,
         headers: {
@@ -4076,6 +4076,34 @@ export const productCategoryList = createAsyncThunk(
   }
 );
 
+export const uploadImages = createAsyncThunk(
+  "uploadImages",
+  async (files, { rejectWithValue }) => {
+    if (!files.length) return rejectWithValue("No files selected");
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `${tssurl}/imageupload/upload`,
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return response.data.imageUrls || [];
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error uploading images");
+    }
+  }
+);
+
+
 export const userDetails = createSlice({
   name: "userDetail",
   initialState: {
@@ -4134,16 +4162,17 @@ export const userDetails = createSlice({
     mpm_listing: [],
     mpm_allchats: [],
     mpm_review: [],
+    images: [],
     role: [],
     loading: false,
     error: null,
     data: [],
-    
-    getalllook:[],
-    getallSalesProduct:[],
-    getProductPerformance:[],
-    getactivitylogs:[],
-    getallVisitors:[]
+
+    getalllook: [],
+    getallSalesProduct: [],
+    getProductPerformance: [],
+    getactivitylogs: [],
+    getallVisitors: []
   },
   reducers: {
     dummy: (state) => state,
@@ -4167,7 +4196,18 @@ export const userDetails = createSlice({
         state.error = action.error.message ?? "Something went wrong";
       })
 
-      // Delete Suspended User
+      .addCase(uploadImages.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(uploadImages.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.images = action.payload;
+      })
+      .addCase(uploadImages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload || "Failed to upload images";
+      })
+
       .addCase(DeleteSuspendUser.pending, (state) => {
         state.status = "loading";
       })
@@ -4204,7 +4244,7 @@ export const userDetails = createSlice({
 
 
 
-// visitors
+      // visitors
       .addCase(getallVisitors.pending, (state) => {
         state.loading = true;
       })
@@ -4236,8 +4276,8 @@ export const userDetails = createSlice({
 
 
 
-      
-// performance proudct
+
+      // performance proudct
       .addCase(getProductPerformance.pending, (state) => {
         state.loading = true;
       })
@@ -4249,18 +4289,18 @@ export const userDetails = createSlice({
         state.loading = false;
         state.error = action.payload?.message;
       })
-// get all activity logs
-.addCase(getactivitylogs.pending, (state) => {
-  state.loading = true;
-})
-.addCase(getactivitylogs.fulfilled, (state, action) => {
-  state.loading = false;
-  state.getactivitylogs = action.payload;
-})
-.addCase(getactivitylogs.rejected, (state, action) => {
-  state.loading = false;
-  state.error = action.payload?.message;
-})
+      // get all activity logs
+      .addCase(getactivitylogs.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getactivitylogs.fulfilled, (state, action) => {
+        state.loading = false;
+        state.getactivitylogs = action.payload;
+      })
+      .addCase(getactivitylogs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
       // Delete a page
       .addCase(DeletePage.pending, (state) => {
         state.status = "loading";

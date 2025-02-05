@@ -8,15 +8,25 @@ import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import { Button, IconButton } from "@mui/material";
 import { Grid } from "react-loader-spinner";
-import { updatehome, getHomePage_cms, addBanner, DeleteBanner, getHomePage_cms_meta, updateHome_cms_meta, addHome, updatebanners } from "../../../User_Management/features/userSlice";
+import { updatehome, getHomePage_cms, addBanner, DeleteBanner, getHomePage_cms_meta, updateHome_cms_meta, addHome, updatebanners, uploadImages, AddeBanner } from "../../../User_Management/features/userSlice";
 import { getUserLogin } from "../../../User_Management/features/userSlice";
 
 const Action = ({ banner_id, banner_title, sub_title, button_link, banner_image_url, setLoading }) => {
   const dispatch = useDispatch();
-  const handlePhotoChange = (event) => {
-    let img = event.target.files[0]
-    setPhoto(img);
+
+  const handlePhotoChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setPhoto(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
+
   const handlePhotoRemove = () => {
     setPhoto(null);
   };
@@ -40,17 +50,15 @@ const Action = ({ banner_id, banner_title, sub_title, button_link, banner_image_
   const handleSubmit = async () => {
     // console.log('clicked');
     const formData = new FormData();
-    // formData.append("banner_id", banner_id);
-    if(title) formData.append("banner_title", title);
-    if(btn) formData.append("sub_title", btn);
+    if (title) formData.append("banner_title", title);
+    if (btn) formData.append("sub_title", btn);
     // formData.append("Butt_title", btnlink);
-    if(photo) formData.append("banner_image", photo);
+    if (photo) formData.append("banner_image", photo);
     setLoading(true);
-    // console.log(formData);
     await dispatch(updatebanners({ formData, bid }));
     setLoading(false);
     handleClose();
-    // window.location.reload()
+    window.location.reload()
   };
 
 
@@ -79,7 +87,7 @@ const Action = ({ banner_id, banner_title, sub_title, button_link, banner_image_
                 <div className="grid  gap-3 mb-3">
                   <div className="w-full h-52 rounded  overflow-hidden" >
                     <img
-                      src={URL.createObjectURL(photo)}
+                      src={photo}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -168,7 +176,7 @@ const Action = ({ banner_id, banner_title, sub_title, button_link, banner_image_
   );
 };
 
-const   CMSHome = ({ setActiveTab, setExpand }) => {
+const CMSHome = ({ setActiveTab, setExpand }) => {
   const style = {
     position: 'absolute',
     top: '50%',
@@ -197,18 +205,36 @@ const   CMSHome = ({ setActiveTab, setExpand }) => {
 
   const [bgImage, setBgImage] = useState(null);
 
-  const handleOfferImageChange1 = (event) => {
-    const file = event.target.files[0];
-    setOfferImg1(file);
+  const handleOfferImageChange1 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setOfferImg1(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
+
 
   const handleOfferImageRemove1 = () => {
     setOfferImg1(null);
   };
 
-  const handleOfferImageChange2 = (event) => {
-    const file = event.target.files[0];
-    setOfferImg2(file);
+
+  const handleOfferImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setOfferImg2(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleOfferImageRemove2 = () => {
@@ -216,72 +242,149 @@ const   CMSHome = ({ setActiveTab, setExpand }) => {
   };
 
 
-  const handleGridImageChange1 = (event) => {
-    const file = event.target.files[0];
-    setGridImg1(file);
+
+  const handleGridImageChange1 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setGridImg1(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleGridImageRemove1 = () => {
     setGridImg1(null);
   };
 
-  const handleGridImageChange2 = (event) => {
-    const file = event.target.files[0];
-    setGridImg2(file);
+
+
+  const handleGridImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setGridImg2(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
+
 
   const handleGridImageRemove2 = () => {
     setGridImg2(null);
   };
 
-  const handleGridImageChange3 = (event) => {
-    const file = event.target.files[0];
-    setGridImg3(file);
+  const handleGridImageChange3 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setGridImg3(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleGridImageRemove3 = () => {
     setGridImg3(null);
   };
 
-  const handleGridImageChange4 = (event) => {
-    const file = event.target.files[0];
-    setGridImg4(file);
+
+  const handleGridImageChange4 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setGridImg4(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleGridImageRemove4 = () => {
     setGridImg4(null);
   };
-  const handleBgImageChange = (event) => {
-    const file = event.target.files[0];
-    setBgImage(file);
+
+
+  const handleBgImageChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setBgImage(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleBgImageRemove = () => {
     setBgImage(null);
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImagePreview(file);
+
+
+  const handleImageChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleImageRemove = () => {
     setImagePreview(null);
   };
 
-  const handleImageChange1 = (event) => {
-    const file = event.target.files[0];
-    setImagePreview1(file);
+
+
+  const handleImageChange1 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview1(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleImageRemove1 = () => {
     setImagePreview1(null);
   };
 
-  const handleImageChange2 = (event) => {
-    const file = event.target.files[0];
-    setImagePreview2(file);
+
+  const handleImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview2(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
+
 
   const handleImageRemove2 = () => {
     setImagePreview2(null);
@@ -304,13 +407,25 @@ const   CMSHome = ({ setActiveTab, setExpand }) => {
   const bannerData = useSelector((state) => state.userManagement.getHomePage_cms_meta)
   //   const navigate = useNavigate();
 
-// console.log(homeData?.OfferArea?.image?.url);
   const [loading, setLoading] = useState(false);
-  // console.log(bannerData);
 
-  const handlePhotoChange = (event) => {
-    let img = event.target.files[0]
-    setPhoto(img);
+  // const handlePhotoChange = (event) => {
+  //   let img = event.target.files[0]
+  //   setPhoto(img);
+  // };
+
+
+  const handlePhotoChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setPhoto(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handlePhotoRemove = () => {
@@ -403,10 +518,19 @@ const   CMSHome = ({ setActiveTab, setExpand }) => {
     setMetaKeywords(event.target.value);
   };
 
-  const handleMetaPhotoChange = (event) => {
-    let img = event.target.files[0]
-    setMetaPhoto(img);
+  const handleMetaPhotoChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setMetaPhoto(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
+
   const handleMetaPhotoRemove = () => {
     setMetaPhoto(null);
   };
@@ -415,9 +539,9 @@ const   CMSHome = ({ setActiveTab, setExpand }) => {
 
     const formData = new FormData();
 
-    if (bgImage) formData.append("OfferArea.image", bgImage);
-    if (offerImg1) formData.append("EventArea.image", offerImg1);
-    if (offerImg2) formData.append("EventArea.image2", offerImg2);
+    if (bgImage) formData.append("OfferArea.image.url", bgImage);
+    if (offerImg1) formData.append("EventArea.image.url", offerImg1);
+    if (offerImg2) formData.append("EventArea.image2.url", offerImg2);
 
     if (banner1Title) formData.append("OfferArea.Title", banner1Title);
     if (banner1Name) formData.append("OfferArea.Name", banner1Name);
@@ -438,54 +562,47 @@ const   CMSHome = ({ setActiveTab, setExpand }) => {
     if (banner4Link3) formData.append("GridArea.link3", banner4Link3);
     if (banner4Link4) formData.append("GridArea.link4", banner4Link4);
 
-    if (gridImg1) formData.append("GridArea.image1", gridImg1);
-    if (gridImg2) formData.append("GridArea.image2", gridImg2);
-    if (gridImg3) formData.append("GridArea.image3", gridImg3);
-    if (gridImg4) formData.append("GridArea.image4", gridImg4);
+    if (gridImg1) formData.append("GridArea.image1.url", gridImg1);
+    if (gridImg2) formData.append("GridArea.image2.url", gridImg2);
+    if (gridImg3) formData.append("GridArea.image3.url", gridImg3);
+    if (gridImg4) formData.append("GridArea.image4.url", gridImg4);
 
+    const images = [];
+    if (imagePreview1) images.push({ url: imagePreview1 });
+    if (imagePreview2) images.push({ url: imagePreview2 });
+    if (imagePreview) images.push({ url: imagePreview });
 
-if(imagePreview1)  formData.append("CollectionArea.images", imagePreview1);
-if(imagePreview2) formData.append("CollectionArea.images", imagePreview2);
-if(imagePreview) formData.append("CollectionArea.images", imagePreview);
-// Add more lines if needed
+    if (images.length > 0) {
+      formData.append("CollectionArea.images", JSON.stringify(images));
+    }
 
     setLoading(true);
     await dispatch(addHome(formData));
     setLoading(false);
-    navigate("/home/pages")
-}
+    // navigate("/home/pages")
+  }
 
-  // console.log(banner4Link1);
   const handleSubmitBanner = async (event) => {
     event.preventDefault();
-
     const formData = new FormData();
     if (photo) formData.append("banner_image", photo);
-    if (title)  formData.append("banner_title", title);
+    if (title) formData.append("banner_title", title);
     if (btn) formData.append("sub_title", btn);
-    // formData.append("button_link", btnlink);
-
     setLoading(true);
-    await dispatch(addBanner(formData));
+    await dispatch(AddeBanner(formData));
     setLoading(false);
-    navigate("/home/home")
-    // window.location.reload();
+    // navigate("/home/home")
   };
   const handleSeoSubmit = async (event) => {
     event.preventDefault();
-
     const formData = new FormData();
-    if (metadesc)  formData.append("SEOArea.MetaDescription", metadesc);
-    if (metaphoto)  formData.append("SEOArea.images", metaphoto);
-    if (metatitle)  formData.append("SEOArea.MetaTitle", metatitle);
-    if (metakeywords)  formData.append("SEOArea.MetaKeywords", metakeywords);
-
+    if (metadesc) formData.append("SEOArea.MetaDescription", metadesc);
+    if (metaphoto) formData.append("SEOArea.images.url", metaphoto);
+    if (metatitle) formData.append("SEOArea.MetaTitle", metatitle);
+    if (metakeywords) formData.append("SEOArea.MetaKeywords", metakeywords);
     setLoading(true);
-    // await dispatch(editContactPage_cms(formData));
     await dispatch(updateHome_cms_meta(formData))
     setLoading(false);
-
-    // window.location.reload();
   };
 
   return (
@@ -581,7 +698,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                 <div className="flex gap-2 mt-2 items-center">
                   <div className="w-20 h-20 rounded overflow-hidden">
                     <img
-                      src={URL.createObjectURL(metaphoto)}
+                      src={metaphoto}
                       alt="User profile"
                       className="w-full h-full object-cover"
                     />
@@ -624,12 +741,12 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
         </div>
         <form onSubmit={handleSubmit}  >
 
-          {bannerData && bannerData.length > 0 ? bannerData.map((item, index) => (
+          {bannerData && bannerData?.length > 0 ? bannerData?.map((item, index) => (
             <>
               <div className="text-xl  p-2 px-4 font-bold bg-[#EEEEEE] inline-block" style={{ borderTopLeftRadius: '5px', borderTopRightRadius: '5px' }}>Banner {index + 1}</div>
               <div key={index} style={{ borderTopLeftRadius: 0 }} className="bg-[#EEEEEE] relative rounded-md drop-shadow-md mb-3 items-end borders  ">
                 <Button style={{ position: 'absolute', top: '10px', right: '10px', }} color="error" variant="contained" size="small"
-                  onClick={() => handleDeleteLink(item.banner_id)}
+                  onClick={() => handleDeleteLink(item?.banner_id)}
                 >
                   <CloseIcon />
                 </Button>
@@ -640,7 +757,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                         style={{ borderTopLeftRadius: 0, borderBottomRightRadius: 0 }}
                       >
                         <img
-                          src={item.banner_image.url}
+                          src={item?.banner_image?.url}
                           className="w-full h-full object-cover " style={{ objectPosition: 'center' }}
                         />
                       </div>
@@ -654,7 +771,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                     Banner Title
                     <input
                       type="add"
-                      value={item.banner_title}
+                      value={item?.banner_title}
                       className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
                       placeholder=""
                     // onChange={(e) => handleBannerTitleChange(index, e)}
@@ -664,7 +781,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                     Sub Title
                     <input
                       type="add"
-                      value={item.sub_title}
+                      value={item?.sub_title}
                       className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
                       placeholder=""
                     // onChange={(e) => handlesub_titleChange(index, e)}
@@ -672,7 +789,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   </label>
                   <div></div>
                   <label className="flex items-end justify-end pr-6 ">
-                    <Action banner_id={item.banner_id} setLoading={setLoading} banner_image_url={item.banner_image.url} banner_title={item.banner_title} sub_title={item.Butt_title} button_link={item.button_link} />
+                    <Action banner_id={item?.banner_id} setLoading={setLoading} banner_image_url={item?.banner_image.url} banner_title={item?.banner_title} sub_title={item?.Butt_title} button_link={item?.button_link} />
                   </label>
                 </div>
               </div>
@@ -699,7 +816,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-20 h-20 rounded  overflow-hidden" >
                       <img
-                        src={URL.createObjectURL(photo)}
+                        src={photo}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -747,7 +864,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                 </label>
               </div>
               <div className="flex mt-10 gap-5 items-center">
-                
+
                 <button
                   className="rounded bg-[#c93a0e] hover:bg-[#c91b0e]"
                   style={{
@@ -790,11 +907,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
               />
               {!bgImage ? (
                 <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                  {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-           
-          </svg> */}
-                  <img src={homeData?.OfferArea?.image?.url && homeData.OfferArea.image.url} className='object-cover w-full h-full' alt='Preview 0' />
+                  <img src={homeData?.OfferArea?.image?.url && homeData?.OfferArea?.image?.url} className='object-cover w-full h-full' alt='Preview 0' />
                 </label>
               ) : (
                 <>
@@ -805,7 +918,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                       <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                     </svg>
                   </div>
-                  <img src={URL.createObjectURL(bgImage)} className='object-cover w-full h-full' alt='Preview 0' />
+                  <img src={bgImage} className='object-cover w-full h-full' alt='Preview 0' />
                 </>
               )}
 
@@ -890,10 +1003,10 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!imagePreview ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                    {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'> */}
-                    <img src={homeData?.CollectionArea?.images?.[0]?.url} className='object-cover w-full h-full' alt='Preview 0' />
-                    {/* </svg> */}
-                  </label>
+                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'> */}
+                      <img src={homeData?.CollectionArea?.images?.[0]?.url} className='object-cover w-full h-full' alt='Preview 0' />
+                      {/* </svg> */}
+                    </label>
                   ) : (
                     <>
                       <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
@@ -903,7 +1016,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(imagePreview)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={imagePreview} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -917,10 +1030,10 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!imagePreview1 ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                    {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'> */}
-                    <img src={homeData?.CollectionArea?.images?.[1]?.url} className='object-cover w-full h-full' alt='Preview 0' />
-                    {/* </svg> */}
-                  </label>
+                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'> */}
+                      <img src={homeData?.CollectionArea?.images?.[1]?.url} className='object-cover w-full h-full' alt='Preview 0' />
+                      {/* </svg> */}
+                    </label>
                   ) : (
                     <>
                       <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
@@ -930,7 +1043,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(imagePreview1)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={imagePreview1} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -957,7 +1070,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(imagePreview2)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={imagePreview2} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -984,9 +1097,6 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!offerImg1 ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg> */}
                       <img src={homeData?.EventArea?.image?.url} className='object-cover w-full h-full' alt='Preview 0' />
                     </label>
                   ) : (
@@ -998,7 +1108,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(offerImg1)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={offerImg1} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -1025,9 +1135,6 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!offerImg2 ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg> */}
                       <img src={homeData.EventArea?.image2?.url} className='object-cover w-full h-full' alt='Preview 0' />
                     </label>
                   ) : (
@@ -1039,7 +1146,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(offerImg2)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={offerImg2} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -1079,7 +1186,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(gridImg1)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={gridImg1} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -1113,9 +1220,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!gridImg2 ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg> */}
+
                       <img src={homeData.GridArea?.image2?.url} className='object-cover w-full h-full' alt='Preview 0' />
                     </label>
                   ) : (
@@ -1127,7 +1232,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(gridImg2)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={gridImg2} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -1162,9 +1267,6 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!gridImg3 ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg> */}
                       <img src={homeData.GridArea?.image3?.url} className='object-cover w-full h-full' alt='Preview 0' />
                     </label>
                   ) : (
@@ -1176,7 +1278,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(gridImg3)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={gridImg3} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -1211,9 +1313,6 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                   />
                   {!gridImg4 ? (
                     <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-                      {/* <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg> */}
                       <img src={homeData.GridArea?.image4?.url} className='object-cover w-full h-full' alt='Preview 0' />
                     </label>
                   ) : (
@@ -1225,7 +1324,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
                           <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                         </svg>
                       </div>
-                      <img src={URL.createObjectURL(gridImg4)} className='object-cover w-full h-full' alt='Preview 0' />
+                      <img src={gridImg4} className='object-cover w-full h-full' alt='Preview 0' />
                     </>
                   )}
 
@@ -1251,7 +1350,7 @@ if(imagePreview) formData.append("CollectionArea.images", imagePreview);
           </div>
 
           <div className="flex mt-10 gap-5 items-center">
-            
+
             <button
               className="rounded bg-[#c93a0e] hover:bg-[#c91b0e]"
               style={{

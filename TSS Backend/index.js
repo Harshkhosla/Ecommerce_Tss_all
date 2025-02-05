@@ -2,6 +2,7 @@ const ConnectToMongo = require("./db");
 const express = require("express");
 const http = require("http"); // Add the http module
 const socketIo = require("socket.io");
+const bcrypt = require('bcrypt');
 const { Server } = require("socket.io");
 var cors = require("cors");
 const mongoose = require("mongoose");
@@ -45,6 +46,7 @@ const contact = require("./routes/Client/contactroutes.js");
 const Stripe = require("./routes/Client/Stripe.js");
 const Orders = require("./routes/Client/Orders.js");
 const promotions= require("./routes/Client/promotionroutes.js");
+const ImageRoute= require("./routes/ImageUploads/ImageUpload.js");
 
 ConnectToMongo();
 const app = express();
@@ -101,6 +103,13 @@ app.use("/client", Stripe);
 app.use("/client/orders", Orders);
 app.use("/client", promotions);
 
+
+
+
+
+
+
+app.use("/admin/imageupload", ImageRoute);
 // app.use("/client/liked",liked)
 
 // app.use('/client/page', ClientHome);
