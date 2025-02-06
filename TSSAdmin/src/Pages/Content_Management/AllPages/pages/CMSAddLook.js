@@ -4,7 +4,7 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Grid } from "react-loader-spinner";
 import { useSelector } from "react-redux";
-import { Addlook, getUserLogin } from "../../../User_Management/features/userSlice";
+import { Addlook, getUserLogin, uploadImages } from "../../../User_Management/features/userSlice";
 import { newsletter_controller } from "../../../User_Management/features/userSlice";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 
@@ -16,13 +16,8 @@ const CMSAddLook = ({ setActiveTab, setExpand }) => {
   setExpand("contentManagement")
   const head = "Add Look";
 
-  // console.log(location.state);
   const catId = location.state;
-
-  // console.log("catId", catId);
   const catalog_id = catId.catalog_id
-
-  //   const dispatch = useDispatch();
 
   const dispatch = useDispatch();
   const LuserData = useSelector((state) => state.userManagement.getUserLogin);
@@ -35,10 +30,6 @@ const CMSAddLook = ({ setActiveTab, setExpand }) => {
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // console.log("submit ")
-    // console.log("thumbnail", thumbnailImage)
-    // console.log("slider", galleryImages)
-
     const formData = new FormData()
     formData.append("thumbnail", thumbnailImage[0])
     formData.append("slider", galleryImages[0])
@@ -48,8 +39,6 @@ const CMSAddLook = ({ setActiveTab, setExpand }) => {
     } else {
       formData.append("catalog_id", catId)
     }
-    // debugger;
-
     await dispatch(Addlook(formData))
 
     // const formData = new FormData();
@@ -78,24 +67,52 @@ const CMSAddLook = ({ setActiveTab, setExpand }) => {
   const ThumbnailImage = (value) => {
     setThumbnailImage(value);
   };
-  const handleGalleryImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedImages = files.map((file) => file);
-    GalleryImages(selectedImages);
+
+    const handleGalleryImageUpload = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        GalleryImages(resultAction?.payload);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+  
+  // const handleGalleryImageUpload = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   const selectedImages = files.map((file) => file);
+  //   GalleryImages(selectedImages);
+  // };
+
+
+  const handleThumbnailImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      ThumbnailImage(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
-  const handleThumbnailImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedImages = files.map((file) => file);
-    ThumbnailImage(selectedImages);
-  };
+
+  // const handleThumbnailImageUpload = (e) => {
+  //   const files = Array.from(e.target.files);
+  //   const selectedImages = files.map((file) => file);
+  //   ThumbnailImage(selectedImages);
+  // };
 
   const handleRemoveImage = (index) => {
     const newImages = [...thumbnailImage];
     newImages.splice(index, 1);
     ThumbnailImage(newImages);
 
-    // fileInputRef.current.value = newImages.length;
   };
 
   return (
@@ -148,7 +165,7 @@ const CMSAddLook = ({ setActiveTab, setExpand }) => {
                           {thumbnailImage.map((image, index) => (
                             <div key={index} className="relative">
                               <img
-                                src={URL.createObjectURL(image)} // replace with your image source
+                                src={(image)} // replace with your image source
                                 alt={image.name} // replace with your image alt text
                                 style={{
                                   width: "100px",
@@ -189,7 +206,7 @@ const CMSAddLook = ({ setActiveTab, setExpand }) => {
                           {galleryImages.map((image, index) => (
                             <div key={index} className="relative">
                               <img
-                                src={URL.createObjectURL(image)} // replace with your image source
+                                src={(image)} // replace with your image source
                                 alt={image.name} // replace with your image alt text
                                 style={{
                                   width: "100px",

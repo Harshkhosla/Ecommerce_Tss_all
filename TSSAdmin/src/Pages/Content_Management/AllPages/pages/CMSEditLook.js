@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import TopHeader from "../../../../UI/TopHeader/TopHeader";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Grid } from "react-loader-spinner";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { useSelector } from "react-redux";
-import { Editlook } from "../../../User_Management/features/userSlice";
+import { Editlook, uploadImages } from "../../../User_Management/features/userSlice";
 
 const CMSEditLook = ({ setActiveTab, setExpand }) => {
 
@@ -21,74 +21,84 @@ const CMSEditLook = ({ setActiveTab, setExpand }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
-  // console.log("data",data);
+  // console.log("data", data);
 
   useEffect(() => {
-    if (data && data.thumbnail) {
+    if (data ) {
       const imageUrl = data.thumbnail;
       setBanner4Title1(data.title)
+      setGalleryImages([data?.thumbnail])
+      setThumbnailImage(data?.slider)
     }
-    // setThumbnailImage([...thumbnailImage,data?.thumbnail])
   }, [data]);
 
   const [loading, setLoading] = useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const formData = new FormData()
+    if (thumbnailImage[0]) formData.append("thumbnail", thumbnailImage[0])
+    if (galleryImages[0]) formData.append("slider", galleryImages[0])
+    if (banner4Title1) formData.append("title", banner4Title1)
+    const cat = data?._id
+    setLoading(true);
+    await dispatch(Editlook({ formData, cat }));
+    setLoading(false);
+    // window.location.reload();
 
 
-    // const formData = new FormData();
-
-    // formData.append("cashback_rate", cashbackRate);
-    // formData.append("reward_rate", rewardPointRate);
-    // formData.append("shipping_charges", shipping);
-    // formData.append("other_charges", other);
-    const formData=new FormData()
-if(thumbnailImage[0])formData.append("thumbnail",thumbnailImage[0])
-if(galleryImages[0])formData.append("slider",galleryImages[0])
-if(banner4Title1)formData.append("title",banner4Title1)
-const cat=data?._id
-// console.log(cat,"cat");
-// formData.append("catalog_id",data?.catalog_id)
-await dispatch(Editlook({formData,cat}));
-
-
-    // setLoading(true);
     // await dispatch(updateGeneralConfig(formData));
     // handleNewsLetter();
 
-    // setLoading(false);
     // navigate("/home/generalConfig")
-    // window.location.reload();
 
   };
 
   const [galleryImages, setGalleryImages] = useState([]);
+  console.log(galleryImages);
+  
   const [banner4Title1, setBanner4Title1] = useState("");
   const [thumbnailImage, setThumbnailImage] = useState([]);
-  
+
   const GalleryImages = (value) => {
     setGalleryImages(value);
   };
   const ThumbnailImage = (value) => {
     setThumbnailImage(value);
   };
-  const handleGalleryImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedImages = files.map((file) => file);
-    GalleryImages(selectedImages);
+
+
+  const handleGalleryImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      GalleryImages(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
-  
-  const handleThumbnailImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedImages = files.map((file) => file);
-    ThumbnailImage(selectedImages);
+
+
+  const handleThumbnailImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      ThumbnailImage(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
-  
+
   const handleRemoveImage = (index) => {
     const newImages = [...thumbnailImage];
     newImages.splice(index, 1);
     ThumbnailImage(newImages);
-    
+
     // fileInputRef.current.value = newImages.length;
   };
   // console.log(thumbnailImage);
@@ -111,18 +121,12 @@ await dispatch(Editlook({formData,cat}));
       <div className="" style={{ background: "white" }}>
         <TopHeader className="fixed " head={head} />
       </div>
-      {/* Same */}
       <div className="ml-80 mt-10 relative w-[70vw]" style={{ marginTop: "80px" }}>
         <form onSubmit={handleSubmit}  >
           <div className="grid gap-3">
-
-
             <div className="flex gap-3">
               <div className="bg-[#EEEEEE] p-5  grid gap-2 rounded-md drop-shadow-md border flex-grow">
-
-
                 <div className='flex gap-3'>
-
                   <div>
                     <label className="grid mt-5" style={{ fontSize: "15px" }}>
                       Thumbnail Photo
@@ -133,7 +137,6 @@ await dispatch(Editlook({formData,cat}));
                         placeholder=""
                         accept="image/*"
                         onChange={handleThumbnailImageUpload}
-
                       />
                     </label>
                     <div style={{ width: "450px", marginTop: "10px" }}>
@@ -142,7 +145,7 @@ await dispatch(Editlook({formData,cat}));
                           {thumbnailImage.map((image, index) => (
                             <div key={index} className="relative">
                               <img
-                                src={URL.createObjectURL(image)} // replace with your image source
+                                src={(image.url)} // replace with your image source
                                 alt={image.name} // replace with your image alt text
                                 style={{
                                   width: "100px",
@@ -164,13 +167,14 @@ await dispatch(Editlook({formData,cat}));
                         <div className="grid grid-cols-4 gap-2">
                           <div className="relative">
                             <img
-                              src={data.thumbnail.url} // replace with your image source
+                              src={data.thumbnail.url} 
+                              alt="Not working"
                               style={{
                                 width: "100px",
                                 height: "100px",
                                 objectFit: "cover",
                                 marginRight: "10px",
-                              }} // set width, height, object-fit, and margin-right styles
+                              }}
                             />
                           </div>
                         </div>
@@ -190,14 +194,13 @@ await dispatch(Editlook({formData,cat}));
                         multiple
                       />
                     </label>
-                    {/* </div> */}
                     <div style={{ width: "450px", marginTop: "10px" }}>
                       {galleryImages && galleryImages.length > 0 && (
                         <div className="grid grid-cols-4 gap-2">
                           {galleryImages.map((image, index) => (
                             <div key={index} className="relative">
                               <img
-                                src={URL.createObjectURL(image)} // replace with your image source
+                                src={image.url} // replace with your image source
                                 alt={image.name} // replace with your image alt text
                                 style={{
                                   width: "100px",
@@ -262,109 +265,7 @@ await dispatch(Editlook({formData,cat}));
           </div>
         </form>
       </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
-
-
-
-
-
-
-
-
-
-
-    // // {/*            
-    // //             <label className="grid pr-6">
-    // //               Background Image
-    // //               {bgImg ? (null) : (
-
-    // //                 <div className="flex items-center mb-2">
-    // //                   <div className="w-20 h-20 rounded overflow-hidden">
-    // //                     <img
-    // //                       src={editData.photo}
-    // //                       alt="User profile"
-    // //                       className="w-full h-full object-cover"
-    // //                     />
-    // //                   </div>
-    // //                 </div>
-    // //               )
-    // //               }
-    // //               {photo ? (
-    // //                 <div className="flex items-center">
-    // //                   <div className="w-20 h-20 rounded overflow-hidden">
-    // //                     <img
-    // //                       src={URL.createObjectURL(photo)}
-    // //                       alt="User profile"
-    // //                       className="w-full h-full object-cover"
-    // //                     />
-    // //                   </div>
-    // //                   <div>
-    // //                     <button
-    // //                       style={{
-    // //                         color: "red",
-    // //                         paddingLeft: "5px",
-    // //                         cursor: "pointer",
-    // //                         backgroundColor: "white",
-    // //                         marginLeft: "20px",
-    // //                       }}
-    // //                       onClick={handlePhotoRemove}>
-    // //                       Remove
-    // //                     </button>
-    // //                   </div>
-    // //                 </div>
-    // //               ) : (
-    // //                 <input
-    // //                   type="file"
-    // //                   id="photo"
-    // //                   name="photo"
-    // //                   accept="image/*"
-    // //                   onChange={handlePhotoChange}
-    // //                   class="file:bg-black file:px-6 file:py-3 file:border-none file:rounded file:text-white file:cursor-pointer placeholder-transparent mt-3 rounded appearance-none placeholder-transparent w-[50vh]"
-    // //                   style={{ border: "2px solid #e6f7fe" }}
-    // //                 />
-    // //               )}
-    // //             </label>
-    // //           </div>
-    // //           <div className="flex mt-10 gap-5 items-center">
-    // //             <button
-    // //               className="rounded bg-[#c93a0e] hover:bg-[#c91b0e]"
-    // //               style={{
-    // //                 width: "130px",
-    // //                 height: "55px",
-    // //                 color: "white",
-    // //               }}
-    // //               type="submit"
-    // //               onSubmit={handleSubmit}>
-    // //               SAVE
-    // //             </button>
-    // //             <NavLink to="/home/header">
-    // //               <button
-    // //                 className="rounded bg-black hover:bg-gray-800"
-    // //                 style={{
-    // //                   width: "130px",
-    // //                   height: "55px",
-    // //                   color: "white",
-    // //                 }}>
-    // //                 Back
-    // //               </button>
-    // //             </NavLink> */}
-    // //           </div>
-    // //         </form>
-    // //       </div>
-    // //     </div>
   );
 };
 
