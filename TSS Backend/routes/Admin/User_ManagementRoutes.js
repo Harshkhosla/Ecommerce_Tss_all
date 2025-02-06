@@ -94,25 +94,12 @@ function generateUniqueDeptId() {
 }
 
 // Create a new user
-router.post('/create',upload.single("pic_url"), async (req, res) => {
+router.post('/create',upload.none(), async (req, res) => {
     try {
-        // Generate unique uid and dept_id
         const uid = generateUniqueId();
         const dept_id = generateUniqueDeptId();
-        // console.log(req.file);
-        
-        
-        // Hash the password using bcrypt
         const hashedPassword = await bcrypt.hash(req.body.pass, 10);
-        const uniqueFileName = req.file.filename;
-
-        
-        
-        // Create a new user with the generated IDs, hashed password, and provided data
         const newUser = new UserManagement({ ...req.body, uid, dept_id, pass: hashedPassword });
-        if (req.file) {
-            newUser.pic_url =`http://64.227.186.165/tss_files/home/${uniqueFileName}`
-          }
         await newUser.save();
 
         res.status(201).json({ message: 'User created successfully', user: newUser });
@@ -147,21 +134,13 @@ router.get('/:uid', async (req, res) => {
     }
 });
 // Updaconst bcryconst bcrypt = require('bcrypt');
-router.put('/:uid', upload.single("pic_url"), async (req, res) => {
+router.put('/:uid', upload.none(), async (req, res) => {
     try {
         const userdata = req.body;
 
-        // Encrypt the password if it exists
         if (userdata.pass) {
             const hashedPassword = await bcrypt.hash(userdata.pass, saltRounds);
             userdata.pass = hashedPassword;
-        }
-
-        if (!req.file) {
-            delete userdata.pic_url;
-        } else {
-            const files = req.file;
-            userdata.pic_url = `http://64.227.186.165/tss_files/home/${files.filename}`;
         }
 
         const updatedUser = await UserManagement.findOneAndUpdate({ uid: req.params.uid }, userdata, { new: true });
@@ -173,10 +152,8 @@ router.put('/:uid', upload.single("pic_url"), async (req, res) => {
         res.status(200).json({ message: 'User updated successfully', user: updatedUser });
     } catch (error) {
         if (error.code === 11000 && error.keyPattern && error.keyValue) {
-            // Duplicate key error handling
             return res.status(400).json({ message: 'Duplicate key error', duplicateKey: error.keyValue });
         }
-
         console.error('Error updating user by UID:', error);
         res.status(500).json({ message: 'Internal Server Error' });
     }

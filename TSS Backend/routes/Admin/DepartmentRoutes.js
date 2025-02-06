@@ -32,46 +32,31 @@ function generateUniqueDeptId() {
 }
 
 // Create a new department
-router.post('/create', upload.single('department_photo'), async (req, res) => {
+router.post('/create', async (req, res) => {
     try {
-        // Generate unique dept_id
         const authToken = req.headers.authorization || req.headers.Authorization;
         console.log(authToken);
         if (!authToken) {
             return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
         }
-        // Decode the authentication token
         const decodedToken = jwt.verify(authToken, 'your-secret-key');
-        // Check if the decoded token has the necessary fields (userId, uid, role)
         if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
             return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
         }
-        // Get the user's role and permissions from the database based on the decoded token
         const userRole = decodedToken.role;
         const userPermissionsArray = await Role.findOne({ role: userRole });
-        console.log(userPermissionsArray);
-        // Check if the user has permission to read products in the "Inventory" category
         const canReadProducts = userPermissionsArray.permissions.some(permission =>
             permission.catg === 'User' && permission.create
         );
-  
         if (!canReadProducts) {
             return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
         }
+        console.log(req.body,"askjvb");
+        
         const dept_id = generateUniqueDeptId();
-        const uniqueFileName = req.file.filename;
-      
-        // Create the URL using the filename
-        const url = `http://64.227.186.165/tss_files/Department/${uniqueFileName}`;
-        
-        
-        //   }
-        // Create a new department with the generated ID and provided data
         const newDepartment = new Department({
             ...req.body,
-            dept_id,
-            department_photo: req.file.buffer, // Save the image as a buffer
-            department_photo1:url, // Save the image as a buffer
+            dept_id
         });
         await newDepartment.save();
 
@@ -154,42 +139,31 @@ router.get('/:dept_id', async (req, res) => {
 });
 
 // Update department by dept_id
-router.put('/:dept_id', upload.single('department_photo'), async (req, res) => {
+router.put('/:dept_id',upload.none(),  async (req, res) => {
     try {
         const authToken = req.headers.authorization || req.headers.Authorization;
-        console.log(authToken);
         if (!authToken) {
             return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
         }
-        // Decode the authentication token
         const decodedToken = jwt.verify(authToken, 'your-secret-key');
-        // Check if the decoded token has the necessary fields (userId, uid, role)
         if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
             return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
         }
-        // Get the user's role and permissions from the database based on the decoded token
         const userRole = decodedToken.role;
         const userPermissionsArray = await Role.findOne({ role: userRole });
-        console.log(userPermissionsArray);
-        // Check if the user has permission to read products in the "Inventory" category
         const canReadProducts = userPermissionsArray.permissions.some(permission =>
             permission.catg === 'User' && permission.update
         );
-  
         if (!canReadProducts) {
             return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
         }
 
-        const uniqueFileName = req.file.filename;
-      
-        // Create the URL using the filename
-        const url = `http://64.227.186.165/tss_files/Department/${uniqueFileName}`;
+        console.log(req.body,"jdschsdv");
         
         const updatedDepartment = await Department.findOneAndUpdate(
             { dept_id: req.params.dept_id },
             {
-                ...req.body,
-                department_photo1: req.file ? url : undefined, // Update image if provided
+                ...req.body
             },
             { new: true }
         );

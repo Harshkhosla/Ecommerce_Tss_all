@@ -3,7 +3,7 @@ import TopHeader from "../../../UI/TopHeader/TopHeader";
 import { Form, Link, useLocation, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../features/userSlice";
+import { updateUser, uploadImages } from "../features/userSlice";
 import { Grid } from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import { getUserLogin } from "../features/userSlice";
@@ -28,15 +28,7 @@ const EditUser = ({ setActiveTab, setExpand }) => {
   const [role, setRole] = useState(editData.role);
   const [password, setPassword] = useState("");
   const [dept, setDept] = useState(editData.department);
-// console.log(editData);
-  useEffect(() => {
-    //   setName(editData.username);
-    //   setEmail(editData.email);
-    //   setPhone(editData.phone);
-    //   setUserId(editData.uid);
-    // setPhoto(editData.photo)
-    // console.log(editData);
-  }, [])
+
 
   const [error, setError] = useState('');
 
@@ -69,10 +61,20 @@ const EditUser = ({ setActiveTab, setExpand }) => {
     setPhone(event.target.value);
   };
 
-  const handlePhotoChange = (event) => {
-    let img = event.target.files[0]
-    setPhoto(img);
-  };
+
+    const handlePhotoChange = async (event) => {
+        const files = event.target.files;
+        if (!files.length) return;
+        setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        if (uploadImages.fulfilled.match(resultAction)) {
+          setPhoto(resultAction?.payload?.[0]);
+        } else {
+          console.error("Upload failed:", resultAction.payload);
+        }
+        setLoading(false);
+      };
+   
 
   const [passwordError, setPasswordError] = useState("");
   const handlePasswordChange = (event) => {
@@ -292,7 +294,7 @@ const EditUser = ({ setActiveTab, setExpand }) => {
                 <div className="flex items-center">
                   <div className="w-20 h-20 rounded overflow-hidden">
                     <img
-                      src={URL.createObjectURL(photo)}
+                      src={photo}
                       alt="User profile"
                       className="w-full h-full object-cover"
                     />

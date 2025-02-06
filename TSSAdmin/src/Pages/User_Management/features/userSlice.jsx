@@ -32,7 +32,7 @@ export const createUser = createAsyncThunk(
     try {
       const response = await axios({
         method: "post",
-        url: `${tssurl}/admin/user_management/create`,
+        url: `${tssurl}/user_management/create`,
         data: formData,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
@@ -197,26 +197,16 @@ export const addNewDept_cms = createAsyncThunk(
         data: formData,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-          // "X-CSRFToken": csrfToken,
+          "Content-Type": "application/json"
         },
       });
-      // console.log(...formData);
-      // // console.log(csrfToken)
-      // console.log(response);
-      // console.log(formData);
-      // alert("Department created successfully");
       return response.data;
     } catch (error) {
       if (error.response.status === 403) {
-        // Handle 403 Forbidden error with a toast message
         toast.error("Access forbidden. You do not have permission to perform this action.");
       } else {
         // console.log("Not submitting data");
       }
-      // // console.log(csrfToken)
-      // console.log("Not submitting data");
       return rejectWithValue(error.response.data);
     }
   }
@@ -2073,8 +2063,6 @@ export const updateDept_cms = createAsyncThunk(
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-
         },
       });
       // console.log(response);

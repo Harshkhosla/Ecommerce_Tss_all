@@ -3,7 +3,7 @@ import React from "react";
 import TopHeader from "../../../../UI/TopHeader/TopHeader";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { useDispatch } from "react-redux";
-import { addNewDept_cms, updateCategory } from "../../../User_Management/features/userSlice";
+import { addNewDept_cms, updateCategory, uploadImages } from "../../../User_Management/features/userSlice";
 import { Link, useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { deleteIcon, editIcon } from "../Assets/index";
 import Table from "../../../../UI/CommonTable/Table";
@@ -25,28 +25,33 @@ const CMSAddDept = ({ setExpand, setActiveTab }) => {
   const [slug, setSlug] = useState('');
 
 
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-
-      const formData = new FormData();
-      formData.append("department_name", title);
-    
-      formData.append("department_photo", photo );
-      
-      
-
-      setLoading(true);
-      await dispatch(addNewDept_cms(formData));
-      setLoading(false);
-      navigate('/home/department');
-      window.location.reload();
-    };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("department_name", title);
+    formData.append("department_photo1", photo);
+    setLoading(true);
+    await dispatch(addNewDept_cms(formData));
+    setLoading(false);
+    navigate('/home/department');
+    window.location.reload();
+  };
 
 
-    const handlePhotoChange = (event) => {
-      let img = event.target.files[0]
-      setPhoto(img);
-    };
+
+  const handlePhotoChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setPhoto(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
+  };
+
 
   const handlePhotoRemove = () => {
     setPhoto(null);
@@ -64,33 +69,33 @@ const CMSAddDept = ({ setExpand, setActiveTab }) => {
           <label className="grid pr-6" style={{ marginTop: "20px" }}>
             Department Photo
             {photo ? (
-                    <div className="flex gap-2 items-center">
-                      <div className="w-20 h-20 rounded overflow-hidden">
-                        <img
-                          src={URL.createObjectURL(photo)}
-                          alt="User profile"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <Button color="error" variant="contained" size="small"
-                          onClick={handlePhotoRemove}>
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <input
-                      type="file"
-                      id="photo"
-                      name="photo"
-                      accept="image/*"
-                      onChange={handlePhotoChange}
-                      className="file:bg-black file:px-6 file:py-3 bg-white file:border-none file:rounded file:text-white file:cursor-pointer placeholder-transparent  rounded appearance-none placeholder-transparent w-[20rem]"
-                      style={{ border: "2px solid #e6f7fe" }}
-                    />
-                  )}
-                </label>
+              <div className="flex gap-2 items-center">
+                <div className="w-20 h-20 rounded overflow-hidden">
+                  <img
+                    src={photo}
+                    alt="User profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <Button color="error" variant="contained" size="small"
+                    onClick={handlePhotoRemove}>
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <input
+                type="file"
+                id="photo"
+                name="photo"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                className="file:bg-black file:px-6 file:py-3 bg-white file:border-none file:rounded file:text-white file:cursor-pointer placeholder-transparent  rounded appearance-none placeholder-transparent w-[20rem]"
+                style={{ border: "2px solid #e6f7fe" }}
+              />
+            )}
+          </label>
           <div className="grid grid-cols-2 gap-3">
             <label className="grid mt-5">
               Department Name
@@ -111,7 +116,7 @@ const CMSAddDept = ({ setExpand, setActiveTab }) => {
                 required
               />
             </label>
-           
+
           </div>
           <button
             className="rounded mt-10 bg-[#c93a0e] hover:bg-[#c91b0e]"

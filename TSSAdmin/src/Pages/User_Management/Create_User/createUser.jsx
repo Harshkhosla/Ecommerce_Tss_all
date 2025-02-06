@@ -3,7 +3,7 @@ import TopHeader from "../../../UI/TopHeader/TopHeader";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { createUser, createRole, RoleManagement } from "../features/userSlice";
+import { createUser, createRole, RoleManagement, uploadImages } from "../features/userSlice";
 import { useNavigate } from "react-router-dom";
 import AddNewRole from "../../PRM/addNewRole";
 import { Grid } from "react-loader-spinner";
@@ -103,10 +103,20 @@ const CreateUser = ({ setActiveTab, setExpand }) => {
   };
   
 
-  const handlePhotoChange = (event) => {
-    setPhoto(event.target.files[0]);
-    // console.log(photo);
-  };
+
+  const handlePhotoChange = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setPhoto(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+ 
 
   const [passwordError, setPasswordError] = useState("");
 
@@ -165,7 +175,7 @@ const CreateUser = ({ setActiveTab, setExpand }) => {
     setLoading(true);
     await dispatch(createUser(formData));
     setLoading(false);
-    navigate("/home/allUsers");
+    // navigate("/home/allUsers");
   };
   // console.log(photo);
   return (
@@ -296,7 +306,7 @@ const CreateUser = ({ setActiveTab, setExpand }) => {
                 <div className="flex items-center">
                   <div className="w-20 h-20 rounded overflow-hidden">
                     <img
-                      src={URL.createObjectURL(photo)}
+                      src={photo}
                       alt="User profile"
                       className="w-full h-full object-cover"
                     />

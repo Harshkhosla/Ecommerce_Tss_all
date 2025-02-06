@@ -3,7 +3,7 @@ import React from "react";
 import TopHeader from "../../../../UI/TopHeader/TopHeader";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, updateDept_cms } from "../../../User_Management/features/userSlice";
+import { getUser, updateDept_cms, uploadImages } from "../../../User_Management/features/userSlice";
 import { Link, useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import { deleteIcon, editIcon } from "../Assets/index";
 import Table from "../../../../UI/CommonTable/Table";
@@ -116,12 +116,20 @@ const EditCMSDepts = ({ setExpand, setActiveTab }) => {
   const Navigate = useNavigate();
   const location = useLocation();
   const data = location.state;
+
   const pageSize = 5;
   const [loading, setLoading] = useState(false);
   const userData = useSelector((state) => state.userManagement.users);
 
-  const [title, setTitle] = useState(data.dept_name);
-  const [images, setImages] = useState([]);
+
+  const [title, setTitle] = useState(data?.dept_name);
+  const [images, setImages] = useState('');
+  console.log(images);
+
+  useEffect(() => {
+    setImages(data?.image)
+  }, [data.image])
+
   const [slug, setSlug] = useState(data.slug);
   const dispatch = useDispatch();
   const greenButtonText = "Add New Member";
@@ -138,16 +146,14 @@ const EditCMSDepts = ({ setExpand, setActiveTab }) => {
     fetchUserData();
   }, [dispatch]);
   const filteredData = userData.filter(item => item.dept_id === data.dept_id);
+
   const handleSubmit = async (event, depID) => {
     event.preventDefault();
-
     const formData = new FormData();
-    formData.append("dept_id", data.dept_id);
-    formData.append("department_name", title);
-
-    images.map((image, index) => {
-      formData.append("department_photo", image);
-    });
+    if (data.depID) formData.append("dept_id", data.dept_id);
+    if (title) formData.append("department_name", title);
+    console.log(images, "sdkvjhbsdvjkhvdsjhb");
+    if (images) formData.append("department_photo1", images);
     setLoading(true);
     await dispatch(updateDept_cms({ formData, depID }));
     setLoading(false);
@@ -180,22 +186,27 @@ const EditCMSDepts = ({ setExpand, setActiveTab }) => {
     },
   ];
 
-  const handlePhotoUpload = (event) => {
+
+  const handlePhotoUpload = async (event) => {
     const files = event.target.files;
-    const uploadedImages = [];
-    for (let i = 0; i < files.length; i++) {
-      uploadedImages.push(files[i]);
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      console.log(resultAction?.payload[0], 'dskhcvbs');
+      setImages(resultAction?.payload[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
     }
-    setImages(uploadedImages);
+    setLoading(false);
   };
 
-  const handleRemoveImage = (index) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
 
-    // fileInputRef.current.value = newImages.length;
+  const handleRemoveImage = () => {
+    setImages(null);
   };
+
+
 
   return (
     <div>
@@ -221,66 +232,33 @@ const EditCMSDepts = ({ setExpand, setActiveTab }) => {
         <form >
           <label className="grid pr-6" style={{ marginTop: "20px" }}>
             Department Photo
-            <div style={{ width: "600px", marginTop: "10px" }}>
-              {images && images.length > 0 ? (
-                null
-              ) : (
-                <div className="grid grid-cols-4 gap-2">
-                  <div className="relative">
-                    <img
-                      src={data.image} alt='img'
-                      style={{
-                        width: "100px",
-                        height: "100px",
-                        objectFit: "cover",
-                        marginRight: "10px",
-                      }}
-                    />
-                  </div>
+            {images ? (
+              <div className="flex gap-2 items-center">
+                <div className="w-20 h-20 rounded overflow-hidden">
+                  <img
+                    src={images}
+                    alt="User profile"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              )}
-              {images && images.length > 0 ? (
-                <div className="grid grid-cols-4 gap-2">
-                  {images.map((image, index) => (
-                    <div key={index} className="relative">
-                      <img
-                        src={URL.createObjectURL(image)}
-                        alt={image.name}
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                          marginRight: "10px",
-                        }}
-                      />
-                      <button
-                        className="absolute top-0 text-white"
-                        style={{ right: 46 }}
-                        onClick={() => handleRemoveImage(index)}>
-                        <DisabledByDefaultRoundedIcon style={{ fill: "red" }} />
-                      </button>
-                    </div>
-                  ))}
+                <div>
+                  <Button color="error" variant="contained" size="small"
+                    onClick={handleRemoveImage}>
+                    Remove
+                  </Button>
                 </div>
-              ) : (
-                <input
-                  style={{
-                    height: "48px",
-                    width: "590px",
-                    paddingLeft: "0px",
-                    border: "2px solid 	#e6f7fe",
-                    marginTop: "5px",
-                    fontSize: "14px",
-                  }}
-                  className="file:bg-black file:px-6 file:py-3 file:border-none file:rounded file:text-white file:cursor-pointer placeholder-transparent mt-3 rounded appearance-none placeholder-transparent"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handlePhotoUpload}
-                  placeholder=""
-                />
-              )}
-            </div>
+              </div>
+            ) : (
+              <input
+                type="file"
+                id="photo"
+                name="photo"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="file:bg-black file:px-6 file:py-3 bg-white file:border-none file:rounded file:text-white file:cursor-pointer placeholder-transparent  rounded appearance-none placeholder-transparent w-[20rem]"
+                style={{ border: "2px solid #e6f7fe" }}
+              />
+            )}
           </label>
           <label className="grid mt-5">
             Department Name
