@@ -12,7 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { hsmCreateProduct, hsmCreateProduct_meta } from "../../User_Management/features/userSlice";
+import { hsmCreateProduct, hsmCreateProduct_meta, uploadImages } from "../../User_Management/features/userSlice";
 import { Grid } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
@@ -78,7 +78,7 @@ const AddProduct = ({ setExpand, setActiveTab }) => {
   const [unit, setunit] = useState('');
   const [tags, settags] = useState('');
   const [rewards, setrewards] = useState('');
-  const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryImages, setGalleryImages] = useState();
   const [thumbnailImage, setThumbnailImage] = useState([]);
   const [lowQuantity, setlowQuantity] = useState('');
   const [fstatus, setfstatus] = useState('');
@@ -113,28 +113,30 @@ const AddProduct = ({ setExpand, setActiveTab }) => {
   const [refund, setRefund] = useState("");
 
   let [discountDate, setdiscountDate] = useState();
-// console.log(colors);
-  let [allData,setAllData]=useState({
-    product_name:"",
-    desc:"",
-    discount:"" ,
-    discount_date:{
-      end:"",
-      start:""
+  // console.log(colors);
+  let [allData, setAllData] = useState({
+    product_name: "",
+    desc: "",
+    discount: "",
+    discount_date: {
+      end: "",
+      start: ""
     },
-    draft:"",
-    discount_type:"",
-    
+    draft: "",
+    discount_type: "",
+
     category: "",
     sub_category: "",
     selling_price: "",
-    quantity_pi:0,
+    quantity_pi: 0,
     reward_points: "",
     sku: "",
     tags: "",
-
+    // uncomment if needed this for input------------------------
     // thumbnail_image:  {
-    //   buffer: Buffer,
+    //   url: "",
+    // },
+    // gallery_images:  {
     //   url: "",
     // },
     unit: "",
@@ -143,24 +145,24 @@ const AddProduct = ({ setExpand, setActiveTab }) => {
     product_desc: "",
     colors: [],
     variants: [],
-    size:[],
-    shipping_returns:"",
-    fabric:"",
-    about:"",
-    fit:"",
-     product_detail:"",
-     refund:"",
-    SEOArea:{
-      metaTitle:"",
+    size: [],
+    shipping_returns: "",
+    fabric: "",
+    about: "",
+    fit: "",
+    product_detail: "",
+    refund: "",
+    SEOArea: {
+      metaTitle: "",
       metaDescription: "",
       metaKeywords: "",
-      images1:""
-      
+      images1: ""
+
     }
   })
   // console.log("allData,78",allData)
-  
-  
+
+
   // console.log(allData);
   useEffect(() => {
     let dates = {
@@ -174,6 +176,7 @@ const AddProduct = ({ setExpand, setActiveTab }) => {
     settext1(event);
   };
   const GalleryImages = (value) => {
+    debugger;
     setGalleryImages(value);
   };
   const ThumbnailImage = (value) => {
@@ -188,90 +191,80 @@ const AddProduct = ({ setExpand, setActiveTab }) => {
   const handleMetaKeywordChange = (event) => {
     setMetaKeywords(event.target.value);
   };
-  const uploadFile = async (file) => {
-    try {
-      // Create a FormData object to append the file
-      const formData = new FormData();
-      formData.append('files', file);
-      
-      // Make a POST request using Axios
-      const response = await axios.post('http://64.227.186.165:5002/upload', formData);
-      
-      // Log the response
-      // console.log(response.data);
-      return response.data;
-    } catch (error) {
-      // Handle errors
-      console.error('Error uploading file:', error);
-      throw error;
-    }
-  };
+
+
+
   const handleMetaPhotoChange = async (event) => {
     try {
-      const img = event.target.files[0];
-      setMetaPhoto(img);
-      
-      // Upload the file
-      const result = await uploadFile(img);
-  // console.log(result?.urls[0]);
-  setMetaPhoto1(result?.urls[0]);
-  // Handle the result as needed
-} catch (error) {
-  // Handle errors
-  console.error('Error handling meta photo change:', error);
-}
-};
-const handleMetaPhotoRemove = () => {
-  setMetaPhoto(null);
+      const files = event.target.files;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setMetaPhoto(resultAction?.payload?.[0]);
+        setMetaPhoto1(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error handling meta photo change:', error);
+    }
+  };
+  const handleMetaPhotoRemove = () => {
+    setMetaPhoto(null);
   };
 
   const HandleSubmitdata = async () => {
     setLoading(true);
     // debugger;
-    allData.draft="false"
-    await dispatch(hsmCreateProduct(allData));   
+    allData.draft = "false"
+    await dispatch(hsmCreateProduct(allData));
     setLoading(false);
     navigate("/home/productList");
   }
-  useEffect(()=>{
-    setDraft1("false");    
+  useEffect(() => {
+    setDraft1("false");
     // console.log(draft1,"hhhyh");
-  },[HandleSubmitdata])
+  }, [HandleSubmitdata])
 
   const Handledraftdata = async () => {
     setLoading(true);
-    allData.draft="true"
-    const del= await dispatch(hsmCreateProduct(allData));
+    allData.draft = "true"
+    const del = await dispatch(hsmCreateProduct(allData));
     setLoading(false);
-    // if(del.payload.message){
-    //   // // console.log("del",del?.payload?.message)   
-    // }
-    // else{
-      setLoading(false);
-      navigate("/home/productList");
-    // }
+    setLoading(false);
+    navigate("/home/productList");
 
   }
-  useEffect(()=>{
-    setDraft1("true");    
+  useEffect(() => {
+    setDraft1("true");
     // console.log(draft1,"hhhyh");
-  },[Handledraftdata])
-  
+  }, [Handledraftdata])
+
   useEffect(() => {
     setAllData((prevData) => ({
       ...prevData,
       draft: draft1,
     }));
   }, [draft1]);
-  useEffect(()=>{
-    setAllData({product_name:prodValue,desc:Desc,discount:discount,discount_date:{start:discountStart,end:discountEnd},
-      discount_type:discountType,SEOArea:{metaTitle:metatitle,metaDescription:metadesc,metaKeywords:metakeywords,images1:metaphoto1},
-      unit:unit,unit_price:unitPrice,draft:draft1,sku:Sku2,about:about,fit:fit,product_detail:product_detail,refund:refund,fabric:fabric,size:size,tags:tags,
-      quantity_pi:quantity,colors:colors,variants:variants,reward_points:rewards,category:itemCat,sub_category:prodCat})
-  },[prodValue,Desc,discount,discountStart,discountEnd,discountType,metatitle,metadesc,metakeywords,unit,unitPrice,
-    Sku2,about,product_detail,fabric,size,tags,quantity ,refund,productCategory,CategoryListmgm,colors,variants,rewards,itemCat,prodCat,draft1,fit,metaphoto1])
+  useEffect(() => {
+    setAllData({
+      product_name: prodValue, desc: Desc, discount: discount, discount_date: { start: discountStart, end: discountEnd },
+      discount_type: discountType, SEOArea: { metaTitle: metatitle, metaDescription: metadesc, metaKeywords: metakeywords, images1: metaphoto1 },
+      unit: unit, unit_price: unitPrice, draft: draft1, sku: Sku2, about: about, fit: fit, product_detail: product_detail, refund: refund, fabric: fabric, size: size, tags: tags,
+      quantity_pi: quantity, colors: colors, variants: variants, reward_points: rewards, category: itemCat, sub_category: prodCat ,
+       thumbnail_image:  {
+        url: thumbnailImage,
+      },
+      gallery_images:  {
+        url: galleryImages,
+      },
+    })
+  }, [prodValue, Desc, discount, discountStart, discountEnd, discountType, metatitle, metadesc, metakeywords, unit, unitPrice,
+    Sku2, about, product_detail,galleryImages,thumbnailImage, fabric, size, tags, quantity, refund, productCategory, CategoryListmgm, colors, variants, rewards, itemCat, prodCat, draft1, fit, metaphoto1])
   const [loading, setLoading] = useState(false);
 
+console.log(galleryImages,"dvjhbvdhbdvsh");
 
   const [newColor, setNewColor] = useState({
     name: "",
@@ -358,7 +351,6 @@ const handleMetaPhotoRemove = () => {
       return updatedColors
     });
   };
-
   const addColor = () => {
     if (newColor.name !== "" ||
       newColor.value !== "") {
@@ -433,10 +425,10 @@ const handleMetaPhotoRemove = () => {
       images.forEach((image, index) => {
         formData.append(`files`, image);
       });
-  
+
       // Make a POST request using Axios
       const response = await axios.post('http://64.227.186.165:5002/upload', formData);
-  
+
       // Log the response
       // console.log(response.data);
       return response.data;
@@ -446,71 +438,58 @@ const handleMetaPhotoRemove = () => {
       throw error;
     }
   };
-  
+
 
   const handleGalleryImageUpload = async (field, e, index) => {
     try {
-      const files = Array.from(e.target.files);
-  
-      // Upload the gallery images
-      const result = await uploadGalleryImages(files);
-  
-      // Update the state with the URLs or handle the result as needed
-      setvariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index][field] = result?.urls;
-        return updatedVariants;
-      });
+      const files = e.target.files;
+
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      console.log(resultAction, "sdvjhbsvjbdsvb");
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setvariants((prevVariants) => {
+          const updatedVariants = [...prevVariants];
+          updatedVariants[index][field] = resultAction?.payload;
+          return updatedVariants;
+        });
+        console.log(variants,'sdvjhbsvjbdsvb');
+        
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
     } catch (error) {
-      // Handle errors
       console.error('Error handling gallery image upload:', error);
     }
   };
-  
-  const uploadThumbnailImage = async (image) => {
-    try {
-      // Create a FormData object to append the thumbnail image
-      const formData = new FormData();
-      formData.append('file', image);
-  
-      // Make a POST request using Axios
-      const response = await axios.post('http://64.227.186.165:5002/upload', formData);
-  
-      // Log the response
-      // console.log(response.data);
-      return response.data;
-    } catch (error) {
-      // Handle errors
-      console.error('Error uploading thumbnail image:', error);
-      throw error;
-    }
-  };
-  
+
 
   const handleThumbnailImageUpload = async (field, e, index) => {
+   
     try {
-      const files = Array.from(e.target.files);
-  
-      // if (files.length === 0) {
-      //   // No files selected, handle accordingly
-      //   return;
-      // }
-  
-      // Upload the thumbnail image (assuming only one file is allowed)
-      const result = await uploadThumbnailImage(files);
-  
-      // Update the state with the URL or handle the result as needed
-      setvariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index][field] = result?.urls;
-        return updatedVariants;
-      });
+      const files = e.target.files;
+      
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      console.log(resultAction, "sdvjhbsvjbdsvb");
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setvariants((prevVariants) => {
+          const updatedVariants = [...prevVariants];
+          updatedVariants[index][field] = resultAction?.payload;
+          return updatedVariants;
+        });
+        console.log(variants,'sdvjhbsvjbdsvb');
+        
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
     } catch (error) {
-      // Handle errors
       console.error('Error handling thumbnail image upload:', error);
     }
   };
-  
+
 
   const isColorFullyUtilized = (color) => {
     const colorVariants = variants.filter((variant) => variant.color.trim().toLowerCase() === color.value.trim().toLowerCase());
@@ -777,20 +756,20 @@ const handleMetaPhotoRemove = () => {
                       <div style={{ width: "600px", marginTop: "10px" }}>
                         {variant.ThumbImg && variant.ThumbImg.length > 0 && (
                           <div className="grid grid-cols-6 gap-2">
-                            {variant?.ThumbImg.map((image, index) => (
+                            
                               <div key={index} className="relative">
                                 <img
-                                  src={URL.createObjectURL(image)} // replace with your image source
-                                  alt={image.name} // replace with your image alt text
+                                  src={variant?.ThumbImg} 
+                                  alt={`Image ${index}`} 
                                   style={{
                                     width: "100px",
                                     height: "100px",
                                     objectFit: "cover",
                                     marginRight: "10px",
-                                  }} // set width, height, object-fit, and margin-right styles
+                                  }}
                                 />
                               </div>
-                            ))}
+
                           </div>
                         )}
                       </div>
@@ -815,7 +794,7 @@ const handleMetaPhotoRemove = () => {
                             {variant.GalleryImg.map((image, index) => (
                               <div key={index} className="relative">
                                 <img
-                                  // src={URL.createObjectURL(image)} // replace with your image source
+                                  src={(image)} // replace with your image source
                                   alt={image.name} // replace with your image alt text
                                   style={{
                                     width: "100px",
@@ -909,7 +888,9 @@ const handleMetaPhotoRemove = () => {
             <Product_img galleryImages={galleryImages}
               thumbnailImage={thumbnailImage}
               GalleryImages={GalleryImages}
-              ThumbnailImage={ThumbnailImage} />
+              ThumbnailImage={ThumbnailImage} 
+              setGalleryImages={setGalleryImages}
+              setThumbnailImage={setThumbnailImage}/>
           )}
 
           <div className="my-3  gap-3">
@@ -1010,7 +991,7 @@ const handleMetaPhotoRemove = () => {
               <div className="flex gap-2 mt-2 items-center">
                 <div className="w-20 h-20 rounded overflow-hidden">
                   <img
-                    src={URL.createObjectURL(metaphoto)}
+                    src={(metaphoto)}
                     alt="User profile"
                     className="w-full h-full object-cover"
                   />

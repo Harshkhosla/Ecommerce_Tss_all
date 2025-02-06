@@ -12,7 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { updateHSMProduct, hsmCreateProduct_meta } from "../../User_Management/features/userSlice";
+import { updateHSMProduct, hsmCreateProduct_meta, uploadImages } from "../../User_Management/features/userSlice";
 import { Grid } from "react-loader-spinner";
 import { Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
@@ -243,15 +243,9 @@ const EditProduct = ({ setExpand, setActiveTab }) => {
   };
   const uploadFile = async (file) => {
     try {
-      // Create a FormData object to append the file
       const formData = new FormData();
       formData.append('files', file);
-  
-      // Make a POST request using Axios
       const response = await axios.post('http://64.227.186.165:5002/upload', formData);
-  
-      // Log the response
-      // console.log(response.data);
       return response.data;
     } catch (error) {
       // Handle errors
@@ -261,27 +255,23 @@ const EditProduct = ({ setExpand, setActiveTab }) => {
   };
 
 
-  const handleMetaPhotoChange = async (event) => {
-    try {
-      const img = event.target.files[0];
-      setMetaPhoto(img);
-  
-      // Upload the file
-      const result = await uploadFile(img);
-  // console.log(result?.urls[0]);
-      setMetaPhoto1(result?.urls[0]);
-      // Handle the result as needed
-    } catch (error) {
-      // Handle errors
-      console.error('Error handling meta photo change:', error);
-    }
-  };
+    const handleMetaPhotoChange = async (event) => {
+      try {
+        const files = event.target.files;
+        setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        if (uploadImages.fulfilled.match(resultAction)) {
+          setMetaPhoto(resultAction?.payload?.[0]);
+          setMetaPhoto1(resultAction?.payload?.[0]);
+        } else {
+          console.error("Upload failed:", resultAction.payload);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error handling meta photo change:', error);
+      }
+    };
 
-
-  // const handleMetaPhotoChange = (event) => {
-  //   let img = event.target.files[0]
-  //   setMetaPhoto(img);
-  // };
   const handleMetaPhotoRemove = () => {
     setMetaPhoto1(null);
   };
@@ -478,68 +468,62 @@ const EditProduct = ({ setExpand, setActiveTab }) => {
   };
   
 
-  const handleGalleryImageUpload = async (field, e, index) => {
-    try {
-      const files = Array.from(e.target.files);
-  
-      // Upload the gallery images
-      const result = await uploadGalleryImages(files);
-  
-      // Update the state with the URLs or handle the result as needed
-      setvariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index][field] = result?.urls;
-        return updatedVariants;
-      });
-    } catch (error) {
-      // Handle errors
-      console.error('Error handling gallery image upload:', error);
-    }
-  };
-  
-  const uploadThumbnailImage = async (image) => {
-    try {
-      // Create a FormData object to append the thumbnail image
-      const formData = new FormData();
-      formData.append('files', image);
-  
-      // Make a POST request using Axios
-      const response = await axios.post('http://64.227.186.165:5002/upload', formData);
-  
-      // Log the response
-      // console.log(response.data);
-      return response.data;
-    } catch (error) {
-      // Handle errors
-      console.error('Error uploading thumbnail image:', error);
-      throw error;
-    }
-  };
 
-  const handleThumbnailImageUpload = async (field, e, index) => {
-    try {
-      // const files = e.target.files;
-      const img = e.target.files[0];
+    const handleGalleryImageUpload = async (field, e, index) => {
+      try {
+        const files = e.target.files;
   
-      // if (files.length === 0) {
-      //   // No files selected, handle accordingly
-      //   return;
-      // }
+        setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        console.log(resultAction, "sdvjhbsvjbdsvb");
+        if (uploadImages.fulfilled.match(resultAction)) {
+          setvariants((prevVariants) => {
+            const updatedVariants = [...prevVariants];
+            updatedVariants[index][field] = resultAction?.payload;
+            return updatedVariants;
+          });
+          console.log(variants,'sdvjhbsvjbdsvb');
+          
+        } else {
+          console.error("Upload failed:", resultAction.payload);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error handling gallery image upload:', error);
+      }
+    };
   
-      // Upload the thumbnail image (assuming only one file is allowed)
-      const result = await uploadThumbnailImage(img);
+
+
+
+   const handleThumbnailImageUpload = async (field, e, index) => {
+     
+      try {
+        const files = e.target.files;
+        
+        setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        console.log(resultAction, "sdvjhbsvjbdsvb");
+        if (uploadImages.fulfilled.match(resultAction)) {
+          setvariants((prevVariants) => {
+            const updatedVariants = [...prevVariants];
+            updatedVariants[index][field] = resultAction?.payload;
+            return updatedVariants;
+          });
+          console.log(variants,'sdvjhbsvjbdsvb');
+          
+        } else {
+          console.error("Upload failed:", resultAction.payload);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error handling thumbnail image upload:', error);
+      }
+    };
+
+
   
-      // Update the state with the URL or handle the result as needed
-      setvariants((prevVariants) => {
-        const updatedVariants = [...prevVariants];
-        updatedVariants[index][field] = result?.urls;
-        return updatedVariants;
-      });
-    } catch (error) {
-      // Handle errors
-      console.error('Error handling thumbnail image upload:', error);
-    }
-  };
+
   // const handleGalleryImageUpload = (field, e, index) => {
   //   const files = Array.from(e.target.files);
   //   const selectedImages = files.map((file) => file);
@@ -875,14 +859,14 @@ const EditProduct = ({ setExpand, setActiveTab }) => {
                             {variant?.GalleryImg?.map((image, index) => (
                               <div key={index} className="relative">
                                 <img
-                                  src={image} // replace with your image source
-                                  // alt={image.name} // replace with your image alt text
+                                  src={(image)} 
+                                  alt={image.name} 
                                   style={{
                                     width: "100px",
                                     height: "100px",
                                     objectFit: "cover",
                                     marginRight: "10px",
-                                  }} // set width, height, object-fit, and margin-right styles
+                                  }} 
                                 />
                               </div>
                             ))}

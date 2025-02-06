@@ -2590,7 +2590,7 @@ export const ServiceCategories = createAsyncThunk(
     // console.log("hello");
     try {
       const response = await axios.get(
-        `${url1}/getAllServiceCategories_hsm`, {
+        `${tssurl}/getAllServiceCategories_hsm`, {
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
           "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",

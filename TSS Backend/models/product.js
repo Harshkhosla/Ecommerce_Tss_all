@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema({
     start: String,
   },
   discount_type: String,
-  gallery_images: [{buffer: Buffer,
+  gallery_images: [{
     url: String,}],
   category: String,
   sub_category: String,
@@ -39,7 +39,7 @@ const productSchema = new mongoose.Schema({
   sales:  { type: Number, default: 0 },
   tags: String,
   thumbnail_image:  {
-    buffer: Buffer,
+    
     url: String,
 
   },

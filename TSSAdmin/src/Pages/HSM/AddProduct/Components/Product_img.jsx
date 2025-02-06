@@ -1,31 +1,47 @@
 import React, { useState } from "react";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
+import { uploadImages } from "../../../User_Management/features/userSlice";
+import { useDispatch } from "react-redux";
 
 
 const Product_img = ({ galleryImages,
   GalleryImages,
   thumbnailImage,
-  ThumbnailImage, }) => {
+  ThumbnailImage,setGalleryImages , setThumbnailImage}) => {
 
-
-  const handleGalleryImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedImages = files.map((file) => file);
-    GalleryImages(selectedImages);
+  const dispatch = useDispatch()
+  const handleGalleryImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    // setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      GalleryImages(resultAction?.payload);
+      
+      setGalleryImages(resultAction?.payload)
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    // setLoading(false);
   };
 
-  const handleThumbnailImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    const selectedImages = files.map((file) => file);
-    ThumbnailImage(selectedImages);
+
+
+  const handleThumbnailImageUpload = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      ThumbnailImage(resultAction?.payload?.[0]);
+      setThumbnailImage(resultAction?.payload?.[0])
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
   };
 
-  const handleRemoveImage = (index) => {
-    const newImages = [...thumbnailImage];
-    newImages.splice(index, 1);
-    ThumbnailImage(newImages);
 
-    // fileInputRef.current.value = newImages.length;
+  const handleRemoveImage = () => {
+    ThumbnailImage(null);
   };
 
   const handleImageClick = () => {
@@ -53,11 +69,10 @@ const Product_img = ({ galleryImages,
             <div style={{ width: "600px", marginTop: "10px" }}>
               {thumbnailImage && thumbnailImage.length > 0 && (
                 <div className="grid grid-cols-6 gap-2">
-                  {thumbnailImage.map((image, index) => (
-                    <div key={index} className="relative">
+                    <div  className="relative">
                       <img
-                        src={URL.createObjectURL(image)} // replace with your image source
-                        alt={image.name} // replace with your image alt text
+                        src={(thumbnailImage)} // replace with your image source
+                        alt={thumbnailImage.name} // replace with your image alt text
                         style={{
                           width: "100px",
                           height: "100px",
@@ -68,11 +83,10 @@ const Product_img = ({ galleryImages,
                       <button
                         className="absolute top-0 text-white"
                         style={{ right: 5 }}
-                        onClick={() => handleRemoveImage(index)}>
+                        onClick={() => handleRemoveImage()}>
                         <DisabledByDefaultRoundedIcon style={{ fill: "red" }} />
                       </button>
                     </div>
-                  ))}
                 </div>
               )}
             </div>
@@ -97,7 +111,7 @@ const Product_img = ({ galleryImages,
                   {galleryImages.map((image, index) => (
                     <div key={index} className="relative">
                       <img
-                        src={URL.createObjectURL(image)} // replace with your image source
+                        src={(image)} // replace with your image source
                         alt={image.name} // replace with your image alt text
                         style={{
                           width: "100px",
