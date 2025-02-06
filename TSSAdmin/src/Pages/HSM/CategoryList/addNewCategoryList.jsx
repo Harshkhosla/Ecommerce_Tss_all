@@ -4,7 +4,7 @@ import TopHeader from "../../../UI/TopHeader/TopHeader";
 import axios from "axios";
 import { responsiveFontSizes } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { addNewCategoryList } from "../../User_Management/features/userSlice";
+import { addNewCategoryList, uploadImages } from "../../User_Management/features/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 const AddNewCategoryList = ({ setExpand, setActiveTab }) => {
@@ -24,22 +24,30 @@ const AddNewCategoryList = ({ setExpand, setActiveTab }) => {
         const formData = new FormData();
         formData.append("categoryName", title);
         images.forEach((image, index) => {
-            formData.append(`image`, image);
+            formData.append(`images1`, image);
         });
 
         await dispatch(addNewCategoryList(formData));
         navigate('/home/categoryList')
     };
 
-    const handlePhotoUpload = (event) => {
-        const files = event.target.files;
-        const uploadedImages = [];
-        for (let i = 0; i < files.length; i++) {
-            uploadedImages.push(files[i]);
-        }
-        setImages(uploadedImages);
-    };
 
+
+     const handlePhotoUpload = async (event) => {
+        const files = event.target.files;
+        if (!files.length) return;
+        // setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        if (uploadImages.fulfilled.match(resultAction)) {
+            setImages(resultAction?.payload);
+        } else {
+          console.error("Upload failed:", resultAction.payload);
+        }
+        // setLoading(false);
+      };
+    
+
+ 
     return (
         <div>
             <div className="flex fixed z-10">
@@ -88,7 +96,7 @@ const AddNewCategoryList = ({ setExpand, setActiveTab }) => {
                                 {images.map((image, index) => (
                                     <img
                                         key={index}
-                                        src={URL.createObjectURL(image)} // replace with your image source
+                                        src={image} // replace with your image source
                                         alt={image.name} // replace with your image alt text
                                         style={{
                                             width: "100px",

@@ -20,7 +20,7 @@ async function generateCategoryExcel(categories) {
 
   // Add data
   categories.forEach(category => {
-      worksheet.addRow([category.category_id, category.category_name, category.description]);
+    worksheet.addRow([category.category_id, category.category_name, category.description]);
   });
 
   // Save the workbook as a buffer
@@ -47,73 +47,58 @@ function generateUniqueRid() {
 const upload = multer({ storage: storage });
 // Helper function to generate a unique department ID
 function generateUniqueDeptId() {
-    return `DEPT${Date.now()}`;
+  return `DEPT${Date.now()}`;
 }
 
 
 router.get('/downloadCategoryExcel', async (req, res) => {
   try {
-      const categories = await ProductCategory.find({}, { _id: 0, __v: 0 });
+    const categories = await ProductCategory.find({}, { _id: 0, __v: 0 });
 
-      if (categories.length === 0) {
-          return res.status(404).json({ message: 'No categories found' });
-      }
+    if (categories.length === 0) {
+      return res.status(404).json({ message: 'No categories found' });
+    }
 
-      const excelData = await generateCategoryExcel(categories);
+    const excelData = await generateCategoryExcel(categories);
 
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.setHeader('Content-Disposition', 'attachment; filename=productCategories.xlsx');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=productCategories.xlsx');
 
-      res.send(excelData);
+    res.send(excelData);
   } catch (error) {
-      console.error('Error exporting product categories:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+    console.error('Error exporting product categories:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 
 // Create
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', upload.none(), async (req, res) => {
   try {
-    const { categoryName, additionalField } = req.body;
+    const { categoryName, additionalField, image1 } = req.body;
     const authToken = req.headers.authorization || req.headers.Authorization;
-    // console.log(authToken);
     if (!authToken) {
-        return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
-    // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
-    // console.log(userPermissionsArray);
-    // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
-        permission.catg === 'Inventory' && permission.create
+      permission.catg === 'Inventory' && permission.create
     );
 
     if (!canReadProducts) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
-    // Handle the image file as needed
-    const imageBuffer = req.file.buffer;
-    const uniqueFileName = req.file.filename;
-      
-    // Create the URL using the filename
-    const url = `http://64.227.186.165/tss_files/productCategory/${uniqueFileName}`;
 
     const newProductCategory = new ProductCategory({
       categoryName,
       additionalField,
-      image: imageBuffer,
-      image1: url,
+      image1
     });
-
     await newProductCategory.save();
-
     res.status(201).json({ message: 'Product Category created successfully' });
   } catch (error) {
     console.error('Error creating Product Category:', error);
@@ -126,28 +111,20 @@ router.get('/', async (req, res) => {
   try {
     const productCategories = await ProductCategory.find();
     const authToken = req.headers.authorization || req.headers.Authorization;
-    // console.log(authToken);
     if (!authToken) {
-        return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
-    // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
-    // console.log(userRole,"harsh");
     const userPermissionsArray = await Role.findOne({ role: userRole });
-    // console.log(userPermissionsArray);
-    // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
-        permission.catg === 'Inventory' && permission.read
+      permission.catg === 'Inventory' && permission.read
     );
-
     if (!canReadProducts) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
     res.status(200).json(productCategories);
   } catch (error) {
@@ -160,15 +137,12 @@ router.get('/:id', async (req, res) => {
   try {
     const productCategory = await ProductCategory.findById(req.params.id);
     const authToken = req.headers.authorization || req.headers.Authorization;
-    // console.log(authToken);
     if (!authToken) {
-        return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
     // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
@@ -176,11 +150,11 @@ router.get('/:id', async (req, res) => {
     // console.log(userPermissionsArray);
     // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
-        permission.catg === 'Inventory' && permission.read
+      permission.catg === 'Inventory' && permission.read
     );
 
     if (!canReadProducts) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
     if (!productCategory) {
       return res.status(404).json({ message: 'Product Category not found' });
@@ -193,48 +167,40 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update
-router.put('/:id', upload.single('image'), async (req, res) => {
+router.put('/:id', upload.none(), async (req, res) => {
   try {
-    const { categoryName, category_list } = req.body;
-    console.log(categoryName);
-    console.log(req.params);
-    console.log(category_list);
+    const { categoryName, category_list, images1 } = req.body;
     const authToken = req.headers.authorization || req.headers.Authorization;
-    // console.log(authToken);
     if (!authToken) {
-        return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
-    // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
-    // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
     }
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
-        permission.catg === 'Inventory' && permission.update
+      permission.catg === 'Inventory' && permission.update
     );
 
     if (!canReadProducts) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
     }
-const updatedProductCategory =await productCategory.findByIdAndUpdate(req.params.id)
-console.log("updatedProductCategory",updatedProductCategory)
-if(categoryName){
-  updatedProductCategory.categoryName=categoryName
-}
-if(category_list){
-  updatedProductCategory.additionalField=category_list
-}
-if(req?.file?.filename){
-  const filename = req.file.filename; 
-  updatedProductCategory.image1=`http://64.227.186.165/tss_files/home/${filename}`
-}
- if (!updatedProductCategory) {
+    const updatedProductCategory = await productCategory.findByIdAndUpdate(req.params.id)
+    if (categoryName) {
+      updatedProductCategory.categoryName = categoryName
+    }
+    if (category_list) {
+      updatedProductCategory.additionalField = category_list
+    }
+    if(images1){
+      updatedProductCategory.image1 = images1
+    }
+
+    if (!updatedProductCategory) {
       return res.status(404).json({ message: 'Product Category not found' });
     }
-    // await productCategory.updateOne({_id:req.params.id},{})
     await updatedProductCategory.save()
     res.status(200).json({
       message: 'Product Category updated successfully',
@@ -252,27 +218,27 @@ router.delete('/:id', async (req, res) => {
     const authToken = req.headers.authorization || req.headers.Authorization;
     // console.log(authToken);
     if (!authToken) {
-        return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
+      return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
     }
     // Decode the authentication token
     const decodedToken = jwt.verify(authToken, 'your-secret-key');
     // Check if the decoded token has the necessary fields (userId, uid, role)
     if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
-        return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
-      }
+      return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
+    }
     // Get the user's role and permissions from the database based on the decoded token
     const userRole = decodedToken.role;
     const userPermissionsArray = await Role.findOne({ role: userRole });
     // console.log(userPermissionsArray);
     // Check if the user has permission to read products in the "Inventory" category
     const canReadProducts = userPermissionsArray.permissions.some(permission =>
-        permission.catg === 'Inventory' && permission.delete
+      permission.catg === 'Inventory' && permission.delete
     );
 
     if (!canReadProducts) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
-      }
-      const deletedProductCategory = await ProductCategory.findByIdAndDelete(req.params.id);
+      return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+    }
+    const deletedProductCategory = await ProductCategory.findByIdAndDelete(req.params.id);
     if (!deletedProductCategory) {
       return res.status(404).json({ message: 'Product Category not found' });
     }

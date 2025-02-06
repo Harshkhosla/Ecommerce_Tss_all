@@ -470,10 +470,7 @@ export const addNewProductCategory_hsm = createAsyncThunk(
         url: `${tssurl}/productCategory`,
         data: formData,
         headers: {
-          "authorization": `${localStorage.getItem('jwt')}`,
-          // "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-          // "X-CSRFToken": csrfToken,
+          "authorization": `${localStorage.getItem('jwt')}`
         },
       });
       // console.log(...formData);
@@ -3953,7 +3950,7 @@ export const DeleteCategoryList = createAsyncThunk(
   "DeleteCategoryList",
   async (catgid) => {
     const response = await axios.delete(
-      `${tssurl}//categories/${catgid}`, {
+      `${tssurl}/categories/${catgid}`, {
       headers: {
         "authorization": `${localStorage.getItem('jwt')}`,
         "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",

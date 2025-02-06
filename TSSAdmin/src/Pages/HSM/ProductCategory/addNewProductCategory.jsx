@@ -3,7 +3,7 @@ import React from "react";
 import TopHeader from "../../../UI/TopHeader/TopHeader";
 import { useDispatch } from "react-redux";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
-import { addNewProductCategory_hsm, HSM_category } from "../../User_Management/features/userSlice";
+import { addNewProductCategory_hsm, HSM_category, uploadImages } from "../../User_Management/features/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Grid } from "react-loader-spinner";
@@ -37,31 +37,33 @@ const AddNewProductCategory = ({ setExpand, setActiveTab }) => {
         formData.append("additionalField", Category);
         formData.append("categoryName", title);
         images.forEach((image, index) => {
-            formData.append(`image`, image);
+            formData.append(`image1`, image);
         });
-
         setLoading(true);
         await dispatch(addNewProductCategory_hsm(formData));
         setLoading(false);
         navigate('/home/productCategoryList')
     };
-    // console.log(Category);
-    const handlePhotoUpload = (event) => {
+
+
+
+    const handlePhotoUpload = async (event) => {
         const files = event.target.files;
-        const uploadedImages = [];
-        for (let i = 0; i < files.length; i++) {
-            uploadedImages.push(files[i]);
+        if (!files.length) return;
+        // setLoading(true);
+        const resultAction = await dispatch(uploadImages(files));
+        if (uploadImages.fulfilled.match(resultAction)) {
+            setImages(resultAction?.payload);
+        } else {
+            console.error("Upload failed:", resultAction.payload);
         }
-        setImages(uploadedImages);
+        // setLoading(false);
     };
-    useEffect(() => { console.log(images); }, [images])
 
     const handleRemoveImage = (index) => {
         const newImages = [...images];
         newImages.splice(index, 1);
         setImages(newImages);
-
-        // fileInputRef.current.value = newImages.length;
     };
 
 
@@ -129,7 +131,7 @@ const AddNewProductCategory = ({ setExpand, setActiveTab }) => {
                                     {images.map((image, index) => (
                                         <div key={index} className="relative">
                                             <img
-                                                src={URL.createObjectURL(image)}
+                                                src={image}
                                                 alt={image.name}
                                                 style={{
                                                     width: "100px",

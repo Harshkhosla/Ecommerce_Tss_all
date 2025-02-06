@@ -3,7 +3,7 @@ import React from "react";
 import TopHeader from "../../../UI/TopHeader/TopHeader";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { useDispatch } from "react-redux";
-import { updateCategoryList } from "../../User_Management/features/userSlice";
+import { updateCategoryList, uploadImages } from "../../User_Management/features/userSlice";
 import { Link, useLoaderData, useLocation, useNavigate } from "react-router-dom";
 
 const EditCategoryList = ({ setExpand, setActiveTab }) => {
@@ -25,34 +25,30 @@ const EditCategoryList = ({ setExpand, setActiveTab }) => {
         const formData = new FormData();
         formData.append("categoryName", title);
         images.map((image, index) => {
-            formData.append("image", image);
+            formData.append("images1", image);
         });
-
-
-        // formData.append();
-        // images.map((image, index) => {
-        //     formData.append("image", image);
-        // });
-
         await dispatch(updateCategoryList({ formData, cid }));
         navigate('/home/categoryList');
     };
 
-    const handlePhotoUpload = (event) => {
-        const files = event.target.files;
-        const uploadedImages = [];
-        for (let i = 0; i < files.length; i++) {
-            uploadedImages.push(files[i]);
-        }
-        setImages(uploadedImages);
-    };
+     const handlePhotoUpload = async (event) => {
+            const files = event.target.files;
+            if (!files.length) return;
+            // setLoading(true);
+            const resultAction = await dispatch(uploadImages(files));
+            if (uploadImages.fulfilled.match(resultAction)) {
+                setImages(resultAction?.payload);
+            } else {
+              console.error("Upload failed:", resultAction.payload);
+            }
+            // setLoading(false);
+          };
+
 
     const handleRemoveImage = (index) => {
         const newImages = [...images];
         newImages.splice(index, 1);
         setImages(newImages);
-
-        // fileInputRef.current.value = newImages.length;
     };
 
     return (
@@ -110,7 +106,7 @@ const EditCategoryList = ({ setExpand, setActiveTab }) => {
                                     {images.map((image, index) => (
                                         <div key={index} className="relative">
                                             <img
-                                                src={URL.createObjectURL(image)}
+                                                src={image}
                                                 alt={image.name}
                                                 style={{
                                                     width: "100px",

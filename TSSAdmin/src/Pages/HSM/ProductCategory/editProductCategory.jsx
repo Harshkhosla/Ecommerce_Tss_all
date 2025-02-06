@@ -6,7 +6,7 @@ import { responsiveFontSizes } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
-import { productCategoryList } from "../../User_Management/features/userSlice";
+import { productCategoryList, uploadImages } from "../../User_Management/features/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { Grid } from "react-loader-spinner";
 
@@ -29,55 +29,35 @@ const EditProductCategory = ({ setExpand, setActiveTab }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const ID = data.pcid;
-
         const formData = new FormData();
-        // formData.append("pcid", data._id);
         formData.append("categoryName", title);
         formData.append("category_list", CategoryList);
         images.map((image, index) => {
-            formData.append("image", image);
+            formData.append("images1", image);
         });
-
         setLoading(true);
         await dispatch(productCategoryList({ formData, ID }));
         setLoading(false);
         navigate('/home/productCategoryList');
     };
 
-    const uploadFile = async (file) => {
-        try {
-          // Create a FormData object to append the file
-          const formData = new FormData();
-          formData.append('files', file);
-      
-          // Make a POST request using Axios
-          const response = await axios.post('http://64.227.186.165:5002/upload', formData);
-      
-          // Log the response
-        //   console.log(response.data);
-          return response.data;
-        } catch (error) {
-          // Handle errors
-          console.error('Error uploading file:', error);
-          throw error;
-        }
-      };
-    const handlePhotoUpload = (event) => {
-        const files = event.target.files;
-        const uploadedImages = [];
-        for (let i = 0; i < files.length; i++) {
-            uploadedImages.push(files[i]);
-        }
-        setImages(uploadedImages);
-    };
+      const handlePhotoUpload = async (event) => {
+              const files = event.target.files;
+              if (!files.length) return;
+              // setLoading(true);
+              const resultAction = await dispatch(uploadImages(files));
+              if (uploadImages.fulfilled.match(resultAction)) {
+                  setImages(resultAction?.payload);
+              } else {
+                  console.error("Upload failed:", resultAction.payload);
+              }
+              // setLoading(false);
+          };
 
     const handleRemoveImage = (index) => {
         const newImages = [...images];
         newImages.splice(index, 1);
-        // console.log(images,"jjjj");
         setImages(newImages);
-
-        // fileInputRef.current.value = newImages.length;
     };
     return (
         <div>
@@ -161,7 +141,7 @@ const EditProductCategory = ({ setExpand, setActiveTab }) => {
                                     {images.map((image, index) => (
                                         <div key={index} className="relative">
                                             <img
-                                                src={URL.createObjectURL(image)}
+                                                src={image}
                                                 alt={image.name}
                                                 style={{
                                                     width: "100px",
