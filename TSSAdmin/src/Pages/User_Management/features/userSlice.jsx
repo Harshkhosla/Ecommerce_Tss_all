@@ -139,8 +139,7 @@ export const addBanner = createAsyncThunk(
         url: `${tssurl}/catalog/${formData?.data}`,
         data: formData.formData,
         headers: {
-          "authorization": `${localStorage.getItem('jwt')}`,
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          "authorization": `${localStorage.getItem('jwt')}`
         },
       });
       return response.data;

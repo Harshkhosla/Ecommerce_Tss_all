@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import { Button, IconButton } from "@mui/material";
 import { Grid } from "react-loader-spinner";
-import { updatehome, getHomePage_cms, addBanner, DeleteBanner, getHomePage_cms_meta, updateHome_cms_meta, getLooks_cms ,getalllook, deleteLook} from "../../../User_Management/features/userSlice";
+import { updatehome, getHomePage_cms, addBanner, DeleteBanner, getHomePage_cms_meta, updateHome_cms_meta, getLooks_cms ,getalllook, deleteLook, uploadImages} from "../../../User_Management/features/userSlice";
 import { getUserLogin } from "../../../User_Management/features/userSlice";
 import Table from "../../../../UI/CommonTable/Table";
 
@@ -171,7 +171,6 @@ return (<>
             const img1Url3 = getData?.inputArea3?.image?.url;
             const img1Url4 = getData?.inputArea4?.image?.url;
             const img1Url5 = getData?.inputArea5?.image?.url;
-            // console.log(img1Url1);
  
             setBgImage(img1Url1);
             setImagePreview1(img1Url2);
@@ -209,107 +208,111 @@ return (<>
       fetchUserData();
 
     },[getData?.catalog_id])
-    const handleOfferImageChange1 = (event) => {
-      const file = event.target.files[0];
-      if(file){
-        setOfferImg1(URL.createObjectURL(file));
-        setInputArea2image(file)
-  };
-  };
+
+
+    const handleOfferImageChange1 = async (event) => {
+      const files = event.target.files;
+      if (!files.length) return;
+      setLoading(true);
+      const resultAction = await dispatch(uploadImages(files));
+      if (uploadImages.fulfilled.match(resultAction)) {
+        setOfferImg1(resultAction?.payload?.[0]);
+        setInputArea2image(resultAction?.payload?.[0]);
+      } else {
+        console.error("Upload failed:", resultAction.payload);
+      }
+      setLoading(false);
+    };
+
+
+
 
   const handleOfferImageRemove1 = () => {
       setOfferImg1(null);
   };
 
-  const handleOfferImageChange2 = (event) => {
-    const file = event.target.files[0];
-    if(file){
-        setOfferImg2(URL.createObjectURL(file));
-        setInputArea4image(file)
+
+
+
+  const handleOfferImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setOfferImg2(resultAction?.payload?.[0]);
+      setInputArea4image(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
-};
+
+
 
 const handleOfferImageRemove2 = () => {
     setOfferImg2(null);
 };
 
 
-const handleGridImageChange1 = (event) => {
-  const file = event.target.files[0];
-  setGridImg1(file);
-};
 
-const handleGridImageRemove1 = () => {
-  setGridImg1(null);
-};
 
-const handleGridImageChange2 = (event) => {
-  const file = event.target.files[0];
-  setGridImg2(file);
-};
 
-const handleGridImageRemove2 = () => {
-  setGridImg2(null);
-};
-
-const handleGridImageChange3 = (event) => {
-  const file = event.target.files[0];
-  setGridImg3(file);
-};
-
-const handleGridImageRemove3 = () => {
-  setGridImg3(null);
-};
-
-const handleGridImageChange4 = (event) => {
-  const file = event.target.files[0];
-  setGridImg4(file);
-};
-
-const handleGridImageRemove4 = () => {
-  setGridImg4(null);
-};
-    const handleBgImageChange = (event) => {
-      const file = event.target.files[0];
-      if(file){
-        setBgImage(URL.createObjectURL(file));
-        setInputArea1Image(file)
+  const handleBgImageChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setBgImage(resultAction?.payload?.[0]);
+      setInputArea1Image(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
-  }
+
+ 
       
 
   const handleBgImageRemove = () => {
       setBgImage(null);
   };
 
-    const handleImageChange = (event) => {
-      const file = event.target.files[0];
-      setImagePreview(file);
+ 
+
+
+
+
+  const handleImageChange1 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview1(resultAction?.payload?.[0]);
+      setInputArea3image(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
-  const handleImageRemove = () => {
-      setImagePreview(null);
+
+  const handleImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview2(resultAction?.payload?.[0]);
+      setInputArea5image(resultAction?.payload?.[0]);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
-  const handleImageChange1 = (event) => {
-    const file = event.target.files[0];
-    if(file){
-        setImagePreview1(URL.createObjectURL(file));
-        setInputArea3image(file)
-  };
-};
-
-const handleImageRemove1 = () => {
-    setImagePreview1(null);
-};
-
-const handleImageChange2 = (event) => {
-  const file = event.target.files[0];
-  if(file){
-    setImagePreview2(URL.createObjectURL(file));
-    setInputArea5image(file)
-};
-};
 
 const handleImageRemove2 = () => {
   setImagePreview2(null);
@@ -332,7 +335,6 @@ const handleImageRemove2 = () => {
   // console.log(looksData);
 
   const data = getalllookdata.map((item)=>{
-    // console.log(item?.thumbnail?.url,"logoo");
     return({
       page: item?.title,
       action: <Action url='/editLook' data={item}/>,
@@ -403,23 +405,7 @@ const handleImageRemove2 = () => {
     setLoading(false);
   }
 
-  const handleMetaTitleChange = (event) => {
-    setMetaTitle(event.target.value);
-  };
-  const handleMetaDescChange = (event) => {
-    setMetaDesc(event.target.value);
-  };
-  const handleMetaKeywordChange = (event) => {
-    setMetaKeywords(event.target.value);
-  };
 
-  const handleMetaPhotoChange = (event) => {
-    let img = event.target.files[0]
-    setMetaPhoto(img);
-  };
-  const handleMetaPhotoRemove = () => {
-    setMetaPhoto(null);
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -438,11 +424,11 @@ const handleImageRemove2 = () => {
     // if(banner1Context4)formData.append("inputArea5conText", banner1Context4);
     // if(banner1Button5)formData.append("inputArea5buttonText", banner1Button5);
  
-    if(inputArea1Image) formData.append("inputArea1",inputArea1Image)
-    if(inputArea2image) formData.append("inputArea2", inputArea2image)
-    if(inputArea3image) formData.append("inputArea3",inputArea3image)
-    if(inputArea4image) formData.append("inputArea4",inputArea4image)
-    if(inputArea5image) formData.append("inputArea5",inputArea5image)
+    if(inputArea1Image) formData.append("inputArea1Image",inputArea1Image)
+    if(inputArea2image) formData.append("inputArea2Image", inputArea2image)
+    if(inputArea3image) formData.append("inputArea3Image",inputArea3image)
+    if(inputArea4image) formData.append("inputArea4Image",inputArea4image)
+    if(inputArea5image) formData.append("inputArea5Image",inputArea5image)
 
   //  if(photo) formData.append("banner_image", photo);
   //  if(title)formData.append("banner_title", title);
@@ -516,7 +502,7 @@ const data = getData.catalog_id
               <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
             </svg>
           </div>
-          <img src={(bgImage)} className='object-cover w-full h-full' alt='Preview 0' />
+          <img src={bgImage} className='object-cover w-full h-full' alt='Preview 0' />
         </>
       )}
       
@@ -611,7 +597,7 @@ const data = getData.catalog_id
                   <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
                 </svg>
               </div>
-              <img src={(offerImg1)} className='object-cover w-full h-full' alt='Preview 0' />
+              <img src={offerImg1} className='object-cover w-full h-full' alt='Preview 0' />
             </>
           )}
           

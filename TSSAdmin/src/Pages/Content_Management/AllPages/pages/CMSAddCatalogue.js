@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Modal from '@mui/material/Modal';
 import { Button, IconButton } from "@mui/material";
 import { Grid } from "react-loader-spinner";
-import { updatehome, getHomePage_cms, addBanner, DeleteBanner, getHomePage_cms_meta,getCatalogue_cms, updateHome_cms_meta, addCatalogue,getalllook } from "../../../User_Management/features/userSlice";
+import { updatehome, getHomePage_cms, addBanner, DeleteBanner, getHomePage_cms_meta, getCatalogue_cms, updateHome_cms_meta, addCatalogue, getalllook, uploadImages } from "../../../User_Management/features/userSlice";
 import { getUserLogin } from "../../../User_Management/features/userSlice";
 import Table from "../../../../UI/CommonTable/Table";
 
@@ -39,7 +39,7 @@ const Action = ({ banner_id, banner_title, button_title, button_link, banner_ima
   }, [dispatch])
   const handleSubmit = async () => {
     // console.log('clicked');
-    
+
     // setLoading(true);
     // await dispatch(addCatalogue(formData));
     // setLoading(false);
@@ -47,7 +47,7 @@ const Action = ({ banner_id, banner_title, button_title, button_link, banner_ima
     window.location.reload()
   };
 
-  
+
 
   return (
     <>
@@ -173,11 +173,11 @@ const Action = ({ banner_id, banner_title, button_title, button_link, banner_ima
 
 const CMSAddCatalogue = ({ setActiveTab, setExpand }) => {
   const dispatch = useDispatch();
-// const [catId,setcatId]=useState("")
+  // const [catId,setcatId]=useState("")
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
-      
+
       await dispatch(getCatalogue_cms());
       // await dispatch(getHomePage_cms());
       setLoading(false);
@@ -188,9 +188,9 @@ const CMSAddCatalogue = ({ setActiveTab, setExpand }) => {
   const catalogueData = useSelector((state) => state.userManagement.getCatalogue_cms)
   //   const navigate = useNavigate();
   // console.log(catalogueData?.[catalogueData.length-1]?.inputArea1?.image?.url);
-const image = catalogueData?.[catalogueData.length-1];
-// console.log(image?.image?.url);
-  const CatId=catalogueData?.[catalogueData.length-1]?.catalog_id;
+  const image = catalogueData?.[catalogueData.length - 1];
+  // console.log(image?.image?.url);
+  const CatId = catalogueData?.[catalogueData.length - 1]?.catalog_id;
   // console.log("catid",CatId)
   const style = {
     position: 'absolute',
@@ -208,227 +208,265 @@ const image = catalogueData?.[catalogueData.length-1];
   const head = "Add Catalog";
   const [open, setOpen] = React.useState(true);
   const [imagePreview, setImagePreview] = useState(null);
-    const [imagePreview1, setImagePreview1] = useState(null);
-    const [imagePreview2, setImagePreview2] = useState(null);
-    const [offerImg1, setOfferImg1] = useState(null);
-    const [offerImg2 , setOfferImg2] = useState(null);
-    const[gridImg1 , setGridImg1 ] = useState(null);
-    const [gridImg2 , setGridImg2] = useState(null);
-    const [gridImg3 , setGridImg3] = useState(null);
-    const [gridImg4, setGridImg4] = useState(null);
-    const [bgImage, setBgImage] = useState(null);
+  const [imagePreview1, setImagePreview1] = useState(null);
+  const [imagePreview2, setImagePreview2] = useState(null);
+  const [offerImg1, setOfferImg1] = useState(null);
+  const [offerImg2, setOfferImg2] = useState(null);
+  const [gridImg1, setGridImg1] = useState(null);
+  const [gridImg2, setGridImg2] = useState(null);
+  const [gridImg3, setGridImg3] = useState(null);
+  const [gridImg4, setGridImg4] = useState(null);
+  const [bgImage, setBgImage] = useState(null);
 
-    // const [showLookData,setshowLookData]=useState(true)
-    useEffect(()=>{ 
-      // console.log(CatId,"useeffect catid ");
-      const getdata= async()=>{
-        // console.log(CatId,"llllolol");
-        if(CatId){
-          setLoading(true)
-          await dispatch(getalllook(CatId));
-          setLoading(false)
-        }
-      }      
-      getdata()
-    },[dispatch,CatId])
+  useEffect(() => {
+    const getdata = async () => {
+      if (CatId) {
+        setLoading(true)
+        await dispatch(getalllook(CatId));
+        setLoading(false)
+      }
+    }
+    getdata()
+  }, [dispatch, CatId])
 
 
-const [getalllookdata,setgetalllook]=useState([])
-const getalllookdata3 = useSelector((state) => state.userManagement.getalllook)
+  const [getalllookdata, setgetalllook] = useState([])
 
-    // console.log("getalllookdata",getalllookdata3);
-  useEffect(()=>{
-    //   if(showLookData){
-    //     setgetalllook([])
-    //   }
-    //   else{
-    // // console.log("getalllookdata3",getalllookdata3)
+  const getalllookdata3 = useSelector((state) => state.userManagement.getalllook)
+
+  useEffect(() => {
     setgetalllook(getalllookdata3)
-  
-          // }
-},[getalllookdata3])
+  }, [getalllookdata3])
 
 
 
-const ProfilePhoto = ({ picUrl }) => {
-  return (
-    <div>
-      <img
-        className="w-12 h-12 rounded-full"
-        style={{ objectFit: "cover" }}
-        src={picUrl}
-        alt="photo"
-      />
-    </div>
-  );
-};
-const ActionLooks=({
-  title,
-  slider,
-  thumbnail
-})=>{
-// navigate krana hai
-const navigate=useNavigate()
-const data={
-  title:title,
-  slider:slider,
-  thumbnail:thumbnail
-}
-
-const handleClick=()=>{
-  navigate("/home/editLook",{state:data})
-}
-
-return (<>
-  <div className=" h-6 flex gap-3 cursor-pointer">
-<img src={editIcon} onClick={handleClick} alt="edit" />
-      <img src={deleteIcon} onClick={"handleDeleteClick"} alt="Delete" />
-  </div>
-</>)
-}
-
-const data = getalllookdata?.map((user) => ({
-  photo: <ProfilePhoto picUrl={user?.thumbnail?.url} />,
-  page: user?.title,
-  action:<ActionLooks 
-    title={user?.title}
-    slider={user?.slider}
-    thumbnail={user?.thumbnail}
-  />
-}));
-
-
-    const pageSize = 5;
-    // const data = [];
-    const columns = [
-        {
-            header:"Photo",
-            accessor:"photo",
-        },
-      {
-        header: "Looks",
-        accessor: "page",
-      },
-    
-      {
-        header: "Action",
-        accessor: "action",
-      },
-    ];
-
-    const greenClicked = () => {
-        navigate("/home/addLook",{state:CatId});
-      };
-    const handleOfferImageChange1 = (event) => {
-      const file = event.target.files[0];
-      setOfferImg1(file);
+  const ProfilePhoto = ({ picUrl }) => {
+    return (
+      <div>
+        <img
+          className="w-12 h-12 rounded-full"
+          style={{ objectFit: "cover" }}
+          src={picUrl}
+          alt="photo"
+        />
+      </div>
+    );
   };
+  const ActionLooks = ({
+    title,
+    slider,
+    thumbnail
+  }) => {
+    // navigate krana hai
+    const navigate = useNavigate()
+    const data = {
+      title: title,
+      slider: slider,
+      thumbnail: thumbnail
+    }
+
+    const handleClick = () => {
+      navigate("/home/editLook", { state: data })
+    }
+
+    return (<>
+      <div className=" h-6 flex gap-3 cursor-pointer">
+        <img src={editIcon} onClick={handleClick} alt="edit" />
+        <img src={deleteIcon} onClick={"handleDeleteClick"} alt="Delete" />
+      </div>
+    </>)
+  }
+
+  const data = getalllookdata?.map((user) => ({
+    photo: <ProfilePhoto picUrl={user?.thumbnail?.url} />,
+    page: user?.title,
+    action: <ActionLooks
+      title={user?.title}
+      slider={user?.slider}
+      thumbnail={user?.thumbnail}
+    />
+  }));
+
+
+  const pageSize = 5;
+  // const data = [];
+  const columns = [
+    {
+      header: "Photo",
+      accessor: "photo",
+    },
+    {
+      header: "Looks",
+      accessor: "page",
+    },
+
+    {
+      header: "Action",
+      accessor: "action",
+    },
+  ];
+
+  const greenClicked = () => {
+    navigate("/home/addLook", { state: CatId });
+  };
+
+
+  const handleOfferImageChange1 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setOfferImg1(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
+  };
+
 
   const handleOfferImageRemove1 = () => {
-      setOfferImg1(null);
+    setOfferImg1(null);
   };
 
-  const handleOfferImageChange2 = (event) => {
-    const file = event.target.files[0];
-    setOfferImg2(file);
-};
 
-const handleOfferImageRemove2 = () => {
+
+  const handleOfferImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setOfferImg2(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
+  };
+
+
+  const handleOfferImageRemove2 = () => {
     setOfferImg2(null);
-};
+  };
 
 
-const handleGridImageChange1 = (event) => {
-  const file = event.target.files[0];
-  setGridImg1(file);
-};
+  const handleGridImageChange1 = (event) => {
+    const file = event.target.files[0];
+    setGridImg1(file);
+  };
 
-const handleGridImageRemove1 = () => {
-  setGridImg1(null);
-};
+  const handleGridImageRemove1 = () => {
+    setGridImg1(null);
+  };
 
-const handleGridImageChange2 = (event) => {
-  const file = event.target.files[0];
-  setGridImg2(file);
-};
+  const handleGridImageChange2 = (event) => {
+    const file = event.target.files[0];
+    setGridImg2(file);
+  };
 
-const handleGridImageRemove2 = () => {
-  setGridImg2(null);
-};
+  const handleGridImageRemove2 = () => {
+    setGridImg2(null);
+  };
 
-const handleGridImageChange3 = (event) => {
-  const file = event.target.files[0];
-  setGridImg3(file);
-};
+  const handleGridImageChange3 = (event) => {
+    const file = event.target.files[0];
+    setGridImg3(file);
+  };
 
-const handleGridImageRemove3 = () => {
-  setGridImg3(null);
-};
+  const handleGridImageRemove3 = () => {
+    setGridImg3(null);
+  };
 
-const handleGridImageChange4 = (event) => {
-  const file = event.target.files[0];
-  setGridImg4(file);
-};
+  const handleGridImageChange4 = (event) => {
+    const file = event.target.files[0];
+    setGridImg4(file);
+  };
 
-const handleGridImageRemove4 = () => {
-  setGridImg4(null);
-};
-    const handleBgImageChange = (event) => {
-      const file = event.target.files[0];
-      setBgImage(file);
+  const handleGridImageRemove4 = () => {
+    setGridImg4(null);
+  };
+
+  const handleBgImageChange = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setBgImage(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
   };
 
   const handleBgImageRemove = () => {
-      setBgImage(null);
+    setBgImage(null);
   };
 
-    const handleImageChange = (event) => {
-      const file = event.target.files[0];
-      setImagePreview(file);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setImagePreview(file);
   };
 
   const handleImageRemove = () => {
-      setImagePreview(null);
+    setImagePreview(null);
   };
 
-  const handleImageChange1 = (event) => {
-    const file = event.target.files[0];
-    setImagePreview1(file);
-};
 
-const handleImageRemove1 = () => {
+  const handleImageChange1 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview1(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
+  };
+
+
+
+  const handleImageRemove1 = () => {
     setImagePreview1(null);
-};
+  };
 
-const handleImageChange2 = (event) => {
-  const file = event.target.files[0];
-  setImagePreview2(file);
-};
+  const handleImageChange2 = async (event) => {
+    const files = event.target.files;
+    if (!files.length) return;
+    setLoading(true);
+    const resultAction = await dispatch(uploadImages(files));
+    if (uploadImages.fulfilled.match(resultAction)) {
+      setImagePreview2(resultAction?.payload);
+    } else {
+      console.error("Upload failed:", resultAction.payload);
+    }
+    setLoading(false);
+  };
 
-const handleImageRemove2 = () => {
-  setImagePreview2(null);
-};
-  //   const dispatch = useDispatch();
+
+
+  const handleImageRemove2 = () => {
+    setImagePreview2(null);
+  };
   const location = useLocation();
 
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchUserData = async () => {
-      // setLoading(true);
       await dispatch(getCatalogue_cms());
-      // await dispatch(getHomePage_cms_meta());
       setLoading(false);
     };
     fetchUserData();
   }, [dispatch]);
-  const homeData = useSelector((state) => state?.userManagement?.getCatalogue_cms?.[catalogueData.length-1])
-  // console.log(homeData);
+  const homeData = useSelector((state) => state?.userManagement?.getCatalogue_cms?.[catalogueData.length - 1])
+
   const seoData = useSelector((state) => state.userManagement.getHomePage_cms_meta)
- 
+
 
   const [loading, setLoading] = useState(false);
-  // console.log(seoData);
+
 
   const handlePhotoChange = (event) => {
     let img = event.target.files[0]
@@ -448,19 +486,19 @@ const handleImageRemove2 = () => {
   const [metakeywords, setMetaKeywords] = useState('')
   const [metaphoto, setMetaPhoto] = useState();
 
-  const [banner1Title1 , setBanner1Title1] = useState("");
-  const [banner1imagelink4 , setBanner1imagelink4] = useState("");
-  const [banner1Context4 , setBanner1context4] = useState("");
-  const [banner1Button5 , setBanner1Button5] = useState("");
-  const [banner1Title3 , setBanner1Title3] = useState("");
+  const [banner1Title1, setBanner1Title1] = useState("");
+  const [banner1imagelink4, setBanner1imagelink4] = useState("");
+  const [banner1Context4, setBanner1context4] = useState("");
+  const [banner1Button5, setBanner1Button5] = useState("");
+  const [banner1Title3, setBanner1Title3] = useState("");
 
-  const [banner1Name , setBanner1Name] = useState('');
-  const [banner1Offer , setBanner1Offer] = useState("");
-  const [banner1SubTitle , setBanner1SubTitle] = useState("");
-  
-  const [banner2Title , setBanner2Title] = useState('');
+  const [banner1Name, setBanner1Name] = useState('');
+  const [banner1Offer, setBanner1Offer] = useState("");
+  const [banner1SubTitle, setBanner1SubTitle] = useState("");
 
-  const [banner3ButtonTitle , setBanner3ButtonTitle] = useState("");
+  const [banner2Title, setBanner2Title] = useState('');
+
+  const [banner3ButtonTitle, setBanner3ButtonTitle] = useState("");
 
   // const [banner1Title1 , setBanner1Title1] = useState(homeData?.inputArea1?.title);
   // const [banner1imagelink4 , setBanner1imagelink4] = useState(homeData?.inputArea4?.imagelink);
@@ -471,15 +509,15 @@ const handleImageRemove2 = () => {
   // const [banner1Name , setBanner1Name] = useState('');
   // const [banner1Offer , setBanner1Offer] = useState(homeData?.inputArea1?.subtitle1);
   // const [banner1SubTitle , setBanner1SubTitle] = useState(homeData?.inputArea1?.subtitle2);
-  
+
   // const [banner2Title , setBanner2Title] = useState('');
 
   // const [banner3ButtonTitle , setBanner3ButtonTitle] = useState(homeData?.inputArea2?.imagelink);
 
- const [banner4ImageLink , setBanner4ImageLink] = useState('');
- const [banner5CenterText , setbanner5CenterText] = useState('');
- const [banner5ButtonText , setbanner5ButtonText] = useState('');
-  
+  const [banner4ImageLink, setBanner4ImageLink] = useState('');
+  const [banner5CenterText, setbanner5CenterText] = useState('');
+  const [banner5ButtonText, setbanner5ButtonText] = useState('');
+
 
   useEffect(() => {
     setMetaTitle(seoData.metaTitle)
@@ -525,33 +563,28 @@ const handleImageRemove2 = () => {
 
 
     const formData = new FormData();
-   if(banner1Title1) formData.append("inputArea1title", banner1Title1);
-   if(banner1Offer) formData.append("inputArea1subtitle1", banner1Offer);
-  //  if(banner1Offer) formData.append("inputArea1subtitle2", banner1Offer);
-   if(banner1SubTitle) formData.append("inputArea1subtitle2", banner1SubTitle);
-   if(banner3ButtonTitle)formData.append("inputArea2imagelink", banner3ButtonTitle);
-   if(banner1Title3)formData.append("inputArea3Title", banner1Title3);
-   if(banner1imagelink4)formData.append("inputArea4imagelink",banner1imagelink4)
-   if(banner1Context4)formData.append("inputArea5conText", banner1Context4);
-   if(banner1Button5)formData.append("inputArea5buttonText", banner1Button5);
+    if (banner1Title1) formData.append("inputArea1title", banner1Title1);
+    if (banner1Offer) formData.append("inputArea1subtitle1", banner1Offer);
+    //  if(banner1Offer) formData.append("inputArea1subtitle2", banner1Offer);
+    if (banner1SubTitle) formData.append("inputArea1subtitle2", banner1SubTitle);
+    if (banner3ButtonTitle) formData.append("inputArea2imagelink", banner3ButtonTitle);
+    if (banner1Title3) formData.append("inputArea3Title", banner1Title3);
+    if (banner1imagelink4) formData.append("inputArea4imagelink", banner1imagelink4)
+    if (banner1Context4) formData.append("inputArea5conText", banner1Context4);
+    if (banner1Button5) formData.append("inputArea5buttonText", banner1Button5);
 
-   if(bgImage) formData.append("inputArea1",bgImage)
-   if(offerImg1) formData.append("inputArea2", offerImg1)
-   if(imagePreview1) formData.append("inputArea3",imagePreview1)
-   if(offerImg2) formData.append("inputArea4",offerImg2)
-   if(imagePreview2) formData.append("inputArea5",imagePreview2)
+    if (bgImage) formData.append("inputArea1Image", bgImage)
+    if (offerImg1) formData.append("inputArea2Image", offerImg1)
+    if (imagePreview1) formData.append("inputArea3Image", imagePreview1)
+    if (offerImg2) formData.append("inputArea4Image", offerImg2)
+    if (imagePreview2) formData.append("inputArea5Image", imagePreview2)
 
-    // // console.log("430bgimage", bgImage)
-    // // console.log("430bgimage", offerImg1)
-    // // console.log("430bgimage", imagePreview1)
-    // // console.log("430bgimage", offerImg2)
-    // // console.log("430bgimage", imagePreview2)
 
     setLoading(true);
     await dispatch(addCatalogue(formData));
     setLoading(false);
     // navigate("/home/addCatalogue")
-    window.location.reload();
+    // window.location.reload();
   };
   const handleSeoSubmit = async (event) => {
     event.preventDefault();
@@ -592,56 +625,56 @@ const handleImageRemove2 = () => {
       {/* Same */}
       <div className="ml-80 my-20 relative w-[70vw] " style={{ marginTop: "100px" }}>
 
-      
+
         <form onSubmit={handleSubmit}  >
 
-        
 
 
-              <div className="bg-[#EEEEEE] p-5 rounded-md drop-shadow-md borders mt-5 ">
+
+          <div className="bg-[#EEEEEE] p-5 rounded-md drop-shadow-md borders mt-5 ">
             <div className="text-xl mb-3 font-semibold">Input Area1</div>
             Background Image
             <div className='relative border border-gray-300 rounded-md w-full h-32 overflow-hidden'>
-          
-      <input
-        type='file'
-        id='imageInput0'
-        className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
-        onChange={(e) => handleBgImageChange(e)}
-          
-      />
-      {!bgImage ? (
-        <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-          <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-          </svg>
-        </label>
-      ) : (
-        <>
-          <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer' 
-          onClick={() => handleBgImageRemove()}
-          >
-            <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
-              <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
-            </svg>
-          </div>
-          <img src={URL.createObjectURL(bgImage)} className='object-cover w-full h-full' alt='Preview 0' />
-        </>
-      )}
-      
-    </div>
-            <div className="grid gap-3 grid-cols-2">
-                <label className="grid pr-6 ">
-                Title
-                  <input
-                    type="add"
-                    value={banner1Title1}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
-                    placeholder=""
-                    onChange={(e) => setBanner1Title1(e.target.value)}
-                  />
+
+              <input
+                type='file'
+                id='imageInput0'
+                className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
+                onChange={(e) => handleBgImageChange(e)}
+
+              />
+              {!bgImage ? (
+                <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
+                  <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
+                  </svg>
                 </label>
-                {/* <label className="grid pr-6 ">
+              ) : (
+                <>
+                  <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
+                    onClick={() => handleBgImageRemove()}
+                  >
+                    <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
+                      <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
+                    </svg>
+                  </div>
+                  <img src={bgImage} className='object-cover w-full h-full' alt='Preview 0' />
+                </>
+              )}
+
+            </div>
+            <div className="grid gap-3 grid-cols-2">
+              <label className="grid pr-6 ">
+                Title
+                <input
+                  type="add"
+                  value={banner1Title1}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
+                  placeholder=""
+                  onChange={(e) => setBanner1Title1(e.target.value)}
+                />
+              </label>
+              {/* <label className="grid pr-6 ">
                   Name
                   <input
                     type="add"
@@ -651,129 +684,129 @@ const handleImageRemove2 = () => {
                     onChange={(e) => setBanner1Name(e.target.value)}
                   />
                 </label> */}
-                <label className="grid pr-6 ">
-                 Subtitle1
-                  <input
-                    type="link"
-                    value={banner1Offer}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
-                    placeholder=""
-                    onChange={(e) => setBanner1Offer(e.target.value)}
-                  />
-                </label>
-                <label className="grid pr-6 ">
-                 Subtitle2
-                  <input
-                    type="link"
-                    value={banner1SubTitle}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
-                    placeholder=""
-                    onChange={(e) => setBanner1SubTitle(e.target.value)}
-                  />
-                </label>
-              </div>
+              <label className="grid pr-6 ">
+                Subtitle1
+                <input
+                  type="link"
+                  value={banner1Offer}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
+                  placeholder=""
+                  onChange={(e) => setBanner1Offer(e.target.value)}
+                />
+              </label>
+              <label className="grid pr-6 ">
+                Subtitle2
+                <input
+                  type="link"
+                  value={banner1SubTitle}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
+                  placeholder=""
+                  onChange={(e) => setBanner1SubTitle(e.target.value)}
+                />
+              </label>
+            </div>
           </div>
 
-         
+
           <div className="bg-[#EEEEEE] p-5 rounded-md drop-shadow-md borders mt-5 ">
             <div className="text-xl mb-3 font-semibold">Input Area 2</div>
 
-            
-           
-          
-           
+
+
+
+
             <div className="grid gap-3 grid-cols-2">
-                <label className="grid pr-6 ">
-              
-               Image Link
-               
-                  <textarea
-                    type="add"
-                    value={banner3ButtonTitle}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 h-56 "
-                    placeholder=""
-                    onChange={(e) => setBanner3ButtonTitle(e.target.value)}
-                  />
-                </label>
-                <label className="grid pr-6 ">
+              <label className="grid pr-6 ">
+
+                Image Link
+
+                <textarea
+                  type="add"
+                  value={banner3ButtonTitle}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 h-56 "
+                  placeholder=""
+                  onChange={(e) => setBanner3ButtonTitle(e.target.value)}
+                />
+              </label>
+              <label className="grid pr-6 ">
                 <div className='relative border border-gray-300 rounded-md w-full h-60 overflow-hidden'>
-          
-          <input
-            type='file'
-            id='imageInput0'
-            className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
-            onChange={(e) => handleOfferImageChange1(e)}
-              
-          />
-          {!offerImg1 ? (
-            <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg>
-            </label>
-          ) : (
-            <>
-              <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer' 
-              onClick={() => handleOfferImageRemove1()}
-              >
-                <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
-                  <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
-                </svg>
-              </div>
-              <img src={URL.createObjectURL(offerImg1)} className='object-cover w-full h-full' alt='Preview 0' />
-            </>
-          )}
-          
-        </div>
-                </label>
-               
-              </div>
+
+                  <input
+                    type='file'
+                    id='imageInput0'
+                    className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
+                    onChange={(e) => handleOfferImageChange1(e)}
+
+                  />
+                  {!offerImg1 ? (
+                    <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
+                      <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
+                      </svg>
+                    </label>
+                  ) : (
+                    <>
+                      <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
+                        onClick={() => handleOfferImageRemove1()}
+                      >
+                        <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
+                          <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
+                        </svg>
+                      </div>
+                      <img src={offerImg1} className='object-cover w-full h-full' alt='Preview 0' />
+                    </>
+                  )}
+
+                </div>
+              </label>
+
+            </div>
           </div>
 
           <div className="bg-[#EEEEEE] p-5 rounded-md drop-shadow-md borders mt-5 ">
             <div className="text-xl mb-3 font-semibold">Input Area 3</div>
             Background Image
             <div className='relative border border-gray-300 rounded-md w-full h-32 overflow-hidden'>
-          
-      <input
-        type='file'
-        id='imageInput0'
-        className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
-        onChange={(e) => handleImageChange1(e)}
-          
-      />
-      {!imagePreview1 ? (
-        <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-          <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-          </svg>
-        </label>
-      ) : (
-        <>
-          <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer' 
-          onClick={() => handleImageRemove2()}
-          >
-            <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
-              <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
-            </svg>
-          </div>
-          <img src={URL.createObjectURL(imagePreview1)} className='object-cover w-full h-full' alt='Preview 0' />
-        </>
-      )}
-      
-    </div>
-            <div className="grid gap-3 w-full">
-                <label className="grid pr-6 ">
-                Title
-                  <input
-                    type="add"
-                    value={banner1Title3}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
-                    placeholder=""
-                    onChange={(e) => setBanner1Title3(e.target.value)}
-                  />
+
+              <input
+                type='file'
+                id='imageInput0'
+                className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
+                onChange={(e) => handleImageChange1(e)}
+
+              />
+              {!imagePreview1 ? (
+                <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
+                  <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
+                  </svg>
                 </label>
-                {/* <label className="grid pr-6 ">
+              ) : (
+                <>
+                  <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
+                    onClick={() => handleImageRemove2()}
+                  >
+                    <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
+                      <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
+                    </svg>
+                  </div>
+                  <img src={imagePreview1} className='object-cover w-full h-full' alt='Preview 0' />
+                </>
+              )}
+
+            </div>
+            <div className="grid gap-3 w-full">
+              <label className="grid pr-6 ">
+                Title
+                <input
+                  type="add"
+                  value={banner1Title3}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
+                  placeholder=""
+                  onChange={(e) => setBanner1Title3(e.target.value)}
+                />
+              </label>
+              {/* <label className="grid pr-6 ">
                   Name
                   <input
                     type="add"
@@ -783,123 +816,123 @@ const handleImageRemove2 = () => {
                     onChange={(e) => setBanner1Name(e.target.value)}
                   />
                 </label> */}
-               
-               
-              </div>
+
+
+            </div>
           </div>
-         
+
 
           <div className="bg-[#EEEEEE] p-5 rounded-md drop-shadow-md borders mt-5 ">
             <div className="text-xl mb-3 font-semibold">Input Area 4</div>
 
-            
-           
-          
-           
+
+
+
+
             <div className="grid gap-3 grid-cols-2">
-            <label className="grid pr-6 ">
+              <label className="grid pr-6 ">
                 <div className='relative border border-gray-300 rounded-md w-full h-60 overflow-hidden'>
-          
-          <input
-            type='file'
-            id='imageInput0'
-            className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
-            onChange={(e) => handleOfferImageChange2(e)}
-              
-          />
-          {!offerImg2 ? (
-            <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-              <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-              </svg>
-            </label>
-          ) : (
-            <>
-              <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer' 
-              onClick={() => handleOfferImageRemove2()}
-              >
-                <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
-                  <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
-                </svg>
-              </div>
-              <img src={URL.createObjectURL(offerImg2)} className='object-cover w-full h-full' alt='Preview 0' />
-            </>
-          )}
-          
-        </div>
-                </label>
-                <label className="grid pr-6 ">
-              
-               Image Link
-               
-                  <textarea
-                    type="add"
-                    value={banner1imagelink4}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 h-56 "
-                    placeholder=""
-                    onChange={(e) => setBanner1imagelink4(e.target.value)}
+
+                  <input
+                    type='file'
+                    id='imageInput0'
+                    className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
+                    onChange={(e) => handleOfferImageChange2(e)}
+
                   />
-                </label>
-               
-               
-              </div>
+                  {!offerImg2 ? (
+                    <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
+                      <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
+                      </svg>
+                    </label>
+                  ) : (
+                    <>
+                      <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
+                        onClick={() => handleOfferImageRemove2()}
+                      >
+                        <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
+                          <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
+                        </svg>
+                      </div>
+                      <img src={offerImg2} className='object-cover w-full h-full' alt='Preview 0' />
+                    </>
+                  )}
+
+                </div>
+              </label>
+              <label className="grid pr-6 ">
+
+                Image Link
+
+                <textarea
+                  type="add"
+                  value={banner1imagelink4}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 h-56 "
+                  placeholder=""
+                  onChange={(e) => setBanner1imagelink4(e.target.value)}
+                />
+              </label>
+
+
+            </div>
           </div>
 
           <div className="bg-[#EEEEEE] p-5 rounded-md drop-shadow-md borders mt-5 ">
             <div className="text-xl mb-3 font-semibold">Input Area 5</div>
             Background Image
             <div className='relative border border-gray-300 rounded-md w-full h-32 overflow-hidden'>
-          
-      <input
-        type='file'
-        id='imageInput0'
-        className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
-        onChange={(e) => handleImageChange2(e)}
-          
-      />
-      {!imagePreview2 ? (
-        <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
-          <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
-          </svg>
-        </label>
-      ) : (
-        <>
-          <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer' 
-          onClick={() => handleImageRemove2()}
-          >
-            <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
-              <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
-            </svg>
-          </div>
-          <img src={URL.createObjectURL(imagePreview2)} className='object-cover w-full h-full' alt='Preview 0' />
-        </>
-      )}
-      
-    </div>
-            <div className="grid gap-3 ">
-                <label className="grid pr-6 ">
-                Center Text
-                  <input
-                    type="add"
-                    value={banner1Context4}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
-                    placeholder=""
-                    onChange={(e) => setBanner1context4(e.target.value)}
-                  />
-                </label>
 
-                <label className="grid pr-6 ">
-                Button Text
-                  <input
-                    type="add"
-                    value={banner1Button5}
-                    className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
-                    placeholder=""
-                    onChange={(e) => setBanner1Button5(e.target.value)}
-                  />
+              <input
+                type='file'
+                id='imageInput0'
+                className='absolute inset-0 opacity-0 w-full h-full cursor-pointer'
+                onChange={(e) => handleImageChange2(e)}
+
+              />
+              {!imagePreview2 ? (
+                <label htmlFor='imageInput0' className='w-full h-full flex items-center justify-center cursor-pointer'>
+                  <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10 text-gray-400' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 6v6m0 0v6m0-6h6m-6 0H6' />
+                  </svg>
                 </label>
-                {/* <label className="grid pr-6 ">
+              ) : (
+                <>
+                  <div className='absolute top-0 right-0 m-1 bg-red-500 cursor-pointer'
+                    onClick={() => handleImageRemove2()}
+                  >
+                    <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5 text-white' viewBox='0 0 20 20' fill='currentColor'>
+                      <path fillRule='evenodd' d='M10 1a1 1 0 0 1 1 1v14a1 1 0 0 1-2 0V2a1 1 0 0 1 1-1zm3 4a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5zm-6 0a1 1 0 1 1-2 0v8a1 1 0 1 1 2 0V5z' clipRule='evenodd' />
+                    </svg>
+                  </div>
+                  <img src={imagePreview2} className='object-cover w-full h-full' alt='Preview 0' />
+                </>
+              )}
+
+            </div>
+            <div className="grid gap-3 ">
+              <label className="grid pr-6 ">
+                Center Text
+                <input
+                  type="add"
+                  value={banner1Context4}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
+                  placeholder=""
+                  onChange={(e) => setBanner1context4(e.target.value)}
+                />
+              </label>
+
+              <label className="grid pr-6 ">
+                Button Text
+                <input
+                  type="add"
+                  value={banner1Button5}
+                  className="px-4 py-2 drop-shadow-md rounded-md mt-1 "
+                  placeholder=""
+                  onChange={(e) => setBanner1Button5(e.target.value)}
+                />
+              </label>
+              {/* <label className="grid pr-6 ">
                   Name
                   <input
                     type="add"
@@ -909,37 +942,37 @@ const handleImageRemove2 = () => {
                     onChange={(e) => setBanner1Name(e.target.value)}
                   />
                 </label> */}
-               
-               
-              </div>
+
+
+            </div>
           </div>
 
         </form>
         {/* "ksdudvhj" */}
         <div className="flex mt-5 gap-5 items-center">
-              <button
-                className="rounded bg-[#c93a0e] hover:bg-[#c91b0e]"
-                style={{
-                  width: "130px",
-                  height: "55px",
-                  color: "white",
-                }}
-                type="submit"
-                onClick={handleSubmit}>
-                SAVE
-              </button>
-              <NavLink to="/home/catalogue">
-                <button
-                  className="rounded bg-black hover:bg-gray-800"
-                  style={{
-                    width: "130px",
-                    height: "55px",
-                    color: "white",
-                  }}>
-                  Back
-                </button>
-              </NavLink>
-            </div>
+          <button
+            className="rounded bg-[#c93a0e] hover:bg-[#c91b0e]"
+            style={{
+              width: "130px",
+              height: "55px",
+              color: "white",
+            }}
+            type="submit"
+            onClick={handleSubmit}>
+            SAVE
+          </button>
+          <NavLink to="/home/catalogue">
+            <button
+              className="rounded bg-black hover:bg-gray-800"
+              style={{
+                width: "130px",
+                height: "55px",
+                color: "white",
+              }}>
+              Back
+            </button>
+          </NavLink>
+        </div>
       </div>
 
 

@@ -1,7 +1,7 @@
 // authMiddleware.js
 
 const jwt = require('jsonwebtoken');
-const Role = require('../models/Role'); // Replace with the correct path
+const Role = require('../models/Role'); 
 
 const authMiddleware = (catogory,permissions) => async (req, res, next) => {
   const authToken = req.headers.authorization || req.headers.Authorization;
