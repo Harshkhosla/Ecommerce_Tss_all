@@ -164,7 +164,7 @@ io.on("connection", (socket) => {
 
 
 server.listen(5300, () => {
-  console.log("SERVER IS RUNNING");
+  console.log(`Web socket SERVER IS RUNNING on port ${PORT}`);
 });
 
 const PORT = process.env.PORT || 5200;
