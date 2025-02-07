@@ -75,7 +75,7 @@ const ProductDetailsPage = () => {
     };
     fetchProduct();
     fetchLikedProducts();
-  }, [productId, product]);
+  }, [ ]);
 
   if (loading) {
     return <div>Loading...</div>;

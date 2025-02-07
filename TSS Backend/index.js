@@ -3,7 +3,6 @@ const express = require("express");
 const http = require("http"); // Add the http module
 const socketIo = require("socket.io");
 const bcrypt = require('bcrypt');
-const { Server } = require("socket.io");
 var cors = require("cors");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/Admin/userRoutes.js");
@@ -45,8 +44,11 @@ const payment = require("./routes/Client/Payment_routes.js");
 const contact = require("./routes/Client/contactroutes.js");
 const Stripe = require("./routes/Client/Stripe.js");
 const Orders = require("./routes/Client/Orders.js");
-const promotions= require("./routes/Client/promotionroutes.js");
-const ImageRoute= require("./routes/ImageUploads/ImageUpload.js");
+const promotions = require("./routes/Client/promotionroutes.js");
+const ImageRoute = require("./routes/ImageUploads/ImageUpload.js");
+const TicketSupport = require("./routes/Websocket/TicketSupport.js");
+const { Server } = require("socket.io");
+const Ticket = require("./models/Ticket.js");
 
 ConnectToMongo();
 const app = express();
@@ -56,7 +58,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-const server = http.createServer(app); // Create an HTTP server
+const server = http.createServer(app);
 
 app.use(express.json());
 
@@ -110,6 +112,11 @@ app.use("/client", promotions);
 
 
 app.use("/admin/imageupload", ImageRoute);
+
+
+app.use('/admin/ticket', TicketSupport)
+
+
 // app.use("/client/liked",liked)
 
 // app.use('/client/page', ClientHome);
@@ -117,31 +124,44 @@ app.use("/admin/imageupload", ImageRoute);
 // websocket part
 
 
-const io = new Server(server, {
-  cors: {
-    origin: [
-      "http://localhost:3000",
-      "https://localhost:3000",
-      "http://localhost:3001",
-      "http://64.227.186.165:3000",
-      "https://64.227.186.165:3000",
-      "http://64.227.186.165:3002",
-      "https://admin.devcorps.in",
-    ],
-    methods: ["GET", "POST", "PUT"],
-  },
-});
+
+
+
+const io = new Server(5300
+  , {
+    cors: {
+      origin: "*", 
+      methods: ["GET", "POST"],  
+      allowedHeaders: ["Content-Type"]
+    }
+  }
+);
 
 io.on("connection", (socket) => {
-  socket.on("send_message", () => {
-    console.log("mesage sent");
-    socket.broadcast.emit("receive_message");
+  console.log("A user connected:", socket.id);
+
+  socket.on("send_message", async (data) => {
+    const { tid, uid, msg, role } = data;
+    const newMessage = {
+      role,
+      message: msg,
+    };
+    try {
+      await Ticket.findOneAndUpdate(
+        { tid: uid },
+        { $push: { messages: newMessage } },
+        { new: true }
+      );
+      io.emit("receive_message", { tid, ...newMessage });
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
   });
-  socket.on("help_desk_send", () => {
-    console.log("help desk message");
-    socket.broadcast.emit("help_desk_receive");
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
 });
+
 
 server.listen(3005, () => {
   console.log("SERVER IS RUNNING");

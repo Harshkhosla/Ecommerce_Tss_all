@@ -3,7 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import { IoMdSend } from "react-icons/io";
 import { BiSupport } from "react-icons/bi";
-import tssurl from "../../port";
+import tssurl, { tssurl2, wss } from "../../port";
 import { Offcanvas, Button } from "react-bootstrap";
 
 function Support() {
@@ -18,28 +18,22 @@ function Support() {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    const socketinit = io.connect("https://ws_tss.devcorps.in/");
+    const socketinit = io(wss);
+
     setSocket(socketinit);
-    socketinit.on("help_desk_receive", async () => {
-      handlegetmsg();
+    socketinit.on("receive_message", (data) => {
+      console.log("asjdchbvjhjhdvbs", data);
+      if (data.tid === mid) {
+        setChats((prevMessages) => ([...prevMessages, data]));
+
+        let scroller = document.getElementById("chat-scroller");
+        setTimeout(() => {
+          scroller.scrollTo(0, scroller.scrollHeight);
+        }, 500);
+      }
     });
+    return () => socketinit.disconnect();
   }, []);
-
-  const getCurrentDate = () => {
-    const currentDate = new Date();
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const year = String(currentDate.getFullYear());
-    return `${day}-${month}-${year}`;
-  };
-
-  const getCurrentTime = () => {
-    const currentDate = new Date();
-    const hours = String(currentDate.getHours()).padStart(2, "0");
-    const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    const seconds = String(currentDate.getSeconds()).padStart(2, "0");
-    return `${hours}:${minutes}:${seconds}`;
-  };
 
   const fetchUserData = async () => {
     const resp = await axios.get(`${tssurl}/auth/users/${mid}`);
@@ -55,18 +49,26 @@ function Support() {
     tid: mid,
   };
 
+  const Opendialogbox = async () => {
+    handleShow();
+
+    // Correct it to scroll to bottom sdome random issue that is happening correct it 
+    // let scroller = document.getElementById("chat-scroller");
+    // setTimeout(() => {
+    //   scroller.scrollTo(0, scroller.scrollHeight);
+    // }, 500);
+  }
   const fetchTicketData = async () => {
     try {
       const response = await axios({
         method: "post",
-        url: `http://64.227.186.165:5002/getticket`,
+        url: `${tssurl2}/ticket/getticket`,
         data: raw,
         headers: {
-          "Content-Type": "application/json",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
+          "Content-Type": "application/json"
         },
       });
-      setChats(response.data);
+      setChats(response.data.ticket.messages);
     } catch (error) {
       console.log(error);
     }
@@ -77,89 +79,54 @@ function Support() {
 
   const [subject, setSubject] = useState("");
   const [Message, setMessage] = useState("");
-  const handleSendMsg = async () => {
-    setloadspin(true);
-    let SendMsg = {
+
+  const handleSendMsg = () => {
+    if (!Message.trim()) return;
+
+    const messageData = {
       tid: mid,
       uid: mid,
       msg: Message,
       role: "user",
-      date: getCurrentDate(),
-      time: getCurrentTime(),
     };
-    try {
-      const send = await axios({
-        method: "post",
-        url: `http://64.227.186.165:5002/replyticket`,
-        data: SendMsg,
-        headers: {
-          "Content-Type": "application/json",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-        },
-      });
-      setMessage("");
-      socket.emit("help_desk_send");
-    } catch (error) {
-      console.log(error);
-    }
-    setloadspin(false);
+    socket.emit("send_message", messageData);
+    setMessage("");
+    let scroller = document.getElementById("chat-scroller");
+    setTimeout(() => {
+      scroller.scrollTo(0, scroller.scrollHeight);
+    }, 500);
   };
-  const handlegetmsg = async () => {
-    handleShow();
-    try {
-      const response = await axios({
-        method: "post",
-        url: `http://64.227.186.165:5002/getticket`,
-        data: raw,
-        headers: {
-          "Content-Type": "application/json",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
-        },
-      });
-      setChats(response.data);
-      if (response.data.data.msgs) {
-        let scroller = document.getElementById("chat-scroller");
-        setTimeout(() => {
-          scroller.scrollTo(0, scroller.scrollHeight);
-        }, 500);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  console.log(memData, "mmm");
+
   const handleStartChat = async (event) => {
     event.preventDefault();
     setloadspin(true);
     let createmsg = {
       uid: mid,
       usname: memData?.name,
-      subj: subject,
+      subject: subject,
       msg: Message,
       role: "user",
     };
     try {
       const send = await axios({
         method: "post",
-        url: `http://64.227.186.165:5002/createticket`,
+        url: `${tssurl2}/ticket/createticket`,
         data: createmsg,
         headers: {
-          "Content-Type": "application/json",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
+          "Content-Type": "application/json"
         },
       });
       setMessage("");
       console.log(send.data);
       const response = await axios({
         method: "post",
-        url: `http://64.227.186.165:5002/getticket`,
+        url: `${tssurl2}/ticket/getticket`,
         data: raw,
         headers: {
           "Content-Type": "application/json",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
         },
       });
-      setChats(response.data);
+      setChats(response.data.ticket.messages);
     } catch (error) {
       console.log(error);
     }
@@ -171,7 +138,7 @@ function Support() {
         <>
           <Button
             className="btn  help-desk shadow"
-            onClick={handlegetmsg}
+            onClick={Opendialogbox}
             style={{
               zIndex: "999",
               backgroundColor: "#fc6d28",
@@ -236,8 +203,8 @@ function Support() {
                 </div>
               ) : (
                 <div className="chatbox-home py-3 px-2" id="chat-scroller">
-                  {chats.data && chats.data.msgs ? (
-                    chats.data.msgs.map((item, index) => (
+                  {chats ? (
+                    chats.map((item, index) => (
                       <>
                         {item.role === "admin" ? (
                           <div>
@@ -245,7 +212,7 @@ function Support() {
                               style={{ maxWidth: "75%", width: "fit-content" }}
                               className="p-2 bg-dark text-white rounded-3"
                             >
-                              {item.msg}
+                              {item.message}
                             </div>
                             <div className="fs-7 text-secondary">
                               {item.time} / {item.date}
@@ -261,7 +228,7 @@ function Support() {
                               }}
                               className="ms-auto p-2 rounded-3"
                             >
-                              {item.msg}
+                              {item.message}
                             </div>
                             <div className="fs-7 text-secondary">
                               {item.time} / {item.date}

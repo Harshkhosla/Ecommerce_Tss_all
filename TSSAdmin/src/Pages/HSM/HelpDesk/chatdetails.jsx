@@ -6,20 +6,60 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@mui/material";
-import io from "socket.io-client";
-import { url2 } from "../../../UI/port";
+import { io } from "socket.io-client";
+import { tssurl, wss } from "../../../UI/port";
 
 const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
   const [isInputDisabled, setIsInputDisabled] = useState(false);
   const [socket, setSocket] = useState(null);
   const [inputValue, setInputValue] = useState("");
+
   useEffect(() => {
-    const socketinit = io.connect("https://ws_tss.devcorps.in/"); // check url
-    setSocket(socketinit);
-    socketinit.on("help_desk_receive", async () => {
-      handlegetmsg();
+    const socketinit = io(wss);
+
+    socketinit.on("connect", () => {
+      console.log("Successfully connected to the socket server");
     });
+
+    socketinit.on("connect_error", (err) => {
+      console.log("Socket connection error:", err);
+    });
+    setSocket(socketinit);
+
+    socketinit.on("receive_message", (data) => {
+      console.log("asjdchbvjhjhdvbs", data);
+
+      if (data.tid === tid) {
+        setMessages((prevMessages) => ([...prevMessages, data]));
+        let scroller = document.getElementById("chat-scroller");
+        setTimeout(() => {
+          scroller.scrollTo(0, scroller.scrollHeight);
+        }, 500);
+      }
+    });
+
+    return () => socketinit.disconnect();
   }, []);
+
+  const handleSendMessage = () => {
+    if (!inputValue.trim()) return;
+
+    const messageData = {
+      tid: tid,
+      uid: uid,
+      msg: inputValue,
+      role: "admin",
+    };
+
+    socket.emit("send_message", messageData);
+
+    setInputValue("");
+    let scroller = document.getElementById("chat-scroller");
+    setTimeout(() => {
+      scroller.scrollTo(0, scroller.scrollHeight);
+    }, 500);
+  };
+
   const raw = {
     tid: tid,
   };
@@ -27,14 +67,13 @@ const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
     try {
       const response = await axios({
         method: "post",
-        url: `http://64.227.186.165:5002/getticket`,
+        url: `${tssurl}/ticket/getticket`,
         data: raw,
         headers: {
-          "Content-Type": "application/json",
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
+          "Content-Type": "application/json"
         },
       });
-      setMessages(response.data.data.msgs);
+      setMessages(response.data?.ticket?.messages);
       let scroller = document.getElementById("chat-scroller");
       setInputValue("");
       setTimeout(() => {
@@ -50,48 +89,20 @@ const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
       await handlegetmsg();
     };
     fetchFooterData();
-  }, [tid]);
+  }, []);
+
   const [messages, setMessages] = useState([]);
-  const getCurrentDate = () => {
-    const currentDate = new Date();
-    const day = String(currentDate.getDate()).padStart(2, "0");
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const year = String(currentDate.getFullYear());
-    return `${day}-${month}-${year}`;
-  };
-
-  const getCurrentTime = () => {
-    const currentDate = new Date();
-    const hours = String(currentDate.getHours()).padStart(2, "0");
-    const minutes = String(currentDate.getMinutes()).padStart(2, "0");
-    const seconds = String(currentDate.getSeconds()).padStart(2, "0");
-    return `${hours}:${minutes}:${seconds}`;
-  };
-
-  console.log("Called");
   const [isOpen, setIsOpen] = useState(true);
-  function formatTime(date) {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "pm" : "am";
-    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    return `${formattedHours}:${formattedMinutes}${ampm}`;
-  }
-  const navigate = useNavigate();
-  // var flag=true;
 
   const handleClose = () => {
     console.log("close");
     setIsOpen(false);
     onClose();
-    // flag=false;
   };
   console.log("Open");
 
   if (!isOpen) {
-    // setIsOpen(true)
-    return null; // Return null if isOpen state is false to hide the component
+    return null;
   }
 
   const handleCloseTicket = async () => {
@@ -99,60 +110,15 @@ const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
       const body = {
         tid: tid,
       };
-      const response = await axios.post(
-        `http://64.227.186.165:5002/closeticket`,
+      await axios.post(
+        `${tssurl}/ticket/closeticket`,
         body
       );
-      console.log(response);
       setIsInputDisabled(true);
       window.location.reload();
     } catch (error) {
       console.log("Failed");
       console.log(error);
-    }
-  };
-
-  const handleSendMessage = async () => {
-    try {
-      const body = {
-        tid: tid.toString(),
-        uid: uid.toString(), // Replace with the appropriate user ID
-        msg: inputValue,
-        date: getCurrentDate(), // Helper function to get the current date
-        time: getCurrentTime(), // Helper function to get the current time
-        role: "admin",
-      };
-
-      const response = await axios.post(
-        `http://64.227.186.165:5002/replyticket`,
-        body
-      ); // Replace "{{chatUrl}}" with the actual chat URL
-
-      // Extract the message data from the response
-      const { success, data } = response.data;
-      const { cid, msg, date, time, role } = data;
-
-      if (success) {
-        // Create a new message object
-        const newMessage = {
-          cid: cid,
-          msg: msg,
-          date: date,
-          time: time,
-          role: role,
-        };
-
-        // Clear the input value
-        let scroller = document.getElementById("chat-scroller");
-        socket.emit("help_desk_send");
-
-        setInputValue("");
-        setTimeout(() => {
-          scroller.scrollTo(0, scroller.scrollHeight);
-        }, 500);
-      }
-    } catch (error) {
-      console.log("Failed to reply", error);
     }
   };
 
@@ -220,8 +186,8 @@ const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
         >
           {/* Backend Side Messages */}
 
-          {messages.length > 0 ? (
-            messages.map((message, index) => (
+          {messages?.length > 0 ? (
+            messages?.map((message, index) => (
               <>
                 {message.role == "user" ? (
                   <div style={{ width: "80%", paddingBottom: "15px" }}>
@@ -242,13 +208,13 @@ const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
                         marginBottom: "5px",
                       }}
                     >
-                      {message.msg}
+                      {message?.message}
                     </div>
                     <div
                       className="text-gray-500"
                       style={{ fontSize: "12px", paddingLeft: "8px" }}
                     >
-                      {message.date} {message.time}
+                      {message?.date} {message?.time}
                     </div>
                   </div>
                 ) : (
@@ -273,7 +239,7 @@ const Chatdetails = ({ onClose, name, status, tid, page, uid }) => {
                         marginBottom: "5px",
                       }}
                     >
-                      {message.msg}
+                      {message.message}
                     </div>
                     <div
                       className="text-gray-500 ms-auto text-right"

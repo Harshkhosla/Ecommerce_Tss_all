@@ -5,8 +5,9 @@ const url4 = "https://apis2.devcorps.in"; //8080
 
 const tssurl = "http://localhost:5200/admin";
 const tssurl2 = "http://localhost:5200";
+const wss = "http://localhost:5300"
 // const tssurl = "https://tssapis.devcorps.in/admin";
 const tssurl1 = "https://tssapis.devcorps.in/client";
 
 
-export { url1, url2, url3, url4 , tssurl ,tssurl2};
+export { url1, url2, url3, url4 , tssurl ,tssurl2 ,wss };

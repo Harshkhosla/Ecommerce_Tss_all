@@ -75,6 +75,7 @@ const AllProjects = ({ setActiveTab, setExpand }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const chatData = useSelector((state) => state.userManagement.hsm_helpdesk);
+console.log(chatData,"DKVJSDV");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -115,18 +116,18 @@ const AllProjects = ({ setActiveTab, setExpand }) => {
   const cht = check.state;
 
   const data = chatData.map((user) => ({
-    photo: <Photo picUrl={user.metadata.pic} />,
-    requester: user.metadata.usname,
-    subject: user.metadata.subj,
-    message: user.msgs[0].msg,
-    status: <Status value={user.metadata.status} />,
+    photo: <Photo picUrl={user?.pic} />,
+    requester: user?.userName,
+    subject: user?.subject,
+    message: user?.messages?.[0]?.message,
+    status: <Status value={user?.status} />,
     action: (
       <Action
-        name={user.metadata.usname}
-        status={user.metadata.status}
-        tid={user.tid}
-        uid={user.metadata.uid}
-        msg={user.msgs}
+        name={user?.userName}
+        status={user?.status}
+        tid={user?.tid}
+        uid={user?.uid}
+        msg={user?.messages}
       />
     ),
   }));

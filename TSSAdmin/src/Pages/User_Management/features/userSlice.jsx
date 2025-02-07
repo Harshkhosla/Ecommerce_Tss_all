@@ -2963,18 +2963,14 @@ export const HSM_helpdesk = createAsyncThunk(
     // console.log("hello");
     try {
       const response = await axios.get(
-        `http://64.227.186.165:5002/getticketlist`, {
+        `${tssurl}/ticket/gettickets`, {
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
-          "API-Key": "90bd6f5b-033f-42e7-8e92-2a443dfa42f8",
         },
       }
       );
-      // console.log(response);
-      return response.data.data;
+      return response.data.tickets;
     } catch (error) {
-      // console.log("Not submitting data");
-      // console.log(error);
       return rejectWithValue(error.response.data);
     }
   }
