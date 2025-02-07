@@ -163,9 +163,9 @@ io.on("connection", (socket) => {
 });
 
 
-server.listen(3005, () => {
-  console.log("SERVER IS RUNNING");
-});
+// server.listen(3005, () => {
+//   console.log("SERVER IS RUNNING");
+// });
 
 const PORT = process.env.PORT || 5200;
 app.listen(PORT, "0.0.0.0", () => {
