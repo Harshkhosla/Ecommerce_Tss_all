@@ -6,14 +6,18 @@ import ProductSearch from "../components/shop/ProductSearch";
 import Product from "../components/shop/Product";
 import ShopBanner from "../components/shop/ShopBanner";
 import Filters from "../components/shop/Filters";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchallproductData } from "../redux/counterSlice";
 
 const ProductsPage = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch()
+  const MID = localStorage.getItem("MID");
+  const products = useSelector((state) => state?.Store?.allproductdata)
+  
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState("Featured");
 
   const [likedProducts, setLikedProducts] = useState([]);
-  const MID = localStorage.getItem("MID");
 
   useEffect(() => {
     const fetchLikedProducts = async () => {
@@ -41,15 +45,11 @@ const ProductsPage = () => {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`${tssurl}/productcat/products`);
-      const filteredData = response?.data?.filter(item => item.draft === "false");
-      setProducts(filteredData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+ 
+
+  useEffect(() => {
+    dispatch(fetchallproductData())
+  }, [dispatch])
 
   const sortFunctions = useMemo(
     () => ({
@@ -83,9 +83,7 @@ const ProductsPage = () => {
     setSortOption(value);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+
 
   useEffect(() => {
     filterFunctions();
@@ -96,10 +94,7 @@ const ProductsPage = () => {
       <ShopBanner />
       <Row className="products">
         <Col md="2">
-          <Filters
-            products={products}
-            setFilteredProducts={setFilteredProducts}
-          />
+            <Filters products={products} setFilteredProducts={setFilteredProducts} />
         </Col>
         <Col md="10" className="p-2">
           <Row>

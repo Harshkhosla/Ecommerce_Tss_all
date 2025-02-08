@@ -3,7 +3,7 @@ import { Button, Form, Row, Col, Modal, InputGroup } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-import tssurl from "../../port";
+import tssurl, { tssurl2 } from "../../port";
 import GoogleAuth from "./GoogleAuth";
 import Register from "./Register";
 
@@ -65,7 +65,7 @@ const Login = ({ data }) => {
         const lastApiCallLoginDate = localStorage.getItem('lastApiCallLoginDate');
         const today = new Date().toISOString().slice(0, 10);
         if (lastApiCallLoginDate !== today) {
-          await axios.post(`https://tssapis.devcorps.in//admin/user/chit`, { mid: mID });
+          await axios.post(`${tssurl2}/user/chit`, { mid: mID });
           localStorage.setItem('lastApiCallLoginDate', today);
         }
         window.location.reload(true);

@@ -159,11 +159,11 @@ const Filters = ({ products, setFilteredProducts }) => {
 
   useEffect(() => {
     setSubcategories([
-      ...new Set(products.map((product) => product.sub_category)),
+      ...new Set(products?.map((product) => product?.sub_category)),
     ]);
     setColors([
       ...new Set(
-        products.flatMap((product) =>
+        products?.flatMap((product) =>
           product.colors.map((color) => ({
             value: color.value,
             name: color.name,

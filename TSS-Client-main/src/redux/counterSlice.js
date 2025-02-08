@@ -1,7 +1,35 @@
-import { createSlice, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createSelector, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import tssurl from "../port";
+
+export const fetchFooterData = createAsyncThunk("app/fetchFooter", async () => {
+  const response = await axios.get(`${tssurl}/footer`);
+  return response.data;
+});
+
+
+export const fetchHomeData = createAsyncThunk("app/fetchHome", async () => {
+  const response = await axios.get(`${tssurl}/home`);
+  return response.data;
+});
+
+export const fetchProductData = createAsyncThunk("app/fetchProducts", async () => {
+  const response = await axios.get(`${tssurl}/top3products`);
+  return response.data;
+});
+
+export const fetchBannersData = createAsyncThunk("app/fetchBanners", async () => {
+  const response = await axios.get(`${tssurl}/banners`);
+  return response.data.banners;
+});
+
+export const fetchallproductData = createAsyncThunk("app/fetchallproductData", async () => {
+  const response = await axios.get(`${tssurl}/productcat/products`);
+  const filteredData = response?.data?.filter(item => item.draft === "false");
+  return filteredData;
+});
+
 
 const appSlice = createSlice({
   name: "app",
@@ -14,6 +42,17 @@ const appSlice = createSlice({
     cartItems: [],
     quantity: 0,
     productDataMap: {},
+    footer:{},
+    homeData: {},
+    productData: {},
+    banners:[],
+    allproductdata:[],
+    statusproducts: {
+      footer: "idle",
+      home: "idle",
+      product: "idle",
+      cart: "idle",
+    },
   },
   reducers: {
     updateQuantityInCart: (state, action) => {
@@ -57,6 +96,44 @@ const appSlice = createSlice({
       );
     },
   },
+  extraReducers: (builder) => {
+    builder
+    .addCase(fetchFooterData.pending, (state) => { state.statusproducts.footer = "loading"; })
+    .addCase(fetchFooterData.fulfilled, (state, action) => {
+      state.statusproducts.footer = "succeeded";
+      state.footerData = action.payload;
+    })
+    .addCase(fetchFooterData.rejected, (state) => { state.statusproducts.footer = "failed"; })
+
+    .addCase(fetchHomeData.pending, (state) => { state.statusproducts.home = "loading"; })
+    .addCase(fetchHomeData.fulfilled, (state, action) => {
+      state.statusproducts.home = "succeeded";
+      state.homeData = action.payload;
+    })
+    .addCase(fetchHomeData.rejected, (state) => { state.statusproducts.home = "failed"; })
+
+    .addCase(fetchProductData.pending, (state) => { state.statusproducts.product = "loading"; })
+    .addCase(fetchProductData.fulfilled, (state, action) => {
+      state.statusproducts.product = "succeeded";
+      state.productData = action.payload;
+    })
+    .addCase(fetchProductData.rejected, (state) => { state.statusproducts.product = "failed"; })
+
+    .addCase(fetchBannersData.pending, (state) => { state.status = "loading"; })
+    .addCase(fetchBannersData.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.banners = action.payload;
+    })
+    .addCase(fetchBannersData.rejected, (state) => { state.status = "failed"; })
+
+    .addCase(fetchallproductData.pending, (state) => { state.status = "loading"; })
+    .addCase(fetchallproductData.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.allproductdata = action.payload;
+    })
+    .addCase(fetchallproductData.rejected, (state) => { state.status = "failed"; })
+
+  }
 });
 
 export const addToCartAsync = (data) => async (dispatch) => {

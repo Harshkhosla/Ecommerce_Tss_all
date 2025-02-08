@@ -199,7 +199,7 @@ function generateUniqueMid() {
 } 
 
 async function sendVerificationEmail(user) {
-    const verificationLink = `https://tssapis.devcorps.in/client/auth/verify?token=${user.verificationToken}`;
+    const verificationLink = `${tssurl}/auth/verify?token=${user.verificationToken}`;
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -232,7 +232,7 @@ router.post('/forgot-password', async(req, res) => {
     }
 
     const token = crypto.randomBytes(20).toString('hex');
-    const resetUrl = `https://tssapis.devcorps.in/client/auth/reset-password?token=${token}`;
+    const resetUrl = `https://brand.mycarebilling.com/api/client/auth/reset-password?token=${token}`;
 
     user.verificationToken = token;
     await user.save();

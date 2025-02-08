@@ -9,7 +9,7 @@ const Offer = ({
     <Container fluid>
       <Row className="bg-light offer">
         <Col md={4} className="text-center mob-head">
-          <Image src={image.url} fluid />
+          <Image src={image?.url} fluid />
         </Col>
         <Col md={4} className="m-auto">
           <Card className="off-card">

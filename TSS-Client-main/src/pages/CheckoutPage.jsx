@@ -309,7 +309,7 @@ const CheckoutPgae = (position) => {
         cancel_url: 'https://example.com/cancel',
       };
       const response = await axios.post(
-        'https://tssapis.devcorps.in/client/create-checkout-session',
+        `${tssurl}/create-checkout-session`,
         data
       );
       if (response.status === 200) {
@@ -357,7 +357,7 @@ const CheckoutPgae = (position) => {
       });
 
       const response = await axios.post(
-        'https://tssapis.devcorps.in/client/orders',
+         `${tssurl}/orders`,
         formData,
         {
           headers: {
