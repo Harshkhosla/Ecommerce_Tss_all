@@ -18,30 +18,30 @@ import tssurl from "../port";
 import ProductsSlider from "../components/shop/ProductSlider";
 import ProductGallery from "../components/shop/ProductGallery";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCartAsync } from "../redux/counterSlice";
 
 const ProductDetailsPage = () => {
+  const dispatch = useDispatch();
+  const MID = localStorage.getItem("MID");
   const { pid: productId } = useParams();
-  const [product, setProduct] = useState({});
-  const [loading, setLoading] = useState(true);
+  const alltheproducts = useSelector((state) => state.Store.allproductdata)
+  const particularproduct = alltheproducts?.find((item) => item.pid === productId, {});
   const [qty, setQty] = useState(1);
-  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(alltheproducts.length < 0 ? true : false);
   const [likedProducts, setLikedProducts] = useState([]);
   const mid = localStorage.getItem("MID");
+  const [product, setProduct] = useState(particularproduct);
+  const [products, setProducts] = useState(alltheproducts);
 
-  const dispatch = useDispatch();
 
-  const { colors, size, quantity_pi, product_detail } = product;
-  const fitOptions = parseHtmlToList(product.fit);
-  const fabricList = parseHtmlToList(product.fabric);
-  const sizes = size?.map(({ name }) => name) || [];
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedColor, setSelectedColor] = useState(null);
+
+  const { colors, size, quantity_pi, product_detail } = product || {};
+
   const fetchLikedProducts = async () => {
     try {
       const response = await axios.get(`${tssurl}/liked/liked-products/${MID}`);
-      const filteredLikedProducts = response.data.likedProducts.filter(
+      const filteredLikedProducts = response?.data.likedProducts.filter(
         (id) => id !== null
       );
       setLikedProducts(filteredLikedProducts);
@@ -51,31 +51,36 @@ const ProductDetailsPage = () => {
   };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const { data } = await axios.get(
-          `${tssurl}/productDetails/${productId}`
-        );
-        setProduct(data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      } finally {
-        setLoading(false);
-      }
-
-      try {
-        const response = await axios.get(`${tssurl}/productcat/products`);
-        const filteredData = response?.data?.filter(
-          (item) => item.draft === "false"
-        );
-        setProducts(filteredData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchProduct();
+    if (alltheproducts.length === 0) {
+      const fetchProduct = async () => {
+        try {
+          const { data } = await axios.get(`${tssurl}/productDetails/${productId}`);
+          setProduct(data);
+        } catch (error) {
+          console.error("Error fetching product:", error);
+        }
+        try {
+          const response = await axios.get(`${tssurl}/productcat/products`);
+          const filteredData = response?.data?.filter((item) => item.draft === "false");
+          setProducts(filteredData);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProduct();
+    }
+    
     fetchLikedProducts();
-  }, [ ]);
+  }, []);
+
+  const fitOptions = parseHtmlToList(product?.fit);
+  const fabricList = parseHtmlToList(product?.fabric);
+  const sizes = size?.map(({ name }) => name) || [];
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -88,7 +93,7 @@ const ProductDetailsPage = () => {
     });
   };
 
-  const variants = product.variants?.[0];
+  const variants = product?.variants?.[0];
   const thumbImg = variants?.ThumbImg || "";
   const addToCartHandler = async () => {
     const data = {
@@ -105,7 +110,6 @@ const ProductDetailsPage = () => {
 
   };
 
-  const MID = localStorage.getItem("MID");
 
   const toggleLike = async () => {
     try {
@@ -118,7 +122,7 @@ const ProductDetailsPage = () => {
       } else {
         setLikedProducts([...likedProducts, product.pid]);
         await axios.post(`${tssurl}/liked/liked-products/add`, {
-          mid: mid,
+          mid: MID,
           pid: product.pid,
         });
         toast.success("Added to Wishlist");
@@ -138,7 +142,7 @@ const ProductDetailsPage = () => {
         <Link to="/products" className="mx-1">
           Products
         </Link>
-        / <strong className="ms-1">{product.product_name}</strong>
+        / <strong className="ms-1">{product?.product_name}</strong>
       </p>
       <Row className="product-details">
         <Col md={6}>
@@ -147,19 +151,19 @@ const ProductDetailsPage = () => {
           </div>
         </Col>
         <Col md={6}>
-          <h3>{product.product_name}</h3>
+          <h3>{product?.product_name}</h3>
           <Row className="mt-2">
             <Col md={3}>
-              <h5>${product.unit_price}</h5>
+              <h5>${product?.unit_price}</h5>
             </Col>
             <Col md={3}>
-              <Ratings value={parseFloat(product.rating)} />
+              <Ratings value={parseFloat(product?.rating)} />
             </Col>
           </Row>
           <h6 className="mt-2">
             Color:{" "}
             <span>
-              {colors.map((color) => (
+              {colors?.map((color) => (
                 <OverlayTrigger
                   key={color.name}
                   placement="bottom"
@@ -190,7 +194,7 @@ const ProductDetailsPage = () => {
           <Row>
             <Col md={6}>
               <h6 className="pt-2">Size*</h6>
-              {sizes.map((size, index) => (
+              {sizes?.map((size, index) => (
                 <Button
                   key={index}
                   variant="light"
@@ -238,7 +242,7 @@ const ProductDetailsPage = () => {
                 className="btn-block py-2 w-75"
                 type="button"
               >
-                {likedProducts.includes(product.pid) ? (
+                {likedProducts?.includes(product?.pid) ? (
                   <FaHeart
                     className=" "
                     size="24"
@@ -284,7 +288,7 @@ const ProductDetailsPage = () => {
               title="About"
               style={{ textAlign: "justify" }}
             >
-              {parseHtmlToText(product.about)}
+              {parseHtmlToText(product?.about)}
             </Tab>
           </Tabs>
         </Col>
@@ -293,7 +297,7 @@ const ProductDetailsPage = () => {
         <h4 className="ms-2 mt-5 mb-4 fw-bold">Similar Products</h4>
         <ProductsSlider data={products} />
       </Row>
-      <Reviews productID={product.pid} />
+      <Reviews productID={product?.pid} />
     </Container>
   );
 };

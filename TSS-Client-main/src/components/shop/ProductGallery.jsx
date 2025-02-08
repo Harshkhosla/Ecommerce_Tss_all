@@ -2,7 +2,7 @@ import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 
 const ProductGallery = ({ product }) => {
-  const variants = product.variants?.[0];
+  const variants = product?.variants?.[0];
   const thumbImg = variants?.ThumbImg || '';
   const galleryImg = variants?.GalleryImg || [];
 
