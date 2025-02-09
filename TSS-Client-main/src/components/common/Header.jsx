@@ -9,10 +9,20 @@ import Login from '../auth/Login';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchheader } from '../../redux/counterSlice';
 
 const Header = () => {
-  const [logo, setLogo] = useState('');
-  const [head, setHead] = useState(null);
+  const dispatch = useDispatch()
+  const header = useSelector((state)=>state?.Store?.header?.header);
+  const [head, setHead] = useState ([]);
+  const logo = header?.brand_logo?.url;
+  useEffect(()=>{
+    if(header){
+      const head = JSON.parse(header?.header) || [];
+      setHead(head);
+    }
+  },[header])  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
@@ -22,26 +32,17 @@ const Header = () => {
 
   const isUserLoggedIn = () => {
     const authToken = localStorage.getItem('authToken');
-    return !!authToken;
+    return authToken;
   };
 
   useEffect(() => {
     setIsLoggedIn(isUserLoggedIn());
   }, []);
 
-  const fetchHeader = async () => {
-    try {
-      const { data } = await axios.get(`${tssurl}/header`);
-      setLogo(data.header.brand_logo.url);
-      setHead(JSON.parse(data.header.header));
-    } catch (error) {
-      console.error('Err:', error);
-    }
-  };
 
   useEffect(() => {
-    fetchHeader();
-  }, []);
+   dispatch(fetchheader());
+  }, [dispatch]);
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');

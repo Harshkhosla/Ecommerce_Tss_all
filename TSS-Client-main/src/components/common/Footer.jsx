@@ -7,25 +7,17 @@ import {
   FaInstagram,
 } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
-import tssurl from '../../port';
 import Support from '../support/support';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFooterData } from '../../redux/counterSlice';
 
 const Footer = () => {
-  const [footerLinks, setFooterLinks] = useState([]);
+  const footerLinks  = useSelector((state) => state.Store.footerData)
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch(`${tssurl}/footer`);
-        const data = await res.json();
-        setFooterLinks(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-  }, []);
+    dispatch(fetchFooterData())
+  }, [dispatch]);
 
   return (
     <>

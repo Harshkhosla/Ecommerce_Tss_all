@@ -31,7 +31,16 @@ export const fetchallproductData = createAsyncThunk("app/fetchallproductData", a
 });
 
 
+export const fetchheader = createAsyncThunk("app/fetchheader", async () => {
+  const response = await axios.get(`${tssurl}/header`);
+  return response.data;
+});
 
+// export const fetchfooter = createAsyncThunk("app/fetchfooter", async () => {
+//   const response = await axios.get(`${tssurl}/productcat/products`);
+//   const filteredData = response?.data?.filter(item => item.draft === "false");
+//   return filteredData;
+// });
 
 const appSlice = createSlice({
   name: "app",
@@ -49,6 +58,7 @@ const appSlice = createSlice({
     productData: {},
     banners:[],
     allproductdata:[],
+    header:{},
     statusproducts: {
       footer: "idle",
       home: "idle",
@@ -134,6 +144,22 @@ const appSlice = createSlice({
       state.allproductdata = action.payload;
     })
     .addCase(fetchallproductData.rejected, (state) => { state.status = "failed"; })
+
+
+    .addCase(fetchheader.pending, (state) => { state.status = "loading"; })
+    .addCase(fetchheader.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.header = action.payload;
+    })
+    .addCase(fetchheader.rejected, (state) => { state.status = "failed"; })
+
+
+    // .addCase(fetchallproductData.pending, (state) => { state.status = "loading"; })
+    // .addCase(fetchallproductData.fulfilled, (state, action) => {
+    //   state.status = "succeeded";
+    //   state.allproductdata = action.payload;
+    // })
+    // .addCase(fetchallproductData.rejected, (state) => { state.status = "failed"; })
 
   }
 });
