@@ -12,6 +12,7 @@ const Slider = () => {
   }, [dispatch]);
 
   return (
+    <>
     <Carousel pause="hover" className="mt-1">
       {banners?.map((bData, index) => (
         <Carousel.Item key={index}>
@@ -23,6 +24,8 @@ const Slider = () => {
         </Carousel.Item>
       ))}
     </Carousel>
+
+    </>
   );
 };
 

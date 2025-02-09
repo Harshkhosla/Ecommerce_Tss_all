@@ -20,6 +20,7 @@ import ProductGallery from "../components/shop/ProductGallery";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCartAsync } from "../redux/counterSlice";
+import { Helmet } from "react-helmet";
 
 const ProductDetailsPage = () => {
   const dispatch = useDispatch();
@@ -35,8 +36,8 @@ const ProductDetailsPage = () => {
   const [products, setProducts] = useState(alltheproducts);
 
 
-
-  const { colors, size, quantity_pi, product_detail } = product || {};
+  const { colors, size, quantity_pi, product_detail, SEOArea } = product || {};
+console.log(SEOArea,"sdjhvvvsdvbjbjvb");
 
   const fetchLikedProducts = async () => {
     try {
@@ -71,7 +72,7 @@ const ProductDetailsPage = () => {
       };
       fetchProduct();
     }
-    
+
     fetchLikedProducts();
   }, []);
 
@@ -133,172 +134,180 @@ const ProductDetailsPage = () => {
   };
 
   return (
-    <Container>
-      <p className="breadcrumb">
-        <Link to="/" className="me-1">
-          Home
-        </Link>
-        /
-        <Link to="/products" className="mx-1">
-          Products
-        </Link>
-        / <strong className="ms-1">{product?.product_name}</strong>
-      </p>
-      <Row className="product-details">
-        <Col md={6}>
-          <div>
-            <ProductGallery product={product} />
-          </div>
-        </Col>
-        <Col md={6}>
-          <h3>{product?.product_name}</h3>
-          <Row className="mt-2">
-            <Col md={3}>
-              <h5>${product?.unit_price}</h5>
-            </Col>
-            <Col md={3}>
-              <Ratings value={parseFloat(product?.rating)} />
-            </Col>
-          </Row>
-          <h6 className="mt-2">
-            Color:{" "}
-            <span>
-              {colors?.map((color) => (
-                <OverlayTrigger
-                  key={color.name}
-                  placement="bottom"
-                  overlay={
-                    <Tooltip id={`tooltip-${color.name}`}>{color.name}</Tooltip>
-                  }
-                >
-                  <span>
-                    <FaCircle
-                      size="25px"
-                      className="mx-1"
-                      color={color.value}
-                      style={{
-                        border:
-                          selectedColor === color.value
-                            ? "2px orange solid"
-                            : "",
-                        borderRadius:
-                          selectedColor === color.value ? "15px" : "",
-                      }}
-                      onClick={() => setSelectedColor(color.value)}
-                    />
-                  </span>
-                </OverlayTrigger>
-              ))}
-            </span>
-          </h6>
-          <Row>
-            <Col md={6}>
-              <h6 className="pt-2">Size*</h6>
-              {sizes?.map((size, index) => (
+    <>
+  <Helmet>
+        <title>{SEOArea?.MetaTitle || 'Default Title'}</title>
+        <meta name="description" content={SEOArea?.MetaDescription || 'Default Description'} />
+        <meta name="keywords" content={SEOArea?.MetaKeywords || 'Default Keywords'} />
+        <meta property="og:image" content={SEOArea?.images?.url || ''} />
+      </Helmet>
+      <Container>
+        <p className="breadcrumb">
+          <Link to="/" className="me-1">
+            Home
+          </Link>
+          /
+          <Link to="/products" className="mx-1">
+            Products
+          </Link>
+          / <strong className="ms-1">{product?.product_name}</strong>
+        </p>
+        <Row className="product-details">
+          <Col md={6}>
+            <div>
+              <ProductGallery product={product} />
+            </div>
+          </Col>
+          <Col md={6}>
+            <h3>{product?.product_name}</h3>
+            <Row className="mt-2">
+              <Col md={3}>
+                <h5>${product?.unit_price}</h5>
+              </Col>
+              <Col md={3}>
+                <Ratings value={parseFloat(product?.rating)} />
+              </Col>
+            </Row>
+            <h6 className="mt-2">
+              Color:{" "}
+              <span>
+                {colors?.map((color) => (
+                  <OverlayTrigger
+                    key={color.name}
+                    placement="bottom"
+                    overlay={
+                      <Tooltip id={`tooltip-${color.name}`}>{color.name}</Tooltip>
+                    }
+                  >
+                    <span>
+                      <FaCircle
+                        size="25px"
+                        className="mx-1"
+                        color={color.value}
+                        style={{
+                          border:
+                            selectedColor === color.value
+                              ? "2px orange solid"
+                              : "",
+                          borderRadius:
+                            selectedColor === color.value ? "15px" : "",
+                        }}
+                        onClick={() => setSelectedColor(color.value)}
+                      />
+                    </span>
+                  </OverlayTrigger>
+                ))}
+              </span>
+            </h6>
+            <Row>
+              <Col md={6}>
+                <h6 className="pt-2">Size*</h6>
+                {sizes?.map((size, index) => (
+                  <Button
+                    key={index}
+                    variant="light"
+                    className="me-2 mb-2 "
+                    style={{
+                      backgroundColor: selectedSize === size ? "orange" : "",
+                    }}
+                    onClick={() => setSelectedSize(size)}
+                  >
+                    {size}
+                  </Button>
+                ))}
+                <p className="mt-1">
+                  <Link to="#">Size Guide</Link>
+                </p>
+              </Col>
+              <Col md={4}>
+                <h6>Quantity*</h6>
+                <div className="quantity-selector">
+                  <Button variant="light" onClick={() => handleQtyChange(-1)}>
+                    <FaMinus size={10} />
+                  </Button>
+                  <span className="mx-4">{qty}</span>
+                  <Button variant="light" onClick={() => handleQtyChange(1)}>
+                    <FaPlus size={10} />
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+            <Row className="cart-list">
+              <Col md={5}>
                 <Button
-                  key={index}
-                  variant="light"
-                  className="me-2 mb-2 "
-                  style={{
-                    backgroundColor: selectedSize === size ? "orange" : "",
-                  }}
-                  onClick={() => setSelectedSize(size)}
+                  variant="dark"
+                  className="btn-block p-2 w-100"
+                  type="button"
+                  disabled={quantity_pi === 0}
+                  onClick={addToCartHandler}
                 >
-                  {size}
+                  Add to Cart
                 </Button>
-              ))}
-              <p className="mt-1">
-                <Link to="#">Size Guide</Link>
-              </p>
-            </Col>
-            <Col md={4}>
-              <h6>Quantity*</h6>
-              <div className="quantity-selector">
-                <Button variant="light" onClick={() => handleQtyChange(-1)}>
-                  <FaMinus size={10} />
+              </Col>
+              <Col md={2}>
+                <Button
+                  variant="light"
+                  className="btn-block py-2 w-75"
+                  type="button"
+                >
+                  {likedProducts?.includes(product?.pid) ? (
+                    <FaHeart
+                      className=" "
+                      size="24"
+                      color="red"
+                      onClick={toggleLike}
+                    />
+                  ) : (
+                    <FaRegHeart
+                      className=""
+                      size="24"
+                      color="black"
+                      onClick={toggleLike}
+                    />
+                  )}
                 </Button>
-                <span className="mx-4">{qty}</span>
-                <Button variant="light" onClick={() => handleQtyChange(1)}>
-                  <FaPlus size={10} />
-                </Button>
-              </div>
-            </Col>
-          </Row>
-          <Row className="cart-list">
-            <Col md={5}>
-              <Button
-                variant="dark"
-                className="btn-block p-2 w-100"
-                type="button"
-                disabled={quantity_pi === 0}
-                onClick={addToCartHandler}
-              >
-                Add to Cart
-              </Button>
-            </Col>
-            <Col md={2}>
-              <Button
-                variant="light"
-                className="btn-block py-2 w-75"
-                type="button"
-              >
-                {likedProducts?.includes(product?.pid) ? (
-                  <FaHeart
-                    className=" "
-                    size="24"
-                    color="red"
-                    onClick={toggleLike}
-                  />
-                ) : (
-                  <FaRegHeart
-                    className=""
-                    size="24"
-                    color="black"
-                    onClick={toggleLike}
-                  />
-                )}
-              </Button>
-            </Col>
-          </Row>
-          <Tabs
-            defaultActiveKey="details"
-            id="fill-tab"
-            className="mt-3 mb-2 prodTabs"
-            fill
-          >
-            <Tab
-              eventKey="details"
-              title="Details"
-              style={{ textAlign: "justify" }}
+              </Col>
+            </Row>
+            <Tabs
+              defaultActiveKey="details"
+              id="fill-tab"
+              className="mt-3 mb-2 prodTabs"
+              fill
             >
-              {parseHtmlToText(product_detail)}
-            </Tab>
-            <Tab eventKey="fabric" title="Fabric">
-              {fabricList.map((fabric, index) => (
-                <li key={index}>{fabric}</li>
-              ))}
-            </Tab>
-            <Tab eventKey="fit" title="Fit">
-              {fitOptions.map((fit, index) => (
-                <li key={index}>{fit}</li>
-              ))}
-            </Tab>
-            <Tab
-              eventKey="about"
-              title="About"
-              style={{ textAlign: "justify" }}
-            >
-              {parseHtmlToText(product?.about)}
-            </Tab>
-          </Tabs>
-        </Col>
-      </Row>
-      <Row>
-        <h4 className="ms-2 mt-5 mb-4 fw-bold">Similar Products</h4>
-        <ProductsSlider data={products} />
-      </Row>
-      <Reviews productID={product?.pid} />
-    </Container>
+              <Tab
+                eventKey="details"
+                title="Details"
+                style={{ textAlign: "justify" }}
+              >
+                {parseHtmlToText(product_detail)}
+              </Tab>
+              <Tab eventKey="fabric" title="Fabric">
+                {fabricList.map((fabric, index) => (
+                  <li key={index}>{fabric}</li>
+                ))}
+              </Tab>
+              <Tab eventKey="fit" title="Fit">
+                {fitOptions.map((fit, index) => (
+                  <li key={index}>{fit}</li>
+                ))}
+              </Tab>
+              <Tab
+                eventKey="about"
+                title="About"
+                style={{ textAlign: "justify" }}
+              >
+                {parseHtmlToText(product?.about)}
+              </Tab>
+            </Tabs>
+          </Col>
+        </Row>
+        <Row>
+          <h4 className="ms-2 mt-5 mb-4 fw-bold">Similar Products</h4>
+          <ProductsSlider data={products} />
+        </Row>
+        <Reviews productID={product?.pid} />
+      </Container>
+    </>
   );
 };
 

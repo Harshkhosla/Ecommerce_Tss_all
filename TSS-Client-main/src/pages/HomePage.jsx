@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import Offer from '../components/home/Offer';
 import Slider from '../components/home/Slider';
 import Collection from '../components/home/Collection';
@@ -31,6 +32,12 @@ const HomePage = () => {
 
   return (
     <div className="homee">
+       <Helmet>
+        <title>{homeData?.SEOArea?.MetaTitle || 'Default Title'}</title>
+        <meta name="description" content={homeData?.SEOArea?.MetaDescription || 'Default Description'} />
+        <meta name="keywords" content={homeData?.SEOArea?.MetaKeywords || 'Default Keywords'} />
+        <meta property="og:image" content={homeData?.SEOArea?.images?.url || ''} />
+      </Helmet>
       <Slider />
       {homeData?.OfferArea ? <Offer data={homeData.OfferArea} /> : <p>Loading Offers...</p>}
       <Collection data={homeData?.CollectionArea} />
