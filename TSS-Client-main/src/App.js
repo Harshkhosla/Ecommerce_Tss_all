@@ -66,7 +66,6 @@ const App = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
   return (
     <Router>
       <Header />

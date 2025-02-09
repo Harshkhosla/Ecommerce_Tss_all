@@ -34,7 +34,6 @@ pauseOnFocusLoss
 draggable
 pauseOnHover
 />
-{/* Same as */}
 <ToastContainer />
         <Router>
           {/* top-header */}
