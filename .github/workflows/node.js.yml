@@ -14,24 +14,40 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch full history to avoid commit issues
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
 
       - name: Determine Deployment Target
         id: determine_target
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          # Ensure we have history
+          git fetch --unshallow || true
+
+          # Get the previous commit or fallback to HEAD~1 if first commit
+          PREV_COMMIT=${{ github.event.before }}
+          if [ -z "$PREV_COMMIT" ] || ! git cat-file -e $PREV_COMMIT^{commit}; then
+            PREV_COMMIT=$(git rev-parse HEAD~1)
+          fi
+
+          echo "Comparing changes from $PREV_COMMIT to HEAD"
+
+          # Detect changed files
+          CHANGED_FILES=$(git diff --name-only $PREV_COMMIT HEAD)
           echo "Changed files: $CHANGED_FILES"
 
+          # Check if TSSAdmin changed
           if echo "$CHANGED_FILES" | grep -q '^TSSAdmin/'; then
             echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_ADMIN }}" >> $GITHUB_ENV
             echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_ADMIN }}" >> $GITHUB_ENV
             echo "DEPLOY_PATH=TSSAdmin" >> $GITHUB_ENV
             echo "Deploying TSSAdmin..."
+          # Check if TSS-Client-main changed
           elif echo "$CHANGED_FILES" | grep -q '^TSS-Client-main/'; then
             echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_CLIENT }}" >> $GITHUB_ENV
             echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_CLIENT }}" >> $GITHUB_ENV
