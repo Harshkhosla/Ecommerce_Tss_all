@@ -1,0 +1,63 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CI: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Determine Deployment Target
+        id: determine_target
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^TSSAdmin/'; then
+            echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_ADMIN }}" >> $GITHUB_ENV
+            # echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_ADMIN }}" >> $GITHUB_ENV
+            echo "DEPLOY_PATH=TSSAdmin" >> $GITHUB_ENV
+          elif git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^TSS-Client-main/'; then
+            echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_CLIENT }}" >> $GITHUB_ENV
+            # echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_CLIENT }}" >> $GITHUB_ENV
+            echo "DEPLOY_PATH=TSS-Client-main" >> $GITHUB_ENV
+          else
+            echo "No relevant changes detected. Skipping deployment."
+            exit 0
+          fi
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ env.DEPLOY_PATH }}
+
+      - name: Build project
+        run: npm run build
+        working-directory: ${{ env.DEPLOY_PATH }}
+
+      - name: Deploy build folder to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY_ACCESS }}
+          AWS_DEFAULT_REGION: us-east-1
+        run: aws s3 sync ${{ env.DEPLOY_PATH }}/build s3://${{ env.TARGET_BUCKET }}
+
+      - name: Invalidate CloudFront cache
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESSKEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY_ACCESS }}
+          AWS_DEFAULT_REGION: us-east-1
+        # run: |
+        #   echo "Starting CloudFront invalidation"
+        #   aws cloudfront create-invalidation --distribution-id ${{ env.DISTRIBUTION_ID }} --paths "/*"
+        #   echo "Invalidation completed"
