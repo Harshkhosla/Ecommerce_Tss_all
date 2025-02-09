@@ -26,28 +26,21 @@ jobs:
       - name: Determine Deployment Target
         id: determine_target
         run: |
-          # Ensure we have history
           git fetch --unshallow || true
-
-          # Get the previous commit or fallback to HEAD~1 if first commit
           PREV_COMMIT=${{ github.event.before }}
           if [ -z "$PREV_COMMIT" ] || ! git cat-file -e $PREV_COMMIT^{commit}; then
             PREV_COMMIT=$(git rev-parse HEAD~1)
           fi
 
           echo "Comparing changes from $PREV_COMMIT to HEAD"
-
-          # Detect changed files
           CHANGED_FILES=$(git diff --name-only $PREV_COMMIT HEAD)
           echo "Changed files: $CHANGED_FILES"
 
-          # Check if TSSAdmin changed
           if echo "$CHANGED_FILES" | grep -q '^TSSAdmin/'; then
             echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_ADMIN }}" >> $GITHUB_ENV
             echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_ADMIN }}" >> $GITHUB_ENV
             echo "DEPLOY_PATH=TSSAdmin" >> $GITHUB_ENV
             echo "Deploying TSSAdmin..."
-          # Check if TSS-Client-main changed
           elif echo "$CHANGED_FILES" | grep -q '^TSS-Client-main/'; then
             echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_CLIENT }}" >> $GITHUB_ENV
             echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_CLIENT }}" >> $GITHUB_ENV
@@ -58,11 +51,24 @@ jobs:
             exit 0
           fi
 
+      - name: Check if package.json exists
+        id: check_package
+        run: |
+          if [ -f "${{ github.workspace }}/${{ env.DEPLOY_PATH }}/package.json" ]; then
+            echo "Package.json found in ${{ env.DEPLOY_PATH }}"
+            echo "HAS_PACKAGE_JSON=true" >> $GITHUB_ENV
+          else
+            echo "No package.json found in ${{ env.DEPLOY_PATH }}, skipping npm install"
+            echo "HAS_PACKAGE_JSON=false" >> $GITHUB_ENV
+          fi
+
       - name: Install dependencies
+        if: env.HAS_PACKAGE_JSON == 'true'
         run: npm install
         working-directory: ${{ env.DEPLOY_PATH }}
 
       - name: Build project
+        if: env.HAS_PACKAGE_JSON == 'true'
         run: npm run build
         working-directory: ${{ env.DEPLOY_PATH }}
 

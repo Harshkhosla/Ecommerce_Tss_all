@@ -12,9 +12,6 @@ import Sidebar from './Sidebar';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchheader } from '../../redux/counterSlice';
 
-
-
-
 const Header = () => {
   const dispatch = useDispatch()
   const header = useSelector((state)=>state?.Store?.header?.header);
