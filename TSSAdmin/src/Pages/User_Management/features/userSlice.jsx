@@ -957,7 +957,7 @@ export const getContactUs_cms_meta = createAsyncThunk(
     try {
       const response = await axios({
         method: "get",
-        url: `${url4}/api/ContactUS_cms`,
+        url: `${tssurl}/ContactUS_cms`,
         headers: {
           "authorization": `${localStorage.getItem('jwt')}`,
           // "Access-Control-Allow-Origin": "*",
