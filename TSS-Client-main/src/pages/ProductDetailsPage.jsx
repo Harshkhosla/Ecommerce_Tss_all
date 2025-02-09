@@ -136,10 +136,10 @@ console.log(SEOArea,"sdjhvvvsdvbjbjvb");
   return (
     <>
   <Helmet>
-        <title>{SEOArea?.MetaTitle || 'Default Title'}</title>
-        <meta name="description" content={SEOArea?.MetaDescription || 'Default Description'} />
-        <meta name="keywords" content={SEOArea?.MetaKeywords || 'Default Keywords'} />
-        <meta property="og:image" content={SEOArea?.images?.url || ''} />
+        <title>{SEOArea?.metaTitle || 'Default Title'}</title>
+        <meta name="description" content={SEOArea?.metaDescription || 'Default Description'} />
+        <meta name="keywords" content={SEOArea?.metaKeywords || 'Default Keywords'} />
+        <meta property="og:image" content={SEOArea?.images1 || ''} />
       </Helmet>
       <Container>
         <p className="breadcrumb">
