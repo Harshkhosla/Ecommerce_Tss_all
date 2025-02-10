@@ -127,15 +127,16 @@ app.use('/admin/ticket', TicketSupport)
 
 
 
-const io = new Server(server
-  , {
-    cors: {
-      origin:"*", 
-      methods: ["GET", "POST"],  
-      allowedHeaders: ["Content-Type"]
-    }
-  }
-);
+const io = new Server(server, {
+  cors: {
+    origin: "*",  // Allow all origins (change to specific domain in production)
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,  // Allow cookies and authentication headers
+  },
+  transports: ["websocket", "polling"], // Ensure WebSocket connection works
+  allowEIO3: true, // Allow older Socket.IO clients (if needed)
+});
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
