@@ -94,7 +94,7 @@ const CartCard = ({ index, product }) => {
             </Col>
           </Row>
           <Row>
-            <h5>$ {unit_price}</h5>
+            <h5>₹ {unit_price}</h5>
           </Row>
           <Row>
             <h6 className="mt-2">

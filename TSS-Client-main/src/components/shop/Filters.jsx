@@ -248,7 +248,7 @@ const Filters = ({ products, setFilteredProducts }) => {
         </Form.Group>
       </ListGroup.Item>
 
-      <ListGroup.Item as={Form}>
+      {/* <ListGroup.Item as={Form}>
         <Form.Group controlId="sizeFilter">
           <Form.Label>Sizes:</Form.Label>
           {['S', 'M', 'L', 'XL'].map((size) => (
@@ -285,7 +285,7 @@ const Filters = ({ products, setFilteredProducts }) => {
             />
           ))}
         </Form.Group>
-      </ListGroup.Item>
+      </ListGroup.Item> */}
 
       <ListGroup.Item>
         <Button

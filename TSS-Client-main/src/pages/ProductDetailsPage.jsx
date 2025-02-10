@@ -36,8 +36,8 @@ const ProductDetailsPage = () => {
   const [products, setProducts] = useState(alltheproducts);
 
 
-  const { colors, size, quantity_pi, product_detail, SEOArea } = product || {};
-console.log(SEOArea,"sdjhvvvsdvbjbjvb");
+  const { colors, size, reward_points,quantity_pi, product_detail, SEOArea  ,category} = product || {};
+
 
   const fetchLikedProducts = async () => {
     try {
@@ -97,6 +97,9 @@ console.log(SEOArea,"sdjhvvvsdvbjbjvb");
   const variants = product?.variants?.[0];
   const thumbImg = variants?.ThumbImg || "";
   const addToCartHandler = async () => {
+    if(!mid){
+      toast.error("User Account has not been created. Please Login");
+    }
     const data = {
       mid: mid,
       pid: productId,
@@ -162,7 +165,7 @@ console.log(SEOArea,"sdjhvvvsdvbjbjvb");
             <h3>{product?.product_name}</h3>
             <Row className="mt-2">
               <Col md={3}>
-                <h5>${product?.unit_price}</h5>
+                <h5>₹{product?.unit_price}</h5>
               </Col>
               <Col md={3}>
                 <Ratings value={parseFloat(product?.rating)} />
@@ -201,23 +204,8 @@ console.log(SEOArea,"sdjhvvvsdvbjbjvb");
             </h6>
             <Row>
               <Col md={6}>
-                <h6 className="pt-2">Size*</h6>
-                {sizes?.map((size, index) => (
-                  <Button
-                    key={index}
-                    variant="light"
-                    className="me-2 mb-2 "
-                    style={{
-                      backgroundColor: selectedSize === size ? "orange" : "",
-                    }}
-                    onClick={() => setSelectedSize(size)}
-                  >
-                    {size}
-                  </Button>
-                ))}
-                <p className="mt-1">
-                  <Link to="#">Size Guide</Link>
-                </p>
+                <h6 className="pt-2">Type of food* {category}</h6>
+                <h6 className="pt-2">Rewards Points*{reward_points}</h6>
               </Col>
               <Col md={4}>
                 <h6>Quantity*</h6>

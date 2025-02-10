@@ -161,28 +161,28 @@ const CartPage = () => {
                 </strong>
                 <Row className="ps-3 my-2">
                   <Col md="7">Bag Total</Col>
-                  <Col md="5">$ {bagTotal ? bagTotal.toFixed(2) : 0}</Col>
+                  <Col md="5">₹ {bagTotal ? bagTotal.toFixed(2) : 0}</Col>
                 </Row>
                 <Row className="ps-3 mb-2">
                   <Col md="7">Bag Discount</Col>
-                  <Col md="5">$ {bagDiscount ? bagDiscount : 0}</Col>
+                  <Col md="5">₹ {bagDiscount ? bagDiscount : 0}</Col>
                 </Row>
                 <Row className="ps-3 mb-2">
                   <p className="mb-0">Convenience Fee</p>
 
                   <Col md="2"></Col>
                   <Col md="5">Delivery Fee</Col>
-                  <Col md="5">$ {deliveryFee ? deliveryFee : 0}</Col>
+                  <Col md="5">₹ {deliveryFee ? deliveryFee : 0}</Col>
 
                   <Col md="2"></Col>
                   <Col md="5">Tax (10%)</Col>
-                  <Col md="5">$ {tax ? tax : 0}</Col>
+                  <Col md="5">₹ {tax ? tax : 0}</Col>
                 </Row>
                 <Row className="ps-3 mb-3">
                   <Col md="7">
                     <strong>Total</strong>
                   </Col>
-                  <Col md="5">$ {total ? total : 0}</Col>
+                  <Col md="5">₹ {total ? total : 0}</Col>
                 </Row>
 
                 <NavLink
@@ -300,10 +300,10 @@ const CartPage = () => {
                               {showTerms[index] && (
                                 <div className="my-1">
                                   <p className="my-0">
-                                    MAX Discount: ${promo.max_discount_amount}
+                                    MAX Discount: ₹{promo.max_discount_amount}
                                   </p>
                                   <p className="my-0">
-                                    Minimum Order Value: $
+                                    Minimum Order Value: ₹
                                     {promo.minimum_shopping}
                                   </p>
                                   <p className="my-0">

@@ -7,6 +7,7 @@ import { FaCircle } from 'react-icons/fa';
 import Cards from 'react-credit-cards-2';
 import 'react-credit-cards-2/dist/es/styles-compiled.css';
 import AddAddressModal from '../components/profile/AddressModal';
+import { toast } from 'react-toastify';
 const CheckoutPgae = (position) => {
   const location = useLocation();
   const CheckData = location.state;
@@ -308,17 +309,17 @@ const CheckoutPgae = (position) => {
         success_url: 'http://64.227.186.165:3000/Order-History',
         cancel_url: 'https://example.com/cancel',
       };
-      const response = await axios.post(
-        `${tssurl}/create-checkout-session`,
-        data
-      );
-      if (response.status === 200) {
-        const { url } = response.data;
-        window.open(url, '_blank');
-        await storeOrderData(products);
-      } else {
-        console.error('Failed to create checkout session');
-      }
+      // const response = await axios.post(
+      //   `${tssurl}/create-checkout-session`,
+      //   data
+      // );
+      await storeOrderData(products);
+      // if (response.status === 200) {
+      //   const { url } = response.data;
+      //   window.open(url, '_blank');
+      // } else {
+      //   console.error('Failed to create checkout session');
+      // }
     } catch (error) {
       console.error('Error creating checkout session:', error);
     }
@@ -336,7 +337,7 @@ const CheckoutPgae = (position) => {
       formData.append("subtotal", bagTotal);
       formData.append("delivery_status", "Pending");
       formData.append("payment_mode", "Card");
-      formData.append("payment_status", "paid");
+      formData.append("payment_status", "un-paid");
       formData.append("tax", tax);
       formData.append("shipping", deliveryFee);
       formData.append("coupon", bagDiscount);
@@ -367,9 +368,11 @@ const CheckoutPgae = (position) => {
       );
 
       if (response.status === 201) {
-        console.log('Order data stored successfully');
+        toast.success('Order data stored successfully')
+        console.log('Order successfully placed');
       } else {
-        console.error('Failed to store order data');
+        toast.error('Failed to store order data')
+        console.error('Failed to Place order');
       }
     } catch (error) {
       console.error('Error storing order data:', error);

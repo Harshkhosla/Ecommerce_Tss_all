@@ -28,23 +28,12 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import OrderSummary from "./pages/OrderSummary";
 import CheckoutPage from "./pages/CheckoutPage";
 
-const fetchData = async () => {
-  try {
-    const lastApiCallDate = localStorage.getItem("lastApiCallDate");
-    const today = new Date().toISOString().slice(0, 10);
-    if (lastApiCallDate !== today) {
-      const response = await axios.post(`${tssurl}/visitors/createVisitors`);
-      console.log("API response:", response.data);
-      localStorage.setItem("lastApiCallDate", today);
-    } else {
-      console.log("API already called today.");
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-};
+
 
 const App = () => {
+
+
+
   const [locationData, setLocationData] = useState([]);
   useEffect(() => {
     const getLocation = () => {
@@ -62,6 +51,22 @@ const App = () => {
 
     getLocation();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const lastApiCallDate = localStorage.getItem("lastApiCallDate");
+      const today = new Date().toISOString().slice(0, 10);
+      if (lastApiCallDate !== today) {
+        const response = await axios.post(`${tssurl}/visitors/createVisitors`);
+        console.log("API response:", response.data);
+        localStorage.setItem("lastApiCallDate", today);
+      } else {
+        console.log("API already called today.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     fetchData();

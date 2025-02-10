@@ -172,6 +172,7 @@ export const addToCartAsync = (data) => async (dispatch) => {
       },
     });
     if (response.status !== 200) {
+      toast.error(response.data.error);
       const errorMessage = response.data
         ? response.data.error
         : "Unknown error";
