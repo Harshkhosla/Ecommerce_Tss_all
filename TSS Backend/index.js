@@ -130,7 +130,7 @@ app.use('/admin/ticket', TicketSupport)
 const io = new Server(server
   , {
     cors: {
-      origin:[ "https://thetiffinwala.in/","https://d2al08diix4yke.cloudfront.net/"], 
+      origin:[ "https://thetiffinwala.in/","https://d2al08diix4yke.cloudfront.net/","https://brand.mycarebilling.com/"], 
       methods: ["GET", "POST"],  
       allowedHeaders: ["Content-Type"]
     }
