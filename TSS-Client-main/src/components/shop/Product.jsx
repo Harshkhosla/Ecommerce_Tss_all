@@ -32,7 +32,7 @@ const Product = ({ product, isLiked, onToggleLike }) => {
   }, [product.pid, MID, isLiked, onToggleLike]);
 
   return (
-    <Card className="product">
+    <Card className="product" >
       <div>
         {isLiked ? (
           <FaHeart
@@ -52,7 +52,7 @@ const Product = ({ product, isLiked, onToggleLike }) => {
       </div>
 
       <Card.Body>
-        <Link to={`productDetails/${product.pid}`}>
+        <Link to={`/productDetails/${product.pid}`}>
           <Card.Title as="div" className="product-title">
             <strong>{product.product_name}</strong>
           </Card.Title>
