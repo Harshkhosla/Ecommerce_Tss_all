@@ -21,6 +21,8 @@ const CartCard = ({ index, product }) => {
   //new
   const dispatch = useDispatch();
   const productData = useSelector((state) => state.Store.productDataMap[pid]);
+
+  const DiscountedPrice = (productData?.discount_type === 'Amount' ? (productData?.unit_price - productData?.discount) : (productData?.unit_price * productData?.discount) / 100)
   const { product_name, unit_price, variants, size } = productData || {};
 
   const cartItems = useSelector((state) => state.Store.cartItems[0]);
@@ -94,18 +96,20 @@ const CartCard = ({ index, product }) => {
             </Col>
           </Row>
           <Row>
-            <h5>₹ {unit_price}</h5>
+            {/* <h5>₹ {unit_price}</h5> */}
+            <h5>₹{unit_price - DiscountedPrice}</h5> <span className="" style={{ textDecoration: "line-through" ,color:"red" }}>₹{unit_price }</span>
+           
           </Row>
-          <Row>
+          {/* <Row>
             <h6 className="mt-2">
               Color:{" "}
               <span>
                 <FaCircle size="25px" className="mx-1" color={Colour} />
               </span>
             </h6>
-          </Row>
+          </Row> */}
           <Row style={{ margin: "1rem 0" }}>
-            <Col md="4" sm='6' className="p-0 d-flex">
+            {/* <Col md="4" sm='6' className="p-0 d-flex">
               <span style={{ fontSize: "1.1rem", marginRight: "0.5rem" }}>
                 Size :
               </span>
@@ -123,7 +127,7 @@ const CartCard = ({ index, product }) => {
                   <option key={size.id}>{size.name}</option>
                 ))}
               </Form.Select>
-            </Col>
+            </Col> */}
             <Col md="6" sm='6' className="p-0 d-flex">
               <span style={{ fontSize: "1.1rem", marginRight: "0.5rem" }}>
                 Qty :

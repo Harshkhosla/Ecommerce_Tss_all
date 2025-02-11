@@ -28,8 +28,9 @@ const CartPage = () => {
     calculateTotal();
   }, [cartItems, bagTotal]);
 
-  const deliveryFee = 40;
-  const tax = Number((bagTotal - bagDiscount) * 10) / 100;
+  const deliveryFee = 5;
+  // const tax = Number((bagTotal - bagDiscount) * 10) / 100;
+  const tax = 0
 
   const total = Number(bagTotal - bagDiscount + deliveryFee + tax).toFixed(2);
   const handleClick = () => {

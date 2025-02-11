@@ -110,7 +110,7 @@ const ProductDetailsPage = () => {
       Colour: selectedColor,
       Quantity: qty,
       name: product?.product_name,
-      price: DiscountedPrice,
+      price: product?.unit_price - DiscountedPrice,
       image: thumbImg?.[0],
     };
     dispatch(addToCartAsync(data));
