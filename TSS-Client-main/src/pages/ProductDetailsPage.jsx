@@ -36,7 +36,9 @@ const ProductDetailsPage = () => {
   const [products, setProducts] = useState(alltheproducts);
 
 
+  const DiscountedPrice = (product.discount_type === 'Amount' ? (product.unit_price - product.discount) : (product.unit_price * product.discount) / 100)
   const { colors, size, reward_points,quantity_pi, product_detail, SEOArea  ,category} = product || {};
+
 
 
   const fetchLikedProducts = async () => {
@@ -107,7 +109,7 @@ const ProductDetailsPage = () => {
       Colour: selectedColor,
       Quantity: qty,
       name: product?.product_name,
-      price: product?.unit_price,
+      price: DiscountedPrice,
       image: thumbImg?.[0],
     };
     dispatch(addToCartAsync(data));
@@ -165,13 +167,13 @@ const ProductDetailsPage = () => {
             <h3>{product?.product_name}</h3>
             <Row className="mt-2">
               <Col md={3}>
-                <h5>₹{product?.unit_price}</h5>
+                <h5>₹{product?.unit_price - DiscountedPrice}</h5> <span className="" style={{ textDecoration: "line-through" ,color:"red" }}>₹{product?.unit_price }</span>
               </Col>
               <Col md={3}>
                 <Ratings value={parseFloat(product?.rating)} />
               </Col>
             </Row>
-            <h6 className="mt-2">
+            {/* <h6 className="mt-2">
               Color:{" "}
               <span>
                 {colors?.map((color) => (
@@ -201,10 +203,10 @@ const ProductDetailsPage = () => {
                   </OverlayTrigger>
                 ))}
               </span>
-            </h6>
+            </h6> */}
             <Row>
               <Col md={6}>
-                <h6 className="pt-2">Type of food* {category}</h6>
+                <h6 className="text-2xl pt-2" style={{color:"green" }}>Type of food* {category}</h6>
                 <h6 className="pt-2">Rewards Points*{reward_points}</h6>
               </Col>
               <Col md={4}>

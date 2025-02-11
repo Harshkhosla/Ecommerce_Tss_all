@@ -8,6 +8,7 @@ import ShopBanner from "../components/shop/ShopBanner";
 import Filters from "../components/shop/Filters";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchallproductData } from "../redux/counterSlice";
+import Skeleton from "react-loading-skeleton";
 
 const ProductsPage = () => {
   const dispatch = useDispatch()
@@ -46,9 +47,11 @@ const ProductsPage = () => {
   };
 
  
-
+const [loading, setLoading] = useState(false)
   useEffect(() => {
+
     dispatch(fetchallproductData())
+    setLoading(true)
   }, [dispatch])
 
   const sortFunctions = useMemo(
@@ -112,17 +115,29 @@ const ProductsPage = () => {
               </select>
             </Col>
           </Row>
-          <Row>
-            {filteredProducts.map((product) => (
-              <Col key={product.pid} sm={6} md={4} lg={4} xl={4}>
-                <Product
-                  product={product}
-                  isLiked={likedProducts.includes(product.pid)}
-                  onToggleLike={handleToggleLike}
-                />
-              </Col>
-            ))}
-          </Row>
+          {loading === false ? (
+            <Row>
+              {[...Array(6)].map((_, index) => (
+                <Col key={index} sm={6} md={4} lg={4} xl={4}>
+                  <Skeleton height={250} />
+                  <Skeleton height={20} width="80%" />
+                  <Skeleton height={20} width="60%" />
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Row>
+              {filteredProducts.map((product) => (
+                <Col key={product.pid} sm={6} md={4} lg={4} xl={4}>
+                  <Product
+                    product={product}
+                    isLiked={likedProducts.includes(product.pid)}
+                    onToggleLike={handleToggleLike}
+                  />
+                </Col>
+              ))}
+            </Row>
+          )}
         </Col>
       </Row>
     </Container>

@@ -7,6 +7,8 @@ import BestSellers from '../components/home/BestSellers';
 import Event from '../components/home/Event';
 import Grid from '../components/home/Grid';
 import NewsLetter from '../components/home/NewsLetter';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFooterData, fetchHomeData, fetchProductData } from '../redux/counterSlice';
 
@@ -19,11 +21,15 @@ const HomePage = () => {
     dispatch(fetchHomeData());
     dispatch(fetchProductData());
   }, [dispatch]);
+ 
 
-  if (statusproducts?.statusproducts==="loading") {
-    return <div className='container'>
-    ...loading
-      </div>;
+  if (statusproducts?.product === "loading") {
+    return (
+      <div className="container">
+        <Skeleton height={200} />
+        <Skeleton count={3} />
+      </div>
+    );
   }
 
   if (error) {

@@ -10,6 +10,7 @@ const Product = ({ product, isLiked, onToggleLike }) => {
   const thumbImgUrl = product.variants?.[0]?.ThumbImg?.[0];
   const colors = product.colors;
   const MID = localStorage.getItem("MID");
+  const DiscountedPrice = (product.discount_type === 'Amount' ? (product.unit_price - product.discount) : (product.unit_price * product.discount) / 100)
 
   const toggleLike = useCallback(async () => {
     try {
@@ -54,15 +55,24 @@ const Product = ({ product, isLiked, onToggleLike }) => {
       <Card.Body>
         <Link to={`/productDetails/${product.pid}`}>
           <Card.Title as="div" className="product-title">
-            <strong>{product.product_name}</strong>
+            <strong>{product.product_name} ({product.category})</strong>
           </Card.Title>
         </Link>
 
-        <Card.Text as="h4">
-          <p>${product.unit_price}</p>
+        <Card.Text as="h4" className="justify-start">
+          <div>
+
+          <span className="line-through text-gray-500" style={{ textDecoration: "line-through" }}>₹{product.unit_price}</span> <span>       </span>
+          <span className="text-red-600  font-bold " style={{color:"red"}}>₹{product.unit_price - DiscountedPrice}</span>
+          </div>
+
+          <div>
+            Reward Points :{product.reward_points}
+          </div>
         </Card.Text>
 
-        <Card.Text as="div">
+
+        {/* <Card.Text as="div">
           {colors.map((color) => (
             <OverlayTrigger
               key={color.name}
@@ -76,7 +86,7 @@ const Product = ({ product, isLiked, onToggleLike }) => {
               </span>
             </OverlayTrigger>
           ))}
-        </Card.Text>
+        </Card.Text> */}
       </Card.Body>
     </Card>
   );
