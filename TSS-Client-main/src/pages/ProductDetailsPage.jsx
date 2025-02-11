@@ -36,7 +36,8 @@ const ProductDetailsPage = () => {
   const [products, setProducts] = useState(alltheproducts);
 
 
-  const DiscountedPrice = (product.discount_type === 'Amount' ? (product.unit_price - product.discount) : (product.unit_price * product.discount) / 100)
+  const DiscountedPrice = (product?.discount_type === 'Amount' ? (product?.unit_price - product?.discount) : (product?.unit_price * product?.discount) / 100)
+
   const { colors, size, reward_points,quantity_pi, product_detail, SEOArea  ,category} = product || {};
 
 
