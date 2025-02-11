@@ -74,7 +74,7 @@ const ProductDetailsPage = () => {
     }
 
     fetchLikedProducts();
-  }, []);
+  }, [productId]);
 
   const fitOptions = parseHtmlToList(product?.fit);
   const fabricList = parseHtmlToList(product?.fabric);
