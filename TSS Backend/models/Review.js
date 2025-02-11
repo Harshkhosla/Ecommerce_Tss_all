@@ -14,11 +14,7 @@ const reviewSchema = new mongoose.Schema({
     FitPurchased:String,
     SizePurchased:String,
     SizeWorn:String,
-    review_photo: {
-        images:{
-            String
-        }
-    },
+    review_photo: String,
     rid: String,
     username: String
 });

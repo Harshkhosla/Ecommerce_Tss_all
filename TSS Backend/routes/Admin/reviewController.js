@@ -33,50 +33,48 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage: storage });
-router.post('/reviews', upload.single("review_photo"), async (req, res) => {
+router.post('/reviews', upload.none(), async (req, res) => {
   try {
 
-    const authToken = req.headers.authorization || req.headers.Authorization;
-      console.log(authToken);
-      if (!authToken) {
-          return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
-      }
-      // Decode the authentication token
-      const decodedToken = jwt.verify(authToken, 'your-secret-key');
-      // Check if the decoded token has the necessary fields (userId, uid, role)
-      if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
-          return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
-      }
-      // Get the user's role and permissions from the database based on the decoded token
-      const userRole = decodedToken.role;
-      const userPermissionsArray = await Role.findOne({ role: userRole });
-      console.log(userPermissionsArray);
-      // Check if the user has permission to read products in the "Inventory" category
-      const canReadProducts = userPermissionsArray.permissions.some(permission =>
-          permission.catg === 'Inventory' && permission.create
-      );
+    // const authToken = req.headers.authorization || req.headers.Authorization;
+    //   console.log(authToken);
+    //   if (!authToken) {
+    //       return res.status(401).json({ message: 'Unauthorized: Missing authentication token' });
+    //   }
+    //   // Decode the authentication token
+    //   const decodedToken = jwt.verify(authToken, 'your-secret-key');
+    //   // Check if the decoded token has the necessary fields (userId, uid, role)
+    //   if (!decodedToken || !decodedToken.userId || !decodedToken.uid || !decodedToken.role) {
+    //       return res.status(401).json({ message: 'Unauthorized: Invalid authentication token' });
+    //   }
+    //   // Get the user's role and permissions from the database based on the decoded token
+    //   const userRole = decodedToken.role;
+    //   const userPermissionsArray = await Role.findOne({ role: userRole });
+    //   console.log(userPermissionsArray);
+    //   // Check if the user has permission to read products in the "Inventory" category
+    //   const canReadProducts = userPermissionsArray.permissions.some(permission =>
+    //       permission.catg === 'Inventory' && permission.create
+    //   );
 
-      if (!canReadProducts) {
-          return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
-      }
-       const { mid, pid, product_name, rating, review,location,Age,Height,BodyType,FitPurchased,SizePurchased,SizeWorn,username } = req.body;
+      // if (!canReadProducts) {
+      //     return res.status(403).json({ message: 'Forbidden: Insufficient permissions' });
+      // }
+       const { mid, pid, product_name, review_photo,rating, review,location,Age,Height,BodyType,FitPurchased,SizePurchased,SizeWorn,username } = req.body;
+console.log(review_photo,"sdkvjsvdjk");
 
-    const uniqueFileName = req.file.filename;
-    const product1 = await Product.findOne({ pid: req.body.pid });
+const product1 = await Product.findOne({ pid: req.body.pid });
+console.log(product1,"kjbdc");
     const Review1 = await Review.find({ pid: req.body.pid });
-    console.log(Review1.length);
-    const url = `http://64.227.186.165/tss_files/home/${uniqueFileName}`;
 
-    // Update product rating
     if(Review1.length<1){
       product1.rating = Number(Number(rating) + Number(product1.rating));
     }else{
 
-      console.log(  product1.rating );
+      // console.log(  product1.rating );
       product1.rating = Number(Number(rating) + Number(product1.rating));
-      console.log(  product1.rating );
+      // console.log(  product1.rating );
       product1.average_rating = product1.rating / 2;
-      console.log(product1.average_rating);
+      // console.log(product1.average_rating);
       product1.rating=product1.average_rating;
     }
 
@@ -86,7 +84,7 @@ router.post('/reviews', upload.single("review_photo"), async (req, res) => {
     const newReview = await Review.create({
       mid,
       pid,
-      product_name,
+      product_name:product1.product_name,
       rating,
       review,
       location,
@@ -96,7 +94,7 @@ router.post('/reviews', upload.single("review_photo"), async (req, res) => {
       FitPurchased,
       SizePurchased,
       SizeWorn,
-      review_photo: url,
+      review_photo,
       rid: generateUniqueRid(),
       username
     });

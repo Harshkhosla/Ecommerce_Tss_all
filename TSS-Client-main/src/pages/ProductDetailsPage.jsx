@@ -272,7 +272,7 @@ const ProductDetailsPage = () => {
               >
                 {parseHtmlToText(product_detail)}
               </Tab>
-              <Tab eventKey="fabric" title="Fabric">
+              <Tab eventKey="fabric" title="Quality">
                 {fabricList.map((fabric, index) => (
                   <li key={index}>{fabric}</li>
                 ))}

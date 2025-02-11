@@ -12,7 +12,7 @@ import axios from "axios";
 import { FaRegCheckCircle } from "react-icons/fa";
 import ReactStars from "react-stars";
 import Ratings from "../common/Ratings";
-import tssurl from "../../port";
+import tssurl, { tssurl2 } from "../../port";
 import Slider from "react-slick";
 
 const Reviews = ({ productID }) => {
@@ -117,7 +117,7 @@ const Reviews = ({ productID }) => {
       formData.append("recommendProduct", recommendProduct);
       formData.append("review_photo", images);
 
-      const response = await axios.post(`${tssurl}/review/reviews`, formData, {
+      const response = await axios.post(`http://localhost:5200/admin/review/reviews`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -141,15 +141,31 @@ const Reviews = ({ productID }) => {
     setImagePreviews([]);
   };
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const selectedImage = event.target.files[0];
-    if (selectedImage) {
-      const preview = URL.createObjectURL(selectedImage);
-
-      setImages(selectedImage);
-      setImagePreviews([preview]);
+  
+    if (!selectedImage) return; // Prevent errors if no file is selected
+  
+    const formData = new FormData();
+    formData.append("images", selectedImage);
+  
+    try {
+      const response = await axios.post(`${tssurl2}/imageupload/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      const uploadedImageUrls = response.data.imageUrls || [];
+  
+      setImages(uploadedImageUrls); 
+      setImagePreviews([uploadedImageUrls]); 
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      return [];
     }
   };
+  
 
   const handleCloseModal = () => {
     resetFormData();
