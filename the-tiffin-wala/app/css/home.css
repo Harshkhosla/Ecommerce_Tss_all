@@ -1,0 +1,325 @@
+/* Font Imports */
+@import url(https://fonts.googleapis.com/css2?family=Arizonia&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=AR+One+Sans&display=swap);
+@import url('https://fonts.googleapis.com/css2?family=Cormorant&display=swap');
+
+/* Slider */
+.carousel-item img {
+  width: 100%;
+  height: 45%;
+}
+.carousel-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.carousel-caption {
+  top: 42%;
+  z-index: 1;
+  color: white;
+  transform: translateY(-50%, -50%);
+  text-align: center;
+}
+.carousel-caption h2 {
+  font-family: 'Cormonant', serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+.carousel-caption p {
+  font-family: 'Cormonant', serif;
+  opacity: 0.85;
+  font-size: 1.1rem;
+  max-width: 40%;
+  margin: 0 auto;
+  white-space: normal;
+}
+
+/* Offer */
+.offer .col-md-4 img {
+  width: 100%;
+}
+.off-card {
+  border-radius: 1rem;
+  text-align: center;
+  border: 1px solid #b59410;
+  padding: 2rem;
+  transition: box-shadow 0.3s ease-in-out;
+}
+.off-card:hover {
+  box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.2);
+}
+.off-card h5 {
+  font-family: 'Arizonia', cursive;
+}
+.off-card h2 {
+  font-family: 'Berkshire Swash', cursive;
+}
+.off-card h1 {
+  font-size: 3.5rem;
+  font-family: 'AR one sans', sans-serif;
+}
+.off-card .flex hr {
+  margin: 0 1rem;
+  width: 75%;
+}
+.off-card p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+}
+.off-card .btn {
+  align-self: center;
+  width: 45%;
+  background-color: white;
+  color: black;
+  transition: box-shadow 0.3s ease-in-out;
+  border-radius: 0;
+  margin: 0.75rem 0;
+  border: 1px solid #b59410;
+}
+.off-card .btn:hover {
+  border: 1px solid #b59410;
+  background-color: #b59410;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.2);
+}
+
+/* Collection */
+.collection img {
+  height: 40rem;
+}
+.collect2 {
+  position: relative;
+  text-align: center;
+}
+.collect2 p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  font-size: 2.2rem;
+  color: white;
+  width: 25rem;
+}
+.collect2 p:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.4rem;
+}
+
+/* Best Sellers */
+.bestsellers {
+  margin: 3rem 2rem 3.25rem 2rem;
+}
+.bestsellers img {
+  height: 30rem;
+  width: 100%;
+}
+.bestsellers a {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  color: black;
+  font-weight: bold;
+}
+.bestsellers p {
+  margin-top: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+.bestsellers h5 {
+  margin-bottom: 1.75rem;
+}
+
+/* Event */
+.event1 {
+  position: relative;
+  overflow: hidden;
+}
+.event1,
+.event2 {
+  padding: 0;
+}
+
+.event2 img,
+.event1 img {
+  width: 100%;
+  height: 40rem;
+}
+
+.event1 a {
+  position: absolute;
+  top: 88%;
+  left: 40%;
+  font-size: 1.2rem;
+  color: black;
+  text-underline-offset: 0.25rem;
+  text-decoration: underline;
+  font-weight: 700;
+  opacity: 0.75;
+  text-align: start;
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+/* Grid */
+.grid {
+  text-align: center;
+  padding: 0;
+  overflow: hidden;
+}
+.grid h4 {
+  margin: 2rem 0;
+  font-weight: 600;
+}
+.grid .col-md-5,
+.grid .col-md-7 {
+  padding: 0;
+}
+.grid img {
+  width: 100%;
+  height: 35rem;
+  position: relative;
+  z-index: 0;
+}
+
+.grid a .gtitle {
+  position: absolute;
+  text-align: start;
+  margin-left: 2rem;
+  transform: translateY(-160%);
+  z-index: 1;
+  font-size: 1.25rem;
+  color: white;
+  width: 25rem;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+.grid .gtitle:hover {
+  text-underline-offset: 0.5rem;
+}
+
+/* NewsLetter */
+.newsletter {
+  margin: 2rem;
+}
+.newsletter .flex {
+  margin-top: 0.25rem;
+}
+.newsletter .form-control {
+  margin-right: 0.5rem;
+  border: 1px solid lightgray;
+  background-color: whitesmoke;
+  box-shadow: none;
+}
+.newsletter h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.newsletter h5 {
+  font-size: 1.1rem;
+}
+.newsletter .btn {
+  font-size: 1rem;
+}
+
+/* Mobile View */
+@media screen and (max-width: 768px) {
+  .slide {
+    height: 30rem;
+  }
+  .carousel-item {
+    height: 30rem;
+  }
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+  }
+  .slide .carousel-indicators {
+    display: none !important;
+  }
+  .carousel-caption {
+    margin: auto 0 14.5rem 0;
+  }
+  .carousel-caption h2 {
+    font-size: 1.2rem;
+  }
+  .carousel-caption p {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+  .offer .col-md-4:nth-child(2) {
+    padding: 0;
+  }
+  .off-card {
+    height: 27.5rem;
+    display: flex;
+    justify-content: center;
+    border: 0.2rem solid #b59410;
+    box-shadow: 1rem 2rem 4rem rgba(0, 0, 0, 0.5);
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+  }
+  .collection img {
+    height: 30rem;
+    width: auto;
+  }
+  .bestsellers {
+    margin: 2.5rem 0.75rem 1.5rem 0.75rem;
+    text-align: center;
+  }
+  .bestsellers img {
+    height: 27.5rem;
+  }
+  .bestsellers h5 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  .bestsellers p {
+    font-size: 1.4rem;
+  }
+  .bestsellers a {
+    font-size: 1rem;
+  }
+  .bestsellers .col-md-4 {
+    padding-bottom: 2rem;
+  }
+  .event1 img {
+    height: 30rem;
+  }
+  .web-head .carousel-item::before {
+    background-color: unset;
+  }
+  .tog a {
+    left: 9.5%;
+    font-size: 0.3rem;
+  }
+  .tog img {
+    height: 17.5rem;
+  }
+  .grid h4 {
+    font-size: 1.5rem;
+  }
+  .grid img {
+    height: 30rem;
+  }
+  .newsletter {
+    padding: 0.75rem 0;
+    text-align: center;
+    margin: 1rem;
+  }
+  .grid h4 {
+    padding: 0;
+    margin: 0;
+  }
+  .grid a .gtitle {
+    margin: 0;
+    transform: unset;
+    top: 588%;
+    right: 12%;
+  }
+}

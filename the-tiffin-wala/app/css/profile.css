@@ -1,0 +1,310 @@
+.password-input {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 70%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.sidebar {
+  padding: 10px;
+  width: 14rem;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.sidebar .list-group-item {
+  background-color: #f0f0f0;
+  line-height: 40px;
+  color: #333;
+  margin-bottom: 10px;
+  position: relative;
+  cursor: pointer;
+}
+
+.sidebar .list-group-item:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 100%;
+  background-color: #e68d06;
+  z-index: 12;
+}
+
+.sidebar-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+
+.profile-form label {
+  margin-bottom: 5px;
+  color: #666;
+  font-weight: bold;
+}
+
+.profile-form input[type='radio'] {
+  transform: scale(1.5);
+  display: none;
+}
+
+.profile-form input[type='radio'] + label {
+  cursor: pointer;
+  margin-right: 10px;
+  color: #333;
+}
+
+.profile-form input[type='radio'] + label::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #666;
+  border-radius: 50%;
+  background-color: transparent;
+  vertical-align: middle;
+}
+
+.profile-form input[type='radio']:checked + label::before {
+  background-color: black;
+}
+
+.profile-form input,
+select {
+  padding: 5px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
+  background-color: transparent;
+  color: #666;
+}
+
+.profile-form input:focus,
+select:focus {
+  outline: none;
+  border-bottom-color: blue;
+}
+
+.profile-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  height: 100%;
+}
+
+
+.profile-picture {
+  margin-bottom: 15px;
+}
+
+.upload-new-picture,
+.remove-picture {
+  cursor: pointer;
+  text-align: center;
+}
+.rectangle-box {
+  display: flex;
+  width: 100%; 
+  max-width: 300px; 
+  height: 200px; 
+  border: 1px solid grey;
+  border-radius: 5px;
+  font-weight: bold;
+  color: orange;
+  justify-content: center;
+  font-size: 1.3rem;
+  align-items: center;
+  cursor: pointer;
+  margin: auto; 
+  margin-top: 20px; 
+}
+.rectangle-box p {
+  margin-top: 15px;
+}
+
+
+.add-card {
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+
+  margin: 5px;
+}
+
+.add-card .card-text,
+.add-card .card-text1 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  /* white-space: nowrap;  */
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}
+
+.card-button {
+  color: grey;
+  padding: 5px 15px;
+  border: 1px solid grey;
+  background: white;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: auto; 
+  margin-bottom: 10px;
+}
+
+
+.add-card .card-text {
+  color: #666;
+}
+.add-card .card-text1 {
+  color: #4a9c4d;
+}
+.upper-section {
+  height: 75px; 
+}
+
+.middle-section {
+  height: 125px; 
+ 
+}
+.middle-section .phone-section,
+.middle-section .default-section{
+  min-height: 25px;
+}
+.middle-section .address-section{
+  min-height: 50px;
+}
+
+.bottom-section {
+  height: 50px; 
+}
+
+.cart-card {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.cart-card:hover {
+  border-color: orange;
+  box-shadow: 0 0 10px orange; /* Adjust the shadow properties as needed */
+}
+
+
+.custom-color {
+  color: orange !important;
+}
+
+.upload-new-picture {
+  color: gray;
+}
+
+.remove-picture {
+  color: orange;
+}
+.narrow-form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.narrow-form {
+  width: 300px;
+}
+
+.update-button {
+  background-color: gray;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 55px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.update-button:hover {
+  background-color: black;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.card-button {
+  color: grey;
+  padding: 5px 15px;
+  border: 1px solid grey;
+  background: white;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: auto; /* Center button vertically */
+  margin-bottom: 25px;
+}
+.rewardCard1{
+  padding: 0.75rem; 
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075); 
+  background-color: #343a40; 
+  border-radius: 0.25rem; 
+  align-items: center; 
+  display: flex; 
+  gap: 0.5rem; 
+  flex-wrap: wrap; 
+  justify-content: space-between; 
+}
+.rewardCard2{
+  padding: 0.75rem; 
+  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075); 
+  background-color: #fbb64f; 
+  border-radius: 0.25rem; 
+  align-items: center; 
+  display: flex; 
+  gap: 0.5rem; 
+  flex-wrap: wrap; 
+  justify-content: space-between; 
+}
+
+
+.Rewardcontainer1 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Rewardcontainer2 {
+  display: flex;
+  flex-direction: row;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mapouter{
+  position:relative;
+  text-align:right;
+  width:100%;
+  max-height:350px;
+}
+.gmap_canvas {
+  overflow:hidden;
+  background:none!important;
+  width:100%;
+  max-height:350px;
+}
+.gmap_iframe {
+  height:350px!important;
+}

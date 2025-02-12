@@ -1,0 +1,99 @@
+@import url(https://fonts.googleapis.com/css2?family=Belgrano&display=swap);
+
+* {
+  font-family: 'Belgrano, sans-serif';
+  margin: 0;
+  padding: 0;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row {
+  overflow: hidden;
+}
+
+.breadcrumb {
+  margin: 1.2rem 0;
+}
+.breadcrumb a {
+  text-decoration: none;
+  color: black;
+}
+.breadcrumb a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.help-desk {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 3%;
+  right: 1%;
+}
+
+.chatbox-home {
+  height: 90%;
+  overflow: auto;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+.activet {
+  transition: all 0.3s;
+}
+
+.activet:active {
+  transform: scale(0.95);
+}
+
+/* Common */
+@import url(./common.css);
+
+/* Auth */
+@import url(./auth.css);
+
+/* Home */
+@import url(./home.css);
+
+/* Products */
+@import url(./products.css);
+
+/* Catalog */
+@import url(./catalog.css);
+
+/* Profile */
+@import url(./profile.css);
+
+/* Wishlist */
+@import url(./wishlist.css);
+
+/* Cart */
+@import url(./cart.css);
+
+/* ---------------------------- */
+/* ---------------------------- */
+
+/* Mobile Tags */
+.web-head {
+  /* Web View me hide */
+  content-visibility: hidden;
+}
+.mob-head {
+  /* Mob View me hide */
+  content-visibility: visible;
+}
+/* Reversal */
+@media screen and (max-width: 768px) {
+  .web-head {
+    content-visibility: visible;
+  }
+  .mob-head {
+    content-visibility: hidden;
+  }
+}
