@@ -5,9 +5,8 @@ import NewsLetter from "@/components/home/NewsLetter";
 import Offer from "@/components/home/Offer";
 import Slider from "@/components/home/Slider";
 import axios from "axios";
+import { tssurl } from "./port";
 
-
-const tssurl = "https://brand.mycarebilling.com/api/client";
 
 const fetchData = async () => {
   try {
