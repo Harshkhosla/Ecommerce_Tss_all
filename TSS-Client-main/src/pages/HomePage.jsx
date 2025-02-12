@@ -36,14 +36,20 @@ const HomePage = () => {
     return <p>Error: {error}</p>;
   }
 
+  const defaultSEO = {
+    MetaTitle: "Delicious & Healthy Tiffin Service | Home-Style Meals",
+    MetaDescription: "Enjoy fresh, home-cooked tiffin meals delivered to your doorstep. Affordable, hygienic, and tasty!",
+    MetaKeywords: "tiffin service, home-cooked meals, food delivery, lunch box, healthy meals",
+    images: { url: "https://yourwebsite.com/default-tiffin-image.jpg" }, 
+  };
   return (
     <div className="homee">
-       <Helmet>
-        <title>{homeData?.SEOArea?.MetaTitle || 'Default Title'}</title>
-        <meta name="description" content={homeData?.SEOArea?.MetaDescription || 'Default Description'} />
-        <meta name="keywords" content={homeData?.SEOArea?.MetaKeywords || 'Default Keywords'} />
-        <meta property="og:image" content={homeData?.SEOArea?.images?.url || ''} />
-      </Helmet>
+      <Helmet>
+      <title>{homeData?.SEOArea?.MetaTitle || defaultSEO.MetaTitle}</title>
+      <meta name="description" content={homeData?.SEOArea?.MetaDescription || defaultSEO.MetaDescription} />
+      <meta name="keywords" content={homeData?.SEOArea?.MetaKeywords || defaultSEO.MetaKeywords} />
+      <meta property="og:image" content={homeData?.SEOArea?.images?.url || defaultSEO.images.url} />
+    </Helmet>
       <Slider />
       {homeData?.OfferArea ? <Offer data={homeData.OfferArea} /> : <p>Loading Offers...</p>}
       <Collection data={homeData?.CollectionArea} />
