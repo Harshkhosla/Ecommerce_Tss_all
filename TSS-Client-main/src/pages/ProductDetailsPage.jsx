@@ -277,7 +277,7 @@ const ProductDetailsPage = () => {
                   <li key={index}>{fabric}</li>
                 ))}
               </Tab>
-              <Tab eventKey="fit" title="Fit">
+              <Tab eventKey="fit" title="Packaging">
                 {fitOptions.map((fit, index) => (
                   <li key={index}>{fit}</li>
                 ))}
