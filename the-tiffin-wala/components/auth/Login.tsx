@@ -5,11 +5,12 @@ import { Button, Form, Row, Col, Modal, InputGroup } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-// import GoogleAuth from "./GoogleAuth";
 import Register from "./Register";
-import { tssurl } from "@/app/port"; // Ensure tssurl is correctly imported
+import { tssurl } from "@/app/port"; 
 
-const Login = ({ data }) => {
+
+const Login = () => {
+
   const [show, setShow] = useState(false);
   const [authMode, setAuthMode] = useState("signin");
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ const Login = ({ data }) => {
 
   const handleForgetPasswordModalClose = () => {
     setForgetPasswordModal(false);
-    setEmail(""); // Clear email input when closing forget password modal
+    setEmail("");
   };
 
   const handleForgetPasswordModalShow = () => {
@@ -35,12 +36,12 @@ const Login = ({ data }) => {
     setShow(false);
   };
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
   };
 
-  const handleSendEmail = async (e) => {
+  const handleSendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
@@ -54,10 +55,13 @@ const Login = ({ data }) => {
       handleForgetPasswordModalClose();
     } catch (error) {
       toast.error("Failed to send email");
+      console.log(error)
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("sdvjhsbvdjbh");
+
     e.preventDefault();
 
     if (!validateEmail(email)) {
@@ -92,7 +96,11 @@ const Login = ({ data }) => {
       }
       handleClose();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error occurred");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
@@ -124,8 +132,8 @@ const Login = ({ data }) => {
         </div>
         {authMode === "signin" ? (
           <>
-            <Modal.Body className="pb-0 mb-0">
-              <Form onSubmit={handleSubmit}>
+            <Modal.Body className="pb-0 mb-0"> 
+              <Form onClick={handleSubmit} >
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email Address</Form.Label>
                   <Form.Control
@@ -136,7 +144,7 @@ const Login = ({ data }) => {
                     required
                   />
                 </Form.Group>
-                <div className="pt-2" />
+
                 <Form.Group controlId="formBasicPassword">
                   <Form.Label>Password</Form.Label>
                   <InputGroup>
@@ -155,6 +163,7 @@ const Login = ({ data }) => {
                     </InputGroup.Text>
                   </InputGroup>
                 </Form.Group>
+
                 <Form.Text
                   className="flex my-3"
                   style={{ cursor: "pointer" }}
@@ -162,16 +171,19 @@ const Login = ({ data }) => {
                 >
                   <strong>Forgot Password?</strong>
                 </Form.Text>
+
+                <Modal.Footer className="flex">
+                  <Button className="loginbtn" variant="dark" type="submit">
+                    Log In
+                  </Button>
+                </Modal.Footer>
               </Form>
             </Modal.Body>
-            <Modal.Footer className="flex">
-              <Button className="loginbtn" variant="dark" onClick={handleSubmit}>
-                Log In
-              </Button>
-            </Modal.Footer>
+
+
           </>
         ) : (
-          <Register authMode={authMode} />
+          <Register  />
         )}
       </Modal>
 

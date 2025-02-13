@@ -2,12 +2,26 @@ import Link from 'next/link';
 import { Container, Row, Col, Image } from 'react-bootstrap';
 
 
-const Collection = ({ data }) => {
-  
+interface Images {
+  url: string
+}
+
+interface CollectionArea {
+  BannerTitle: string;
+  catalogid: string;
+  images: Images[]
+}
+
+interface CollectionProps {
+  collectionArea: CollectionArea;
+}
+
+const Collection = ( {collectionArea} : CollectionProps) => {
+
   return (
     <Container fluid>
       <Row className="collection">
-        {data?.images?.map((image, index) => (
+        {collectionArea?.images?.map((image, index) => (
           <Col
             md="4"
             key={index}
@@ -16,8 +30,8 @@ const Collection = ({ data }) => {
           >
             <Image src={image?.url} fluid className="w-100" alt='Images' />
             {index === 1 && (
-              <Link href={`/catalog/${data?.catalogid}`}>
-                <p>{data.BannerTitle}</p>
+              <Link href={`/catalog/${collectionArea?.catalogid}`}>
+                <p>{collectionArea.BannerTitle}</p>
               </Link>
             )}
           </Col>

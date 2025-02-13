@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Form, Modal, Button, InputGroup } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -23,30 +22,30 @@ const Register = () => {
   const [passwordStrength, setPasswordStrength] = useState("");
   const router = useRouter();
 
-  const validateEmail = (email) => {
+  const validateEmail = (email:string) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfirmPassword(value);
     setPasswordError(value !== password ? "Passwords do not match" : "");
   };
 
-  const handlePasswordStrength = (e) => {
+  const handlePasswordStrength = (e:React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPassword(value);
     const strengthScore = zxcvbn(value).score;
     setPasswordStrength(getPasswordStrengthLabel(strengthScore));
   };
 
-  const getPasswordStrengthLabel = (score) => {
+  const getPasswordStrengthLabel = (score:number) => {
     const strengthLabels = ["Weak", "Weak", "Fair", "Good", "Strong"];
     return strengthLabels[score] || "";
   };
 
-  const getStrengthClass = (strength) => {
+  const getStrengthClass = (strength: "Weak" | "Fair" | "Good" | "Strong"): string => {
     return {
       Weak: "weak",
       Fair: "fair",
@@ -55,7 +54,7 @@ const Register = () => {
     }[strength] || "";
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
@@ -88,7 +87,11 @@ const Register = () => {
         toast.error(response.data.message || "Operation Unsuccessful");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error occurred");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error occurred");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
     }
   };
 
@@ -147,7 +150,7 @@ const Register = () => {
               </InputGroup.Text>
             </InputGroup>
             {passwordStrength && (
-              <small className={`password-strength ${getStrengthClass(passwordStrength)}`}>
+              <small className={`password-strength ${getStrengthClass(passwordStrength as "Weak" | "Fair" | "Good" | "Strong")}`}>
                 Password Strength: {passwordStrength}
               </small>
             )}

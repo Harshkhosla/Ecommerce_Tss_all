@@ -3,9 +3,9 @@ import Collection from "@/components/home/Collection";
 import Grid from "@/components/home/Grid";
 import NewsLetter from "@/components/home/NewsLetter";
 import Offer from "@/components/home/Offer";
-import Slider from "@/components/home/Slider";
 import axios from "axios";
 import { tssurl } from "./port";
+import Slider from "@/components/home/Slider";
 
 
 const fetchData = async () => {
@@ -37,16 +37,31 @@ const fetchfooter = async () => {
     return [];
   }
 };
+
+
+const fetchBanners = async () => {
+  try {
+    const response = await axios.get(`${tssurl}/banners`);
+    return response.data.banners || [];
+
+  } catch (error) {
+    console.error("Error fetching banners:", error);
+    return [];
+  }
+};
+
 export default async function Home() {
   const homeData = await fetchData()
   const productData = await fetchProducts()
   const footerData = await fetchfooter()
+  const banners = await fetchBanners()
+  
   return (
     < >
-      < Slider />
-      <Offer data={homeData?.OfferArea} />
-      <Collection data={homeData?.CollectionArea} />
-      <BestSellers data={productData} />
+      < Slider bannerdata={banners}/>/
+      <Offer offerArea={homeData?.OfferArea} />
+      <Collection collectionArea={homeData?.CollectionArea} />
+      <BestSellers bestseller={productData} />
       <Grid data={homeData.GridArea} />
       <NewsLetter data={footerData} />
     </>

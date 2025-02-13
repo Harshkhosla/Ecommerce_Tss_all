@@ -3,21 +3,40 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Container, Row, Col, Image, Carousel } from 'react-bootstrap';
 
-const BestSellers = ({ data }) => {
+interface Variant {
+  GalleryImg: string[];
+  ThumbImg: string[];
+  color: string;
+  isEnabled: boolean;
+  price: string;
+  quantity: string;
+  size: string;
+  variantId: number;
+}
+
+interface Products {
+  product_name:string;
+  pid:string;
+  variants:Variant[]
+}
+interface BestsellerProps{
+  bestseller:Products[]
+}
+const BestSellers = ({ bestseller }:BestsellerProps) => {
   const [index, setIndex] = useState(0);
 
-  const handleSelect = (selectedIndex, e) => {
+  const handleSelect = (selectedIndex:number) => {
     setIndex(selectedIndex);
   };
 
   const renderCarouselItems = () => {
-    if (!Array.isArray(data)) {
+    if (!Array.isArray(bestseller)) {
       return null;
     }
 
-    return data.map((card, i) => (
+    return bestseller.map((card, i) => (
       <Carousel.Item key={i} style={{ height: '35rem' }}>
-        <Image src={card.variants[0].ThumbImg?.[0]} fluid />
+        <Image src={card.variants[0].ThumbImg?.[0]} fluid alt='tiffin'/>
         <p>{card.product_name}</p>
         <Link href={`/productDetails/${card.pid}`}>Shop Now</Link>
       </Carousel.Item>
@@ -29,10 +48,10 @@ const BestSellers = ({ data }) => {
       <div className="mob-head">
         <Row className="bestsellers">
           <h5>OUR BEST SELLERS HIGHLIGHTS</h5>
-          {Array.isArray(data) &&
-            data.map((card, index) => (
+          {Array.isArray(bestseller) &&
+            bestseller.map((card, index) => (
               <Col md={4} key={index}>
-                <Image src={card.variants[0].ThumbImg?.[0]} fluid />
+                <Image src={card.variants[0].ThumbImg?.[0]} fluid alt='tiffin'/>
                 <p>{card.product_name}</p>
                 <Link href={`/productDetails/${card.pid}`}>Shop Now</Link>
               </Col>

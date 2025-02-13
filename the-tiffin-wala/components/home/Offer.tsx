@@ -1,15 +1,28 @@
 import Link from 'next/link';
 import { Container, Card, Row, Col, Image, Button } from 'react-bootstrap';
-// import offer2 from '../../assets/images/offer2.png';
+
+
+interface OfferArea {
+  image: { url: string };
+  Title: string;
+  Name: string;
+  Offer: string;
+  Subtitle: string;
+  Subtitle1: string;
+}
+
+interface OfferProps {
+  offerArea: OfferArea;
+}
 
 const Offer = ({
-  data: { image, Title, Name, Offer, Subtitle, Subtitle1 },
-}) => {
+  offerArea: { image, Title, Name, Offer, Subtitle, Subtitle1 },
+}: OfferProps) => {
   return (
     <Container fluid>
       <Row className="bg-light offer">
         <Col md={4} className="text-center mob-head">
-          <Image src={image?.url} fluid alt='kdshjcb' />
+          <Image src={image.url} fluid alt='kdshjcb' />
         </Col>
         <Col md={4} className="m-auto">
           <Card className="off-card">
@@ -29,7 +42,7 @@ const Offer = ({
           </Card>
         </Col>
         <Col md={4} className="text-end mt-auto mob-head">
-          <Image src={image?.url} fluid alt='dsvvds' />
+          <Image src={image.url} fluid alt='dsvvds' />
         </Col>
       </Row>
     </Container>

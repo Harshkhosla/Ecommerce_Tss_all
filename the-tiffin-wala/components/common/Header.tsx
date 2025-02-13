@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from 'react';
 import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import { NavDropdown, Tabs, Tab } from 'react-bootstrap';
@@ -6,27 +6,36 @@ import { FaShoppingCart, FaStar, FaSearch, FaUser } from 'react-icons/fa';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import axios from 'axios';
 import { tssurl } from '@/app/port';
-import { useRouter } from 'next/router';
 import Sidebar from './Sidebar';
 import Login from '../auth/Login';
+import { useRouter } from 'next/navigation';
+
+interface NavLink{
+  link:string;
+  name:string;
+}
+
+interface Menu{
+  MLink:string;
+  Mname:string;
+  nav_link?:NavLink[]
+}
 
 const Header = () => {
-  const [head, setHead] = useState([]);
-  const [logo, setLogo] = useState('');
+  const [head, setHead] = useState<Menu[]>([]);
+  const [logo, setLogo] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [show, setShow] = useState(false);
   const [showNav, setShowNav] = useState(false);
-  // const navigate = useRouter();
+  const router =  useRouter()
 
   useEffect(() => {
     const fetchHeader = async () => {
       try {
         const response = await axios.get(`${tssurl}/header`);
         const headerData = response.data.header;
-        console.log(headerData,"sdkvjbsvd");
-        
         setLogo(headerData?.brand_logo?.url);
         setHead(JSON.parse(headerData?.header) || []);
+        
       } catch (error) {
         console.error('Error fetching header:', error);
       }
@@ -41,11 +50,11 @@ const Header = () => {
     localStorage.removeItem('jwt');
     localStorage.removeItem('MID');
     setIsLoggedIn(false);
-    // navigate('/');
+    router.push("/")
   };
 
   const activeKey = () => {
-    const mainMenu = head?.find((menu) => menu?.Mname === 'WOMEN');
+    const mainMenu = head?.find((menu) => menu?.Mname === 'DAILY');
     return mainMenu ? mainMenu.MLink : '';
   };
 
@@ -75,7 +84,7 @@ const Header = () => {
                   </NavDropdown>
                 ) : (
                   <Nav.Link className="px-3 mob-head">
-                    <Login data={show} handleShow={() => setShow(true)} />
+                    <Login />
                   </Nav.Link>
                 )}
                 <Nav.Link href="/wishlist" className="px-3">
