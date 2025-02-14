@@ -150,12 +150,13 @@ const checkAdminSignup = async (req, res, next) => {
 };
 
 
-router.post('/Signup', checkAdminSignup, upload.none(),async (req, res) => {
+router.post('/Signup',async (req, res) => {
     try {
         const { email, name, password, mobileNo } = req.body;
 
         // Check if the email is already registered
         const existingUser = await User.findOne({ email });
+       
         if (existingUser) {
             return res.status(400).json({ message: 'Email already exists' });
         }
@@ -180,7 +181,7 @@ router.post('/Signup', checkAdminSignup, upload.none(),async (req, res) => {
         await newUser.save();
 
         // Send verification email
-        await sendVerificationEmail(newUser);
+        // await sendVerificationEmail(newUser);
 
         res.status(201).json({ message: 'User registered successfully', mid: newUser.mid });
     } catch (error) {
@@ -352,9 +353,9 @@ router.post('/Login',checkAdminLogin,upload.none(), async (req, res) => {
         }
 
         // Check if the user's email is verified
-        if (!user.verified) {
-            return res.status(403).json({ message: 'Email not verified' });
-        }
+        // if (!user.verified) {
+        //     return res.status(403).json({ message: 'Email not verified' });
+        // }
 
         // Compare the entered password with the hashed password in the database
         const isPasswordValid = await bcrypt.compare(password, user.password);
