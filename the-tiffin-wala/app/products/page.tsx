@@ -51,6 +51,8 @@ export default async function Products() {
     if (typeof window !== "undefined") {
         MID = localStorage.getItem("MID");
     }
+    console.log(MID);
+    
     const products = await getalltheproducts()
     const getlikedproduct = await getLikedProducts(MID)
 
