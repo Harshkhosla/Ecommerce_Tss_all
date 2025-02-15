@@ -26,13 +26,9 @@ interface ProductsPageProps {
   likedProducts: string[];
 }
 const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) => {
-  console.log(products,"sdsdv");
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
   const [userLikedProducts, setUserLikedProducts] = useState<string[]>(likedProducts);
   const [sortOption, setSortOption] = useState<string>("Featured");
-
-
-
 
   const handleToggleLike = (productId: string, isLiked: boolean) => {
     setUserLikedProducts((prev) =>
