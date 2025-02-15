@@ -9,9 +9,14 @@ interface ProductType {
   product_name: string;
   unit_price: number;
   draft: string;
-  sub_category: string;
-  rating: string;
+  sub_category:string;
+  category:string;
   size: { name: string }[];
+  discount: number;
+  discount_type: "Amount" | "Percentage";
+  reward_points: number;
+  rating: string;
+  variants?: { ThumbImg?: string[] }[];
 }
 
 interface PriceRange {

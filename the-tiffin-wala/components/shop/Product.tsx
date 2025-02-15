@@ -68,7 +68,7 @@ const Product: React.FC<ProductProps> = ({ product, isLiked, onToggleLike }) => 
         )}
 
         <Link href={`/productDetails/${product.pid}`}>
-          <Card.Img src={thumbImgUrl} variant="top" fluid="true"  alt={product.product_name}/>
+          <Card.Img src={thumbImgUrl} variant="top"   alt={product.product_name}/>
           {product.rating > "4.5" && <Badge bg="light">TOP RATED</Badge>}
         </Link>
       </div>
