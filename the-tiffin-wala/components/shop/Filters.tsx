@@ -1,25 +1,45 @@
 "use client"
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Form, ListGroup, Button } from 'react-bootstrap';
-// import { FaCircle } from 'react-icons/fa';
-// import Ratings from '../common/Ratings';
+import Ratings from '../common/Ratings';
 
-const Filters = ({ products, setFilteredProducts }) => {
-  const [subcategories, setSubcategories] = useState([]);
-  const [subcategoryFilters, setSubcategoryFilters] = useState([]);
-  const [colors, setColors] = useState([]);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [priceRange, setPriceRange] = useState([]);
-  const [ratingFilters, setRatingFilters] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
+
+interface ProductType {
+  pid: string;
+  product_name: string;
+  unit_price: number;
+  draft: string;
+  sub_category: string;
+  rating: string;
+  size: { name: string }[];
+}
+
+interface PriceRange {
+  label: string;
+  min: number;
+  max: number;
+}
+
+interface filteroageProps {
+  products: ProductType[];
+  setFilteredProducts: (filtered: ProductType[]) => void;
+}
+
+const Filters: React.FC<filteroageProps> = ({ products, setFilteredProducts }) => {
+  const [subcategories, setSubcategories] = useState<string[]>([]);
+  const [subcategoryFilters, setSubcategoryFilters] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<PriceRange[]>([]);
+  const [ratingFilters, setRatingFilters] = useState<PriceRange[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
 
   const priceRanges = useMemo(
     () => [
-      { label: 'Under $1000', min: 0, max: 1000 },
-      { label: '$1001 - $2000', min: 1001, max: 2000 },
-      { label: '$2001 - $3000', min: 2001, max: 3000 },
-      { label: '$3001 - $4000', min: 3001, max: 4000 },
-      { label: 'Over $4000', min: 4001, max: 10000 },
+      { label: 'Under 100', min: 0, max: 100 },
+      { label: '101 - 200', min: 101, max: 200 },
+      { label: '201 - 3000', min: 201, max: 300 },
+      { label: '301 - 400', min: 301, max: 400 },
+      { label: 'Over 400', min: 401, max: 40000 },
     ],
     []
   );
@@ -43,11 +63,11 @@ const Filters = ({ products, setFilteredProducts }) => {
       );
     }
 
-    if (selectedColors.length > 0) {
-      filtered = filtered.filter((product) =>
-        product.colors.some((c) => selectedColors.includes(c.value))
-      );
-    }
+    // if (selectedColors.length > 0) {
+    //   filtered = filtered.filter((product) =>
+    //     product.colors.some((c) => selectedColors.includes(c.value))
+    //   );
+    // }
 
     const selectedPriceRanges = priceRanges.filter((range) =>
       priceRange.some(
@@ -86,14 +106,13 @@ const Filters = ({ products, setFilteredProducts }) => {
     products,
     subcategoryFilters,
     priceRanges,
-    selectedColors,
     priceRange,
     setFilteredProducts,
     ratingFilters,
     selectedSizes,
   ]);
 
-  const handleSubcategoryChange = (subcategory) => {
+  const handleSubcategoryChange = (subcategory: string) => {
     setSubcategoryFilters((filters) =>
       filters.includes(subcategory)
         ? filters.filter((filter) => filter !== subcategory)
@@ -101,15 +120,8 @@ const Filters = ({ products, setFilteredProducts }) => {
     );
   };
 
-  const handleColorChange = (color) => {
-    setSelectedColors((colors) =>
-      colors.includes(color.value)
-        ? colors.filter((c) => c !== color.value)
-        : [...colors, color.value]
-    );
-  };
 
-  const handlePriceChange = (range) => {
+  const handlePriceChange = (range: PriceRange) => {
     setPriceRange((prevRanges) => {
       const isRangeSelected = prevRanges.some(
         (prevRange) =>
@@ -127,27 +139,28 @@ const Filters = ({ products, setFilteredProducts }) => {
     });
   };
 
-  const handleRatingChange = (minInterval, maxInterval) => {
-    setRatingFilters((filters) => {
+  
+  const handleRatingChange = (minInterval: number, maxInterval: number) => {
+    setRatingFilters((filters: PriceRange[]) => {
       const existingFilterIndex = filters.findIndex(
         (filter) => filter.min === minInterval && filter.max === maxInterval
       );
-
+  
       if (existingFilterIndex !== -1) {
-        const newFilters = [...filters];
-        newFilters.splice(existingFilterIndex, 1);
-        return newFilters;
+        return filters.filter(
+          (filter) => !(filter.min === minInterval && filter.max === maxInterval)
+        );
       } else {
-        return [...filters, { min: minInterval, max: maxInterval }];
+        return [
+          ...filters,
+          { label: `${minInterval} - ${maxInterval}`, min: minInterval, max: maxInterval }
+        ];
       }
     });
   };
+  
 
-  const handleSizeChange = (size) => {
-    setSelectedSizes((sizes) =>
-      sizes.includes(size) ? sizes.filter((s) => s !== size) : [...sizes, size]
-    );
-  };
+
 
   const handleRemoveAllFilters = () => {
     setSubcategoryFilters([]);
@@ -161,17 +174,7 @@ const Filters = ({ products, setFilteredProducts }) => {
   useEffect(() => {
     setSubcategories([
       ...new Set(products?.map((product) => product?.sub_category)),
-    ]);
-    setColors([
-      ...new Set(
-        products?.flatMap((product) =>
-          product.colors.map((color) => ({
-            value: color.value,
-            name: color.name,
-          }))
-        )
-      ),
-    ]);
+    ])
   }, [products]);
 
   useEffect(() => {
@@ -189,7 +192,7 @@ const Filters = ({ products, setFilteredProducts }) => {
     <ListGroup variant="flush">
       <strong>Filters:</strong>
       <ListGroup.Item as={Form}>
-        <Form.Group controlId="subcategoryFilter">
+        <Form.Group >
           <Form.Label htmlFor="subcategoryFilter">Product Type:</Form.Label>
           {subcategories.map((subcategory) => (
             <Form.Check
@@ -204,8 +207,8 @@ const Filters = ({ products, setFilteredProducts }) => {
         </Form.Group>
       </ListGroup.Item>
 
-      {/* <ListGroup.Item as={Form}>
-        <Form.Group controlId="ratingsFilter">
+      <ListGroup.Item as={Form}>
+        <Form.Group >
           <Form.Label>Ratings:</Form.Label>
           {ratingRanges.map((range) => (
             <Form.Check
@@ -227,10 +230,10 @@ const Filters = ({ products, setFilteredProducts }) => {
             />
           ))}
         </Form.Group>
-      </ListGroup.Item> */}
+      </ListGroup.Item>
 
       <ListGroup.Item as={Form}>
-        <Form.Group controlId="priceFilter">
+        <Form.Group >
           <Form.Label>Price:</Form.Label>
           {priceRanges.map((range) => (
             <Form.Check
@@ -248,45 +251,6 @@ const Filters = ({ products, setFilteredProducts }) => {
           ))}
         </Form.Group>
       </ListGroup.Item>
-
-      {/* <ListGroup.Item as={Form}>
-        <Form.Group controlId="sizeFilter">
-          <Form.Label>Sizes:</Form.Label>
-          {['S', 'M', 'L', 'XL'].map((size) => (
-            <Form.Check
-              key={size}
-              type="checkbox"
-              label={size}
-              id={`size-${size}`}
-              checked={selectedSizes.includes(size)}
-              onChange={() => handleSizeChange(size)}
-            />
-          ))}
-        </Form.Group>
-      </ListGroup.Item>
-
-      <ListGroup.Item as={Form}>
-        <Form.Group controlId="colorFilter">
-          <Form.Label>Colors:</Form.Label>
-          {colors.map((color) => (
-            <Form.Check
-              key={`${color.name}-${color.value}`}
-              type="checkbox"
-              label={
-                <>
-                  <FaCircle
-                    style={{ color: color.value, marginRight: '5px' }}
-                  />
-                  {color.name}
-                </>
-              }
-              id={`color-${color.name.toLowerCase()}`}
-              checked={selectedColors.includes(color.value)}
-              onChange={() => handleColorChange(color)}
-            />
-          ))}
-        </Form.Group>
-      </ListGroup.Item> */}
 
       <ListGroup.Item>
         <Button

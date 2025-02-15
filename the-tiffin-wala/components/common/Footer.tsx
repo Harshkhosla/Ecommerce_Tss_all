@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+"use client"
 import { Nav, Col, Row, Container, Tabs, Tab } from 'react-bootstrap';
 import {
   FaFacebook,
@@ -6,24 +6,26 @@ import {
   FaLinkedin,
   FaInstagram,
 } from 'react-icons/fa6';
-import { Link } from 'react-router-dom';
-import Support from '../support/support';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFooterData } from '../../redux/counterSlice';
+import axios from 'axios';
+import { tssurl } from '@/app/port';
+import Link from 'next/link';
+// import Support from '../support/support';
+
 
 const Footer = () => {
-  const footerLinks  = useSelector((state) => state.Store.footerData)
-  const dispatch = useDispatch();
+  
 
-  useEffect(() => {
-    dispatch(fetchFooterData())
-  }, [dispatch]);
+  const callfooter = async()=>{
+    const response = await axios.get(`${tssurl}/footer`);
+    return response.data;
+  }
+ const footerLinks =  callfooter()
 
   return (
     <>
       <div className="mob-head">
         <footer className="bg-light pt-5 mt-0">
-          <Support />
+          {/* <Support /> */}
           <Container>
             <Row>
               <Col md="2">
@@ -61,16 +63,16 @@ const Footer = () => {
                 <h4>Follow Us On Social Media</h4>
                 {footerLinks?.footer && (
                   <div className="social">
-                    <Link to={footerLinks.footer.facebook} target="_blank">
+                    <Link href={footerLinks.footer.facebook} target="_blank">
                       <FaFacebook size={30} />
                     </Link>
-                    <Link to={footerLinks.footer.twitter} target="_blank">
+                    <Link href={footerLinks.footer.twitter} target="_blank">
                       <FaXTwitter size={30} />
                     </Link>
-                    <Link to={footerLinks.footer.insta} target="_blank">
+                    <Link href={footerLinks.footer.insta} target="_blank">
                       <FaInstagram size={30} />
                     </Link>
-                    <Link to="." target="_blank">
+                    <Link href="." target="_blank">
                       <FaLinkedin size={30} />
                     </Link>
                   </div>
@@ -85,7 +87,7 @@ const Footer = () => {
       </div>
       <div className="web-head">
         <footer>
-          <Support />
+          {/* <Support /> */}
           <Container className="px-3">
             <Tabs
               defaultActiveKey="tss"

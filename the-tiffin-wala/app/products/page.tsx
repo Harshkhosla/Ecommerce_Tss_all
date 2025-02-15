@@ -1,161 +1,62 @@
-"use client"
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import axios from "axios";
-import Filters from "@/components/shop/Filters";
-import ShopBanner from "@/components/shop/ShopBanner";
+import ProductsPage from "@/components/products/ProductsPage";
 import { tssurl } from "../port";
-import ProductSearch from "@/components/shop/ProductSearch";
-import Skeleton from "react-loading-skeleton";
-import Product from "@/components/shop/Product";
+import axios from "axios";
 
-const fetchAllProduct = async () => {
-    const response = await axios.get(`${tssurl}/productcat/products`);
-    const filteredData = response?.data?.filter(item => item.draft === "false");
+
+interface ProductType {
+    pid: string;
+    product_name: string;
+    unit_price: number;
+    category:string;
+    draft: string;
+    sub_category:string;
+    size: { name: string }[];
+    discount: number;
+    discount_type: "Amount" | "Percentage";
+    reward_points: number;
+    rating: string;
+    variants?: { ThumbImg?: string[] }[];
+  }
+
+
+const getalltheproducts = async () => {
+    const response = await axios.get<ProductType[]>(`${tssurl}/productcat/products`);
+    const filteredData = response.data.filter((item) => item.draft === "false");
     return filteredData;
 }
-const ProductsPage = () => {
-    const MID = localStorage.getItem("MID");
-
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false)
-    const [filteredProducts, setFilteredProducts] = useState([]);
-
-    useEffect(() => {
-        const loadProducts = async () => {
-            const allProducts = await fetchAllProduct();
-            console.log(allProducts);
-            
-            setLoading(true)
-            setProducts(allProducts);
-            setFilteredProducts(allProducts);
-        };
-        loadProducts();
-    }, []);
-
-    // const [filteredProducts, setFilteredProducts] = useState([]);
-    const [sortOption, setSortOption] = useState("Featured");
-
-    const [likedProducts, setLikedProducts] = useState([]);
-
-    useEffect(() => {
-        const fetchLikedProducts = async () => {
-            try {
-                const response = await axios.get(
-                    `${tssurl}/liked/liked-products/${MID}`
-                );
-                const filteredLikedProducts = response.data.likedProducts.filter(
-                    (item) => item !== null
-                );
-                setLikedProducts(filteredLikedProducts);
-            } catch (error) {
-                console.error("Error fetching liked products:", error);
-            }
-        };
-
-        fetchLikedProducts();
-    }, [MID]);
-
-    const handleToggleLike = (productId, isLiked) => {
-        if (isLiked) {
-            setLikedProducts([...likedProducts, productId]);
-        } else {
-            setLikedProducts(likedProducts.filter((id) => id !== productId));
-        }
-    };
 
 
-  
+const getLikedProducts = async (MID: string | null): Promise<string[]> => {
+    if (!MID) {
+        console.warn("MID is missing, returning empty liked products.");
+        return [];
+    }
 
+    try {
+        const response = await axios.get<{ likedProducts: string[] }>(`${tssurl}/liked/liked-products/${MID}`);
+        console.log(response, "sdvkjndsvkjnvs");
 
-    const sortFunctions = useMemo(
-        () => ({
-            'Name A to Z': (a, b) => a.product_name.localeCompare(b.product_name),
-            'Name Z to A': (a, b) => b.product_name.localeCompare(a.product_name),
-            'Price Low to High': (a, b) => a.unit_price - b.unit_price,
-            'Price High to Low': (a, b) => b.unit_price - a.unit_price,
-        }),
-        []
-    );
-
-    const filterFunctions = useCallback(() => {
-        let sorted = [...products].sort(sortFunctions[sortOption] || (() => 0));
-        setFilteredProducts(sorted);
-    }, [products, sortFunctions, sortOption]);
-
-    const handleSearch = (searchTerm) => {
-        const filtered =
-            searchTerm === ''
-                ? [...products]
-                : products.filter((product) =>
-                    product.product_name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                );
-
-        setFilteredProducts(filtered);
-    };
-
-    const handleSortChange = ({ target: { value } }) => {
-        setSortOption(value);
-    };
-
-
-
-    useEffect(() => {
-        filterFunctions();
-    }, [filterFunctions]);
-
-    return (
-        <Container fluid>
-            {/* <ShopBanner /> */}
-            <Row className="products">
-                <Col md="2">
-                    <Filters products={products} setFilteredProducts={setFilteredProducts} />
-                </Col>
-                <Col md="10" className="p-2">
-          <Row>
-            <Col md={9}>
-              <ProductSearch products={products} onSearch={handleSearch} />
-            </Col>
-            <Col md={3} className="proselect">
-              <span> Sort: </span>
-              <select value={sortOption} onChange={handleSortChange}>
-                {Object.keys(sortFunctions).map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </Col>
-          </Row>
-          {loading === false ? (
-            <Row>
-              {[...Array(6)].map((_, index) => (
-                <Col key={index} sm={6} md={4} lg={4} xl={4}>
-                  <Skeleton height={250} />
-                  <Skeleton height={20} width="80%" />
-                  <Skeleton height={20} width="60%" />
-                </Col>
-              ))}
-            </Row>
-          ) : (
-            <Row>
-              {filteredProducts.map((product) => (
-                <Col key={product.pid} sm={6} md={4} lg={4} xl={4}>
-                  <Product
-                    product={product}
-                    isLiked={likedProducts.includes(product.pid)}
-                    onToggleLike={handleToggleLike}
-                  />
-                </Col>
-              ))}
-            </Row>
-          )}
-        </Col>
-            </Row>
-        </Container>
-    );
+        return response.data.likedProducts.filter((item) => item !== null);
+    } catch (error) {
+        console.error("Error fetching liked products:", error);
+        return [];
+    }
 };
 
-export default ProductsPage;
+
+
+export default async function Products() {
+
+    let MID: string | null = null;
+    if (typeof window !== "undefined") {
+        MID = localStorage.getItem("MID");
+    }
+    const products = await getalltheproducts()
+    const getlikedproduct = await getLikedProducts(MID)
+
+    return (
+        <div>
+            <ProductsPage products={products} likedProducts={getlikedproduct} />
+        </div>
+    )
+}

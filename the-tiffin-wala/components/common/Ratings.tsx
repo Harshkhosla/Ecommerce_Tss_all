@@ -1,7 +1,11 @@
-"use client"
+
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 
-const Ratings = ({ value }) => {
+interface RatingsProps {
+  value: number;
+}
+
+const Ratings: React.FC<RatingsProps> = ({ value }) => {
   const stars = [];
 
   for (let i = 0; i < 5; i++) {

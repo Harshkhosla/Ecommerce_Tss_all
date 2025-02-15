@@ -1,15 +1,35 @@
 "use client"
 import { useCallback } from "react";
-import { Card, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { FaCircle, FaRegHeart, FaHeart } from "react-icons/fa";
+import { Card, Badge } from "react-bootstrap";
+import {  FaRegHeart, FaHeart } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Link from "next/link";
 import { tssurl } from "@/app/port";
 
-const Product = ({ product, isLiked, onToggleLike }) => {
+interface ProductType {
+  pid: string;
+  product_name: string;
+  unit_price: number;
+  draft: string;
+  category:string;
+  sub_category:string;
+  size: { name: string }[];
+  discount: number;
+  discount_type: "Amount" | "Percentage";
+  reward_points: number;
+  rating: string;
+  variants?: { ThumbImg?: string[] }[];
+}
+
+interface ProductProps {
+  product: ProductType;
+  isLiked: boolean;
+  onToggleLike: (pid: string, liked: boolean) => void;
+}
+
+const Product: React.FC<ProductProps> = ({ product, isLiked, onToggleLike }) => {
   const thumbImgUrl = product.variants?.[0]?.ThumbImg?.[0];
-  const colors = product.colors;
   const MID = localStorage.getItem("MID");
   const DiscountedPrice = (product.discount_type === 'Amount' ? (product.unit_price - product.discount) : (product.unit_price * product.discount) / 100)
 
@@ -48,7 +68,7 @@ const Product = ({ product, isLiked, onToggleLike }) => {
         )}
 
         <Link href={`/productDetails/${product.pid}`}>
-          <Card.Img src={thumbImgUrl} variant="top" fluid="true" />
+          <Card.Img src={thumbImgUrl} variant="top" fluid="true"  alt={product.product_name}/>
           {product.rating > "4.5" && <Badge bg="light">TOP RATED</Badge>}
         </Link>
       </div>
