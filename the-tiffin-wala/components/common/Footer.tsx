@@ -8,18 +8,34 @@ import {
 } from 'react-icons/fa6';
 import axios from 'axios';
 import { tssurl } from '@/app/port';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 // import Support from '../support/support';
 
+interface FooterLinks {
+  footer?: {
+    QuickLinks?: { page: string; Name: string }[];
+    facebook?: string;
+    twitter?: string;
+    insta?: string;
+    footer?: string;
+  };
+}
+const Footer: React.FC = () => {
+  const [footerLinks, setFooterLinks] = useState<FooterLinks | null>(null);
 
-const Footer = () => {
-  
+  useEffect(() => {
+    const fetchFooterLinks = async () => {
+      try {
+        const response = await axios.get<FooterLinks>(`${tssurl}/footer`);
+        setFooterLinks(response.data);
+      } catch (error) {
+        console.error("Error fetching footer data:", error);
+      }
+    };
 
-  const callfooter = async()=>{
-    const response = await axios.get(`${tssurl}/footer`);
-    return response.data;
-  }
- const footerLinks =  callfooter()
+    fetchFooterLinks();
+  }, []);
 
   return (
     <>
@@ -63,13 +79,13 @@ const Footer = () => {
                 <h4>Follow Us On Social Media</h4>
                 {footerLinks?.footer && (
                   <div className="social">
-                    <Link href={footerLinks.footer.facebook} target="_blank">
+                    <Link href={footerLinks.footer.facebook || ''} target="_blank">
                       <FaFacebook size={30} />
                     </Link>
-                    <Link href={footerLinks.footer.twitter} target="_blank">
+                    <Link href={footerLinks.footer.twitter || ''} target="_blank">
                       <FaXTwitter size={30} />
                     </Link>
-                    <Link href={footerLinks.footer.insta} target="_blank">
+                    <Link href={footerLinks.footer.insta || ''} target="_blank">
                       <FaInstagram size={30} />
                     </Link>
                     <Link href="." target="_blank">
