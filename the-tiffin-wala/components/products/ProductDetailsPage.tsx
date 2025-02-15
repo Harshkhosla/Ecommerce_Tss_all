@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Container, Row, Col, Button, Tabs, Tab } from "react-bootstrap";
 import { FaPlus, FaMinus, FaHeart, FaRegHeart } from "react-icons/fa";
@@ -21,6 +21,7 @@ interface ProductDetailsProps {
 }
 
 const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
+  const router = useRouter()
   const {pid:productId}  = useParams<{ pid: string }>(); 
   const [product, setProduct] = useState<ProductType |  null>(
     products.find((item) => item.pid === productId) || null
@@ -64,7 +65,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       return;
     }
 
-    // Dispatching an action (Assumed you have Redux setup)
+    router.push('/cart')
     // dispatch(addToCartAsync({...}));
   };
 
