@@ -9,6 +9,7 @@ import "swiper/css/scrollbar";
 import "./css/index.css";
 import Header from "../components/common/Header";
 import Footer from "@/components/common/Footer";
+import { ReduxProvider } from "@/redux/provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,9 +36,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ReduxProvider>
         <Header/>
         {children}
         <Footer/> 
+        </ReduxProvider>
       </body>
     </html>
   );

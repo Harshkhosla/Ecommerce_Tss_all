@@ -13,6 +13,8 @@ import Ratings from "@/components/common/Ratings";
 // import Reviews from "@/components/shop/Reviews";
 import { tssurl } from "@/app/port";
 import { ProductType } from "../types";
+import { useDispatch } from "react-redux";
+import { addToCartAsync } from "@/redux/counterSlice";
 
 
 
@@ -22,6 +24,7 @@ interface ProductDetailsProps {
 
 const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
   const router = useRouter()
+  const dispatch = useDispatch()
   const {pid:productId}  = useParams<{ pid: string }>(); 
   const [product, setProduct] = useState<ProductType |  null>(
     products.find((item) => item.pid === productId) || null
@@ -64,9 +67,16 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       toast.error("User Account has not been created. Please Login");
       return;
     }
-
+    const data = {
+      mid: mid,
+      pid: productId,
+      Quantity: qty,
+      name: product?.product_name,
+      price: product?.unit_price - discountedPrice,
+      image: product.variants.thumbImg?.[0],
+    };
+    dispatch(addToCartAsync(data));
     router.push('/cart')
-    // dispatch(addToCartAsync({...}));
   };
 
   const toggleLike = async () => {

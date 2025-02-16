@@ -8,9 +8,10 @@ import axios from "axios";
 import Register from "./Register";
 import { tssurl } from "@/app/port"; 
 
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
-
+  const router = useRouter();
   const [show, setShow] = useState(false);
   const [authMode, setAuthMode] = useState("signin");
   const [email, setEmail] = useState("");
@@ -90,7 +91,8 @@ const Login = () => {
           await axios.post(`${tssurl}/user/chit`, { mid: mID });
           localStorage.setItem("lastApiCallLoginDate", today);
         }
-        window.location.reload();
+        router.prefetch('/');
+
       } else {
         toast.error(response.data.message || "Operation Unsuccessful");
       }

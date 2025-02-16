@@ -5,6 +5,7 @@ import { Row, Col, Container } from "react-bootstrap";
 // import ShopTags from "../components/common/Tags";
 import axios from "axios";
 import { tssurl } from "../port";
+import Sidebar from "@/components/profile/Sidebar";
 
 export default function oderHistory (){
     const MID = localStorage.getItem("MID");
@@ -46,7 +47,7 @@ export default function oderHistory (){
         </Row>
         <Row>
           <Col md={3}>
-            {/* <Sidebar /> */}
+            <Sidebar/>
           </Col>
           <Col md={9} className="">
             <div className="shadow rounded px-3 bg-white overflow-auto">
