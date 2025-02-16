@@ -13,6 +13,29 @@ const fs = require('fs');
 const upload = multer();
 const axios = require('axios');
 const VisitorLog = require('../../models/VisitorLog');
+const { client, pushtoQueue, getQueue, popFromQueue } = require('../../redis/redisClient');
+
+
+
+router.post('/subcribedpid',async(req,res)=>{
+    try{
+        const pids = req.body.pids;
+        pids.map((pid,index)=>{
+            const charger = `Charger`
+            pushtoQueue(charger,pid)
+        })
+        const charger =`Charger`;
+      const queue =  await getQueue(charger) 
+
+        // pids.map((pids,index)=>{
+        //     const charger = `Charger`;
+        //     popFromQueue(charger)
+        // })
+        res.status(200).json(queue)
+    }catch(error){
+        res.status(400).json("Error in the queue ",error)
+    }
+})
 
 router.get('/visitor-log/today', async (req, res) => {
     try {

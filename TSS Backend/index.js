@@ -49,6 +49,9 @@ const ImageRoute = require("./routes/ImageUploads/ImageUpload.js");
 const TicketSupport = require("./routes/Websocket/TicketSupport.js");
 const { Server } = require("socket.io");
 const Ticket = require("./models/Ticket.js");
+const { connectRedis } = require("./redis/redisClient.js");
+
+
 
 ConnectToMongo();
 const app = express();
@@ -167,6 +170,8 @@ io.on("connection", (socket) => {
 server.listen(5300, () => {
   console.log(`Web socket SERVER IS RUNNING on port ${PORT}`);
 });
+
+connectRedis()
 
 const PORT = process.env.PORT || 5200;
 app.listen(PORT, "0.0.0.0", () => {
