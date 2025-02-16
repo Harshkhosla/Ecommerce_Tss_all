@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Form, Card, Row, Col, Image, Button } from "react-bootstrap";
-import { FaRegHeart, FaHeart, FaMinus, FaPlus } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { Card, Row, Col, Image, Button } from "react-bootstrap";
+import { FaRegHeart, FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,30 +11,34 @@ import { tssurl } from "@/app/port";
 import { RootState } from "@/redux/store";
 import { getProductDataByPID, updateProductQuantityAsync } from "@/redux/counterSlice";
 
-const CartCard = ({ index, product }) => {
+interface Product {
+  Quantity: number,
+  pid: string,
+  name: string,
+  url: string
+
+}
+interface Cartprops {
+  index: number,
+  product: Product,
+}
+
+const CartCard: React.FC<Cartprops> = ({ index, product }) => {
   const { pid, Quantity } = product;
   const mid = localStorage.getItem("MID");
   const [likedProducts, setLikedProducts] = useState([]);
   const [quantity, setQuantity] = useState(Quantity);
 
   const dispatch = useDispatch();
-  // const productData = useSelector((state) => state.Store.productDataMap[pid]) || {};
-    const cartItems = useSelector((state: RootState) => state.counter.items);
-    const productData = useSelector((state: RootState) => state.counter.productDataMap);
-    console.log(productData,"xkvjhsbvskjbvs");
-    
+
+  const cartItems = useSelector((state: RootState) => state.counter.items);
+  const productData = useSelector((state: RootState) => state.counter.productDataMap[pid]);
+
+
   const particularcarddata = cartItems[index] || {};
 
-
-
-  const DiscountedPrice =
-    productData?.discount_type === "Amount"
-      ? particularcarddata?.price - productData?.discount
-      : particularcarddata?.price - ( (productData?.unit_price ) * productData?.discount )/100;
-
-
-  const updateQuantity = (updatedQuantity:number) => {
-    dispatch(updateProductQuantityAsync({ data: { ...data, Quantity: updatedQuantity }, mid }));
+  const updateQuantity = (updatedQuantity: number) => {
+    dispatch(updateProductQuantityAsync({ data: { ...particularcarddata, Quantity: updatedQuantity }, mid }));
   };
 
   useEffect(() => {
@@ -47,7 +51,7 @@ const CartCard = ({ index, product }) => {
       updateQuantity(quantity + 1);
     }
 
-    
+
   };
 
   const handleDecrease = () => {
@@ -97,9 +101,9 @@ const CartCard = ({ index, product }) => {
             </Col>
           </Row>
           <Row>
-            <h5>₹{DiscountedPrice.toFixed(2)}</h5>
+            <h5>₹{particularcarddata.price.toFixed(2)}</h5>
             <span style={{ textDecoration: "line-through", color: "red" }}>
-              ₹{particularcarddata.price}
+              ₹{productData?.unit_price}
             </span>
           </Row>
           <Row style={{ margin: "1rem 0" }}>

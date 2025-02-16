@@ -25,8 +25,8 @@ interface ProductDetailsProps {
 const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
   const router = useRouter()
   const dispatch = useDispatch()
-  const {pid:productId}  = useParams<{ pid: string }>(); 
-  const [product, setProduct] = useState<ProductType |  null>(
+  const { pid: productId } = useParams<{ pid: string }>();
+  const [product, setProduct] = useState<ProductType | null>(
     products.find((item) => item.pid === productId) || null
   );
   const [qty, setQty] = useState(1);
@@ -50,13 +50,15 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
 
     fetchLikedProducts();
   }, [productId, mid]);
+  console.log(product, "sdjvhbvjsbvdshvhjvb");
 
   const discountedPrice =
-  product
-    ? product.discount_type === "Amount"
-      ? product.unit_price - product.discount
-      : product.unit_price * (1 - product.discount / 100)
-    : 0;
+    product
+      ? product.discount_type === "Amount"
+        ? product.unit_price - Number(product.discount)
+        : product.unit_price * (1 - Number(product.discount) / 100)
+      : 0;
+
 
   const handleQtyChange = (change: number) => {
     setQty((prevQty) => Math.max(1, Math.min(10, prevQty + change)));
@@ -72,10 +74,10 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       pid: productId,
       Quantity: qty,
       name: product?.product_name,
-      price: product?.unit_price - discountedPrice,
-      image: product.variants.thumbImg?.[0],
+      price: discountedPrice,
+      image: product?.variants?.[0]?.GalleryImg?.[0] || "",
     };
-    dispatch(addToCartAsync(data));
+    dispatch(addToCartAsync({ mid, data: data }));
     router.push('/cart')
   };
 
@@ -107,7 +109,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
 
       <Row className="product-details">
         <Col md={6}>
-        {product ? <ProductGallery product={product} /> : <p>Loading...</p>}
+          {product ? <ProductGallery product={product} /> : <p>Loading...</p>}
         </Col>
         <Col md={6}>
           <h3>{product?.product_name}</h3>
@@ -117,7 +119,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
               <span style={{ textDecoration: "line-through", color: "red" }}>₹{product?.unit_price}</span>
             </Col>
             <Col md={3}>
-              <Ratings value={product?.rating || 0} />
+              <Ratings value={Number(product?.rating) || 0} />
             </Col>
           </Row>
 

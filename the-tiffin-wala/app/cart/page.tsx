@@ -3,20 +3,19 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { tssurl } from "../port";
 import CartCard from "@/components/cart/CartCard";
 import { getCartItemsAsync } from "@/redux/counterSlice";
 
 
-interface CartItem {
-  mid: string;
-  pid: string;
-  Quantity: number;
-  name: string;
-  price: number;
-  image?: string;
-}
+// interface CartItem {
+//   mid: string;
+//   pid: string;
+//   Quantity: number;
+//   name: string;
+//   price: number;
+//   image?: string;
+// }
 
 interface Promotion {
   promotion_code: string;
@@ -37,14 +36,11 @@ const CartPage: React.FC = () => {
   const [selectedPromotion, setSelectedPromotion] = useState<string | null>(null);
   const [promoApplied, setPromoApplied] = useState(false);
   const [viewOffer, setViewOffer] = useState(false);
-  const [showTerms, setShowTerms] = useState<{ [key: number]: boolean }>({});
   const [promotions, setPromotions] = useState<Promotion[]>([]);
-  const [shippingDiscount, setShippingDiscount] = useState(0);
 
 
   const cartItems = useSelector((state: RootState) => state.counter.items);
 
-  console.log(cartItems,'ceveveve');
   
  
   useEffect(() => {
@@ -53,11 +49,11 @@ const CartPage: React.FC = () => {
     }
   }, [dispatch, mid]);
 
-  // ✅ Memoized Cart Total Calculation
-//   const bagTotal = useMemo(() => {
-//     return cartItems?.reduce((total, item) => total + item.Quantity * item.price, 0) || 0;
-//   }, [cartItems]);
-const bagTotal = 299
+  const bagTotal = useMemo(() => {
+    return cartItems?.reduce((total, item) => total + item.Quantity * item.price, 0) || 0;
+  }, [cartItems]);
+
+
   const deliveryFee = 5;
   const tax = 0;
 
@@ -121,14 +117,12 @@ const bagTotal = 299
           </Col>
         ) : (
           <>
-            {/* Cart Items */}
             <Col md={8} className="my-2">
               {cartItems?.map((product, index) => (
                 <CartCard key={product.pid} index={index} product={product} />
               ))}
             </Col>
 
-            {/* Order Summary */}
             <Col md={4} className="mt-4">
               <Card className="bg-light pt-3">
                 <strong className="ps-3" style={{ fontSize: "1.4rem" }}>Order Details</strong>
