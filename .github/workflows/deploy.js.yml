@@ -1,4 +1,4 @@
-name: Deploy to ec2 instance
+name: Deploy to EC2 instance
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 2  # Ensures the previous commit exists
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -26,7 +26,6 @@ jobs:
       - name: Determine Deployment Target
         id: determine_target
         run: |
-          git fetch --unshallow || true
           PREV_COMMIT=${{ github.event.before }}
           if [ -z "$PREV_COMMIT" ] || ! git cat-file -e $PREV_COMMIT^{commit}; then
             PREV_COMMIT=$(git rev-parse HEAD~1)
@@ -39,12 +38,13 @@ jobs:
           if echo "$CHANGED_FILES" | grep -q '^TSS Backend/'; then
             echo "DEPLOY_PATH=TSS Backend" >> $GITHUB_ENV
             echo "Deploying TSS Backend..."
-          else:
+          else
             echo "No relevant changes detected. Skipping deployment."
             exit 0
+          fi
 
       - name: SSH and Deploy to EC2
-        if: steps.determine_target.outputs.DEPLOY_PATH == 'TSS Backend'
+        if: env.DEPLOY_PATH == 'TSS Backend'
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ec2_key.pem
           chmod 600 ec2_key.pem
@@ -55,6 +55,3 @@ jobs:
             npm install
             pm2 restart tss-mycare
           EOF
-        env:
-          EC2_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
