@@ -61,6 +61,8 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
+
+
 const server = http.createServer(app);
 
 app.use(express.json());
@@ -132,13 +134,13 @@ app.use('/admin/ticket', TicketSupport)
 
 const io = new Server(server, {
   cors: {
-    origin: "*",  // Allow all origins (change to specific domain in production)
+    origin: "*",  
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,  // Allow cookies and authentication headers
+    credentials: true,  
   },
-  transports: ["websocket", "polling"], // Ensure WebSocket connection works
-  allowEIO3: true, // Allow older Socket.IO clients (if needed)
+  transports: ["websocket", "polling"], 
+  allowEIO3: true, 
 });
 
 io.on("connection", (socket) => {
@@ -167,8 +169,9 @@ io.on("connection", (socket) => {
 });
 
 
+const PORT2 = process.env.PORT || 5300;
 server.listen(5300, () => {
-  console.log(`Web socket SERVER IS RUNNING on port ${PORT}`);
+  console.log(`Web socket SERVER IS RUNNING on port ${PORT2}`);
 });
 
 connectRedis()
