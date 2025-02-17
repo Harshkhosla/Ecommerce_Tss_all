@@ -10,7 +10,8 @@ const tssurl1 = "https://tssapis.devcorps.in/client";
 
 const tssurl2 = "https://brand.mycarebilling.com/api";
 const tssurl = "https://brand.mycarebilling.com/api/admin";
-const wss = "ws://18.212.238.96:5300/"
+const wss = "wss://websocket.mycarebilling.com/"
+// const wss = "ws://18.212.238.96:5300/"
 
 
 
