@@ -24,6 +24,7 @@ router.post('/subcribedpid',async(req,res)=>{
             const charger = `Charger`
             pushtoQueue(charger,pid)
         })
+        
         const charger =`Charger`;
       const queue =  await getQueue(charger) 
 

@@ -1,0 +1,62 @@
+name: Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  CI: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Determine Deployment Target
+        id: determine_target
+        run: |
+          git fetch --unshallow || true
+          PREV_COMMIT=${{ github.event.before }}
+          if [ -z "$PREV_COMMIT" ] || ! git cat-file -e $PREV_COMMIT^{commit}; then
+            PREV_COMMIT=$(git rev-parse HEAD~1)
+          fi
+
+          echo "Comparing changes from $PREV_COMMIT to HEAD"
+          CHANGED_FILES=$(git diff --name-only $PREV_COMMIT HEAD)
+          echo "Changed files: $CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -q '^TSS Backend/'; then
+            echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_ADMIN }}" >> $GITHUB_ENV
+            echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_ADMIN }}" >> $GITHUB_ENV
+            echo "DEPLOY_PATH=TSS Backend" >> $GITHUB_ENV
+            echo "Deploying TSS Backend..."
+          else:
+            echo "No relevant changes detected. Skipping deployment."
+            exit 0
+
+      - name: SSH and Deploy to EC2
+        if: steps.determine_target.outputs.DEPLOY_PATH == 'TSS Backend'
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            cd /Ecommerce_Tss_all
+            git pull origin main
+            cd /TSS Backend
+            npm install
+            pm2 restart tss-mycare
+          EOF
+        env:
+          EC2_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
