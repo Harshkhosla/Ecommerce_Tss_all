@@ -51,7 +51,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
             cd Ecommerce_Tss_all
             git pull origin main
-            cd TSS Backend
+            cd 'TSS Backend'
             npm install
             pm2 restart tss-mycare
           EOF
