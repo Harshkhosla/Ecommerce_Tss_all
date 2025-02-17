@@ -16,7 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -37,8 +37,6 @@ jobs:
           echo "Changed files: $CHANGED_FILES"
 
           if echo "$CHANGED_FILES" | grep -q '^TSS Backend/'; then
-            echo "TARGET_BUCKET=${{ secrets.AWS_S3_BUCKET_ADMIN }}" >> $GITHUB_ENV
-            echo "DISTRIBUTION_ID=${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_ADMIN }}" >> $GITHUB_ENV
             echo "DEPLOY_PATH=TSS Backend" >> $GITHUB_ENV
             echo "Deploying TSS Backend..."
           else:
