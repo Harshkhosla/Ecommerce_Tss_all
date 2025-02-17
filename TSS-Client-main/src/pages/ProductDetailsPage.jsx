@@ -174,37 +174,6 @@ const ProductDetailsPage = () => {
                 <Ratings value={parseFloat(product?.rating)} />
               </Col>
             </Row>
-            {/* <h6 className="mt-2">
-              Color:{" "}
-              <span>
-                {colors?.map((color) => (
-                  <OverlayTrigger
-                    key={color.name}
-                    placement="bottom"
-                    overlay={
-                      <Tooltip id={`tooltip-${color.name}`}>{color.name}</Tooltip>
-                    }
-                  >
-                    <span>
-                      <FaCircle
-                        size="25px"
-                        className="mx-1"
-                        color={color.value}
-                        style={{
-                          border:
-                            selectedColor === color.value
-                              ? "2px orange solid"
-                              : "",
-                          borderRadius:
-                            selectedColor === color.value ? "15px" : "",
-                        }}
-                        onClick={() => setSelectedColor(color.value)}
-                      />
-                    </span>
-                  </OverlayTrigger>
-                ))}
-              </span>
-            </h6> */}
             <Row>
               <Col md={6}>
                 <h6 className="text-2xl pt-2" style={{color:"green" }}>Type of food* {category}</h6>
