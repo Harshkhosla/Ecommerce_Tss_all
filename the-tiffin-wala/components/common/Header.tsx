@@ -90,7 +90,7 @@ const Header = () => {
                 <Nav.Link href="/wishlist" className="px-3">
                   <FaStar size={15} />
                 </Nav.Link>
-                <Nav.Link href="/cart/carts" className="px-3">
+                <Nav.Link href="/cart" className="px-3">
                   <FaShoppingCart size={15} />
                 </Nav.Link>
               </Nav>
@@ -132,7 +132,7 @@ const Header = () => {
                 <Image src={logo} alt="TSS" fluid />
               </Navbar.Brand>
               <Nav>
-                <Nav.Link href="/cart/carts" className="px-3 cart-mob">
+                <Nav.Link href="/cart" className="px-3 cart-mob">
                   <FaShoppingCart size={15} />
                 </Nav.Link>
               </Nav>

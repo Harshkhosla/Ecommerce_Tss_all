@@ -6,6 +6,7 @@ import { FaWallet } from "react-icons/fa";
 import { IoStarSharp } from "react-icons/io5";
 import axios from "axios";
 import { tssurl } from "../port";
+import Sidebar from "@/components/profile/Sidebar";
 
 interface RewardPointsResponse {
   reward_points: number;
@@ -53,7 +54,7 @@ export default function Rewardpoints() {
   return (
     <Container fluid>
       <Row>
-        <Col md={3}>{/* <Sidebar /> */}</Col>
+        <Col md={3}><Sidebar /></Col>
         <Col md={9}>
           <h4>My Points</h4>
           <Row>

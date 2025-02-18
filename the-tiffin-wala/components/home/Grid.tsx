@@ -51,13 +51,13 @@ const Grid = ({ data }) => {
       <h4 className="mob-head">More To Explore</h4>
       <Row key={1} className="mob-head">
         <Col md={5}>
-          <Image src={image1?.url} fluid />
+          <Image src={image1?.url} alt='clothing' fluid />
           <Link href={link1}>
             <p className="gtitle">{title1}</p>
           </Link>
         </Col>
         <Col md={7}>
-          <Image src={image2?.url} fluid />
+          <Image src={image2?.url} alt='clothing' fluid />
           <Link href={link2}>
             <p className="gtitle">{title2}</p>
           </Link>
@@ -65,13 +65,13 @@ const Grid = ({ data }) => {
       </Row>
       <Row key={2} className="mob-head">
         <Col md={7}>
-          <Image src={image3?.url} fluid />
+          <Image src={image3?.url}  alt='clothing' fluid />
           <Link href={link3}>
             <p className="gtitle">{title3}</p>
           </Link>
         </Col>
         <Col md={5}>
-          <Image src={image4?.url} fluid />
+          <Image src={image4?.url} alt='clothing' fluid />
           <Link href={link4}>
             <p className="gtitle">{title4}</p>
           </Link>

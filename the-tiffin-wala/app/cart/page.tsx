@@ -1,7 +1,7 @@
 "use client"
 import { AppDispatch, RootState } from "@/redux/store";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import { Container, Row, Col, Button, Card, NavLink } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { tssurl } from "../port";
 import CartCard from "@/components/cart/CartCard";
@@ -143,9 +143,9 @@ const CartPage: React.FC = () => {
                   <Col md="5">₹ {total}</Col>
                 </Row>
 
-                {/* <NavLink to="/checkout" state={{ cartItems, bagTotal, total }}>
+                <NavLink href="/checkout" state={{ cartItems, bagTotal, total }}>
                   <Button className="fw-bold mt-4 w-100" style={{ backgroundColor: "#000", color: "orange" }}>Checkout</Button>
-                </NavLink> */}
+                </NavLink>
               </Card>
 
               {/* Coupons Section */}

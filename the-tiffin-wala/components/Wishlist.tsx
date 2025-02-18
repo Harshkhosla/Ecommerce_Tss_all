@@ -95,7 +95,7 @@ const WishlistPage: React.FC = () => {
       if (response.status === 200) {
         toast.success("Product added to cart");
         handleDeleteProduct(productID);
-        router.push("/cart/carts");
+        router.push("/cart");
       } else {
         console.error("Failed to add product to cart");
       }
