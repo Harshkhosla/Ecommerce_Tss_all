@@ -4,7 +4,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { ProductType } from "@/components/types";
 import { tssurl } from "@/app/port";
-import ShopBanner from "@/components/shop/ShopBanner";
+// import ShopBanner from "@/components/shop/ShopBanner";
 import Filters from "@/components/shop/Filters";
 import ProductSearch from "@/components/shop/ProductSearch";
 import Product from "@/components/shop/Product";

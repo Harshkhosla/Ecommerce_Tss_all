@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Row, Container, Col, Image } from "react-bootstrap";
-import ShopTags from "@/components/common/Tags";
+// import ShopTags from "@/components/common/Tags";
 import AddressCard from "@/components/common/AddressCard";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";

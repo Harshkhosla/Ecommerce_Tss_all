@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight, } from "react-icons/fa";
 import Link from "next/link";
 
 const ProductsSlider = ({ data }) => {
-  let cardslide = {
+  const  cardslide = {
     dots: false,
     infinite: true,
     speed: 500,

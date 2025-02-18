@@ -65,7 +65,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
   };
 
   const addToCartHandler = () => {
-    if (!mid) {
+    if (!mid) { 
       toast.error("User Account has not been created. Please Login");
       return;
     }

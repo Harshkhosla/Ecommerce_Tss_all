@@ -23,25 +23,25 @@ const MainComponent: React.FC = () => {
   const [savedData, setSavedData] = useState<CardData[]>([]);
   const MID = typeof window !== "undefined" ? localStorage.getItem("MID") : "";
 
-  const [formState, setFormState] = useState({
-    cardType: "Credit Card",
-    mid: MID,
-    number: "",
-    name: "",
-    expiry: "",
-    cvc: "",
-    focus: "",
-    cardTitle: "",
-    isDefault: false,
-  });
+  // const [formState, setFormState] = useState({
+  //   cardType: "Credit Card",
+  //   mid: MID,
+  //   number: "",
+  //   name: "",
+  //   expiry: "",
+  //   cvc: "",
+  //   focus: "",
+  //   cardTitle: "",
+  //   isDefault: false,
+  // });
 
-  const [editMode, setEditMode] = useState(false);
-  const [editedCardId, setEditedCardId] = useState<string | null>(null);
-  const [formErrors, setFormErrors] = useState({
-    number: "",
-    expiry: "",
-    cvc: "",
-  });
+  // const [editMode, setEditMode] = useState(false);
+  // const [editedCardId, setEditedCardId] = useState<string | null>(null);
+  // const [formErrors, setFormErrors] = useState({
+  //   number: "",
+  //   expiry: "",
+  //   cvc: "",
+  // });
 
   useEffect(() => {
     const fetchCardDetails = async () => {
@@ -57,78 +57,78 @@ const MainComponent: React.FC = () => {
     if (MID) fetchCardDetails();
   }, [MID]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
-    setFormErrors((prev) => ({ ...prev, [name]: "" }));
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormState((prev) => ({ ...prev, [name]: value }));
+  //   // setFormErrors((prev) => ({ ...prev, [name]: "" }));
+  // };
 
-  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setFormState((prev) => ({ ...prev, focus: e.target.name }));
-  };
+  // const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+  //   setFormState((prev) => ({ ...prev, focus: e.target.name }));
+  // };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prev) => ({ ...prev, isDefault: e.target.checked }));
-  };
+  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setFormState((prev) => ({ ...prev, isDefault: e.target.checked }));
+  // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    let valid = true;
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   let valid = true;
 
-    if (formState.number.length !== 16) {
-      setFormErrors((prev) => ({ ...prev, number: "Card number must be 16 digits" }));
-      valid = false;
-    }
+  //   if (formState.number.length !== 16) {
+  //     // setFormErrors((prev) => ({ ...prev, number: "Card number must be 16 digits" }));
+  //     valid = false;
+  //   }
 
-    if (!formState.expiry.match(/\d{2}\/\d{2}/)) {
-      setFormErrors((prev) => ({ ...prev, expiry: "Expiry date must be in MM/YY format" }));
-      valid = false;
-    }
+  //   if (!formState.expiry.match(/\d{2}\/\d{2}/)) {
+  //     // setFormErrors((prev) => ({ ...prev, expiry: "Expiry date must be in MM/YY format" }));
+  //     valid = false;
+  //   }
 
-    if (formState.cvc.length !== 3) {
-      setFormErrors((prev) => ({ ...prev, cvc: "CVC must be 3 digits" }));
-      valid = false;
-    }
+  //   if (formState.cvc.length !== 3) {
+  //     // setFormErrors((prev) => ({ ...prev, cvc: "CVC must be 3 digits" }));
+  //     valid = false;
+  //   }
 
-    if (!valid) return;
+  //   if (!valid) return;
 
-    const data = {
-      mid: MID,
-      card: {
-        number: formState.number,
-        name: formState.name,
-        expiry: formState.expiry,
-        cvv: formState.cvc,
-        holderName: formState.name,
-        title: formState.cardType,
-        default: formState.isDefault,
-      },
-    };
+  //   const data = {
+  //     mid: MID,
+  //     card: {
+  //       number: formState.number,
+  //       name: formState.name,
+  //       expiry: formState.expiry,
+  //       cvv: formState.cvc,
+  //       holderName: formState.name,
+  //       title: formState.cardType,
+  //       default: formState.isDefault,
+  //     },
+  //   };
 
-    try {
-      if (editMode && editedCardId) {
-        await axios.put(`${tssurl}/payments/card/${editedCardId}`, data);
-      } else {
-        await axios.post(`${tssurl}/payments/payment/cards`, data);
-      }
-      setShowModal(false);
-      setEditMode(false);
-      setEditedCardId(null);
-      setFormState({
-        cardType: "Credit Card",
-        mid: MID,
-        number: "",
-        name: "",
-        expiry: "",
-        cvc: "",
-        focus: "",
-        cardTitle: "",
-        isDefault: false,
-      });
-    } catch (error) {
-      console.error("Error adding card details:", error);
-    }
-  };
+  //   try {
+  //     if (editMode && editedCardId) {
+  //       await axios.put(`${tssurl}/payments/card/${editedCardId}`, data);
+  //     } else {
+  //       await axios.post(`${tssurl}/payments/payment/cards`, data);
+  //     }
+  //     setShowModal(false);
+  //     setEditMode(false);
+  //     setEditedCardId(null);
+  //     setFormState({
+  //       cardType: "Credit Card",
+  //       mid: MID,
+  //       number: "",
+  //       name: "",
+  //       expiry: "",
+  //       cvc: "",
+  //       focus: "",
+  //       cardTitle: "",
+  //       isDefault: false,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error adding card details:", error);
+  //   }
+  // };
 
   const handleDeleteCard = async (cardId: string) => {
     try {

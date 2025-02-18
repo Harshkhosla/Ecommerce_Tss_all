@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 
-const ProductSearch = ({ products, onSearch }) => {
+const ProductSearch = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (event:Event) => {

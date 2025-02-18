@@ -1,7 +1,6 @@
-import { Row, Image } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 // import banner1 from '../../assets/images/Tiffin5.jpeg';
 import ShopTags from '../common/Tags';
-import { tssurl } from '@/app/port';
 
 const ShopBanner = async() => {
   // const data = await  getpromocode()

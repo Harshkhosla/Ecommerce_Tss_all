@@ -1,13 +1,13 @@
 "use client";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
  import { useState, useEffect } from 'react';
 import { Container, ListGroup } from 'react-bootstrap';
 import { BsChevronRight } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Sidebar: React.FC = () => {
-  const navigate = useNavigate;
+  const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,6 +25,7 @@ const Sidebar: React.FC = () => {
     setIsLoggedIn(false);
     toast.success('Logout successfully');
     // navigate('/');
+    router.push('/')
   };
 
   return (

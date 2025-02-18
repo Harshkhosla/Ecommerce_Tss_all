@@ -32,7 +32,7 @@ const Grid = ({ data }) => {
 
     return carouselItems.map((item, index) => (
       <Carousel.Item key={index}>
-        <img
+        <Image
           src={item.image?.url}
           alt={`carousel${index}`}
           className="d-block w-100"

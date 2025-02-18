@@ -22,11 +22,16 @@ interface CartState {
   items: CartItem[];
   productDataMap: ProductData;
   status: "idle" | "loading" | "failed";
+  bagTotal:number;
+  total:number;
 }
+
 
 const initialState: CartState = {
   items: [],
   productDataMap: {},
+  bagTotal:0,
+  total:0,
   status: "idle",
 };
 
@@ -136,6 +141,16 @@ const cartSlice = createSlice({
         state.items.push(action.payload);
       }
     },
+    setCartData: (state, action: PayloadAction<CartState>) => {
+      // state.cartItems = action.payload.cartItems;
+      state.bagTotal = action.payload.bagTotal;
+      state.total = action.payload.total;
+    },
+    clearCartData: (state) => {
+      // state.cartItems = [];
+      state.bagTotal = 0;
+      state.total = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -166,5 +181,5 @@ const cartSlice = createSlice({
 });
 
 // ✅ Export Actions & Reducer
-export const { addOrUpdateCartItem } = cartSlice.actions;
+export const { addOrUpdateCartItem , setCartData } = cartSlice.actions;
 export default cartSlice.reducer;

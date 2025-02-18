@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import { Row, Col, Container, Button } from "react-bootstrap";
-import ShopTags from "../../components/common/Tags";
+// import ShopTags from "../../components/common/Tags";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { tssurl } from "../port";
