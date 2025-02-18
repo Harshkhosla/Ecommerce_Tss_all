@@ -1,16 +1,18 @@
 'use client';
 
 import { useEffect, useState, useRef } from "react";
-// import ShopTags from "../components/common/Tags";
 import { Row, Container, Col, Image } from "react-bootstrap";
-// import AddressCard from "../components/profile/AddressCard";
+import ShopTags from "@/components/common/Tags";
+import AddressCard from "@/components/common/AddressCard";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaLocationDot } from "react-icons/fa6";
 import { tssurl } from "../port";
 import Sidebar from "@/components/profile/Sidebar";
-// import AddAddressModal from "../components/profile/AddressModal";
+import Tags from "@/components/common/Tags";
+import { toast } from "react-toastify";
+import AddAddressModal from "@/components/common/AddressModal";
 
 interface Address {
   _id: string;
@@ -67,7 +69,48 @@ const ProfilePage: React.FC = () => {
       setPreviewSource(URL.createObjectURL(file));
     }
   };
+  const updateAddress = (addressId: string, updatedData: Partial<Address>) => {
+    setAddresses((prevAddresses) =>
+      prevAddresses.map((address) =>
+        address._id === addressId ? { ...address, ...updatedData } : address
+      )
+    );
+  };
+  
+  const onDelete = async (addressID: string, mID: string | null) => {
+    try {
+      const response = await fetch(
+        `${tssurl}/auth/users/${mID}/addresses/${addressID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`Failed to delete address: ${response.statusText}`);
+      }
+  
+      console.log("Address deleted successfully");
+  
+      setAddresses((prevAddresses) =>
+        prevAddresses.filter((address) => address._id !== addressID)
+      );
+  
+      // Instead of full reload, consider showing a toast
+      toast.success("Address deleted successfully");
+  
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      toast.error("Failed to delete address");
+    }
+  };
+  
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!mID) return;
@@ -88,7 +131,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <Container fluid>
-      {/* <Row><ShopTags /></Row> */}
+      <Row><Tags/></Row>
       <Row>
         <Col md={3}><Sidebar/></Col>
         <Col md={9}>
@@ -128,13 +171,18 @@ const ProfilePage: React.FC = () => {
         <Col md={2}><FaLocationDot onClick={() => setShowModal(true)} /></Col>
         <Col md={8}>
           <Slider dots infinite slidesToShow={2} slidesToScroll={1}>
-            {/* {addresses.length ? addresses.map((address) => (
-              <AddressCard key={address._id} address={address} />
-            )) : <p>No addresses found.</p>} */}
+            {addresses.length ? addresses.map((address) => (
+              <AddressCard 
+              key={address._id} 
+              address={address} 
+              onDelete={(id, mID) => onDelete(id, mID)}
+              updateAddress={(id, updatedData) => updateAddress(id, updatedData)}
+            />
+            )) : <p>No addresses found.</p>}
           </Slider>
         </Col>
       </Row>
-      {/* <AddAddressModal showModal={showModal} handleCloseModal={() => setShowModal(false)} /> */}
+      <AddAddressModal showModal={showModal} handleCloseModal={() => setShowModal(false)} handleAdd={(newAddress) => console.log(newAddress)}/>
     </Container>
   );
 };

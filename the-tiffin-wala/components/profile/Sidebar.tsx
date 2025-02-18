@@ -48,7 +48,7 @@ const Sidebar: React.FC = () => {
             <BsChevronRight />
           </ListGroup.Item>
         </Link>
-        <Link href="/PaymentOptions" className="sidebar-link text-decoration-none">
+        <Link href="/paymentOptions" className="sidebar-link text-decoration-none">
           <ListGroup.Item className="sidebar-item">
             Payment Options
             <BsChevronRight />
