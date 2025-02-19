@@ -1,7 +1,18 @@
-"use client"
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+"use client";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 
-const NewsLetter = ({ data }) => {
+interface FooterData {
+  Title?: string;
+  Subtitle?: string;
+}
+
+interface NewsLetterProps {
+  data?: {
+    footer?: FooterData;
+  };
+}
+
+const NewsLetter: React.FC<NewsLetterProps> = ({ data }) => {
   return (
     <Container fluid>
       <Row className="newsletter">
@@ -10,7 +21,7 @@ const NewsLetter = ({ data }) => {
           <h5>{data?.footer?.Subtitle}</h5>
         </Col>
         <Col md="6">
-          <Form.Group controlId="formNews" className="flex">
+          <Form.Group controlId="formNews" className="d-flex">
             <Form.Control type="email" placeholder="Email Id" />
             <Button variant="dark" size="lg">
               Subscribe
