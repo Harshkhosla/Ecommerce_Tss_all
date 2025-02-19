@@ -10,7 +10,7 @@ import Login from "../auth/Login";
 
 const ClientAuthControls = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [show, setShow] = useState(false);
+    // const [show, setShow] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -36,8 +36,7 @@ const ClientAuthControls = () => {
                 </NavDropdown>
             ) : (
                 <Nav.Link className="px-3 mob-head">
-                    <div>kvhjbs</div>
-                    <Login data={show} handleShow={() => setShow(true)} />
+                    <Login  />
                 </Nav.Link>
             )}
         </>

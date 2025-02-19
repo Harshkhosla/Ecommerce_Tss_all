@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
-import { ProductType } from "@/components/types";
+// import { ProductType } from "@/components/types";
 import { tssurl } from "@/app/port";
 // import ShopBanner from "@/components/shop/ShopBanner";
 import Filters from "@/components/shop/Filters";
@@ -11,6 +11,24 @@ import Product from "@/components/shop/Product";
 import { useParams } from "next/navigation";
 
 
+interface ProductType {
+  pid: string;
+  product_name: string;
+  unit_price: number;
+  draft: string;
+  sub_category:string;
+  category:string;
+  size: { name: string }[];
+  discount: number;
+  discount_type: "Amount" | "Percentage";
+  reward_points: number;
+  rating: string;
+  variants?: { ThumbImg?: string[] }[];
+}
+
+// interface ProductsPageProps {
+//   products: ProductType[];
+// }
 
 const SubCategoryPage = () => {
   const [products, setProducts] = useState<ProductType[]>([]);

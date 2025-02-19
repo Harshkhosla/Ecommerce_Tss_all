@@ -69,7 +69,7 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) 
         <Col md="10" className="p-2">
           <Row>
             <Col md={9}>
-              <ProductSearch products={products} onSearch={handleSearch} />
+              <ProductSearch  onSearch={handleSearch} />
             </Col>
             <Col md={3} className="proselect">
               <span> Sort: </span>

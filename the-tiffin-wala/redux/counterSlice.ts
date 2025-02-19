@@ -19,11 +19,11 @@ interface ProductData {
 }
 
 interface CartState {
-  items: CartItem[];
-  productDataMap: ProductData;
-  status: "idle" | "loading" | "failed";
-  bagTotal:number;
-  total:number;
+  items?: CartItem[];
+  productDataMap?: ProductData;
+  status?: "idle" | "loading" | "failed";
+  bagTotal?:number;
+  total?:number;
 }
 
 

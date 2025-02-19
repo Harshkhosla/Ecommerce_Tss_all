@@ -1,11 +1,15 @@
-"use client"
-import { useState } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+"use client";
+import { useState } from "react";
+import { Row, Col, Form, Button } from "react-bootstrap";
 
-const ProductSearch = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+interface ProductSearchProps {
+  onSearch: (searchTerm: string) => void;
+}
 
-  const handleSearch = (event:Event) => {
+const ProductSearch: React.FC<ProductSearchProps> = ({ onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSearch(searchTerm);
   };
@@ -14,7 +18,7 @@ const ProductSearch = ({ onSearch }) => {
     <Row className="productsearch">
       <Col md="7">
         <Form onSubmit={handleSearch}>
-          <Form.Group controlId="formSearch" className="flex">
+          <Form.Group className="d-flex">
             <Form.Control
               type="text"
               id="searchTerm"

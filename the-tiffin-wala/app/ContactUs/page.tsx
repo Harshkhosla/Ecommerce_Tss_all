@@ -6,13 +6,14 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { tssurl } from "../port";
 import Sidebar from "@/components/profile/Sidebar";
+import { Info } from "@/components/types";
 
 const Contact = () => {
   const [name, setName] = useState("");
   const [mail, setMail] = useState("");
   const [phn, setPhn] = useState("");
   const [message, setMessage] = useState("");
-  const [info, setInfo] = useState<any>(null);
+  const [info, setInfo] = useState<Info>();
 
   const authToken = localStorage.getItem("authToken");
   const MID = localStorage.getItem("MID");

@@ -8,42 +8,36 @@ import AddAddressModal from '@/components/common/AddressModal';
 import { tssurl } from '../port';
 import {  useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import Image from 'next/image';
+import { Product } from '@/components/types';
 // import { getCartItemsAsync } from '@/redux/counterSlice';
+
+
 
 const CheckoutPgae = () => {
 
 // const dispatch = useDispatch();
 const cartItems = useSelector((state: RootState) => state.counter.items);
 const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
-// console.log(cartItems2,"dskvjsvjnvdjvsndsv");
-
   const mid = localStorage.getItem('MID');
-//   console.log(CheckData, 'lopo');
-//   const {
-//     bagDiscount,
-//     bagTotal,
-//     cartItems,
-//     deliveryFee,
-//     tax,
-//     total,
-//   } = CheckData;
 
   const [allAddress, setAllAddress] = useState([]);
-  const [allPaymentOptions, setAllPaymentOptions] = useState([]);
-  const [selectedCardType, setSelectedCardType] = useState('');
-  const [selectedCard, setSelectedCard] = useState('');
+  // const [allPaymentOptions, setAllPaymentOptions] = useState([]);
+  // const [selectedCardType, setSelectedCardType] = useState('');
+  // const [selectedCard, setSelectedCard] = useState('');
   const [selectedAddress, setSelectedAddress] = useState('');
   const [memData, setMemData] = useState([]);
   const tax = 0 ;
   const deliveryFee = 5;
   console.log(memData, 'lllolo');
-  const fetchUserData = async () => {
-    const resp = await axios.get(`${tssurl}/auth/users/${mid}`);
-    setMemData(resp?.data?.user);
-  };
+  
   useEffect(() => {
+    const fetchUserData = async () => {
+      const resp = await axios.get(`${tssurl}/auth/users/${mid}`);
+      setMemData(resp?.data?.user);
+    };
     fetchUserData();
-  }, []);
+  }, [mid]);
   const [showModal, setShowModal] = useState(false);
   const [formState, setFormState] = useState({
     cardType: 'Credit Card',
@@ -68,17 +62,17 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     //   }
     // }, [dispatch, mid]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
     setFormErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  const handleInputFocus = (e) => {
+  const handleInputFocus = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormState((prev) => ({ ...prev, focus: e.target.name }));
   };
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFormState((prev) => ({ ...prev, [name]: checked }));
   };
@@ -86,27 +80,27 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
   const [editMode, setEditMode] = useState(false);
   const [editedCardId, setEditedCardId] = useState(null);
 
-  const handleEditCard = (cardId) => {
-    const editedCard = allPaymentOptions.find((card) => card._id === cardId);
+  // const handleEditCard = (cardId) => {
+  //   const editedCard = allPaymentOptions.find((card) => card._id === cardId);
 
-    if (editedCard) {
-    //   setFormState({
-    //     cardType: editedCard.title,
-    //     number: editedCard.number,
-    //     name: editedCard.name,
-    //     expiry: editedCard.expiry,
-    //     cvc: editedCard.cvv,
-    //     cardTitle: editedCard.holderName,
-    //     isDefault: editedCard.default,
-    //   });
+  //   if (editedCard) {
+  //   //   setFormState({
+  //   //     cardType: editedCard.title,
+  //   //     number: editedCard.number,
+  //   //     name: editedCard.name,
+  //   //     expiry: editedCard.expiry,
+  //   //     cvc: editedCard.cvv,
+  //   //     cardTitle: editedCard.holderName,
+  //   //     isDefault: editedCard.default,
+  //   //   });
 
-      setEditMode(true);
-      setEditedCardId(cardId);
-      setShowModal(true);
-    }
-  };
+  //     setEditMode(true);
+  //     setEditedCardId(cardId);
+  //     setShowModal(true);
+  //   }
+  // };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.preventDefault();
 
     let valid = true;
@@ -133,18 +127,18 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     }
 
     if (valid) {
-      const data = {
-        mid: mid,
-        card: {
-          number: formState.number,
-          name: formState.name,
-          expiry: formState.expiry,
-          cvv: formState.cvc,
-          holderName: formState.name,
-          title: formState.cardType,
-          default: formState.isDefault,
-        },
-      };
+      // const data = {
+      //   mid: mid,
+      //   card: {
+      //     number: formState.number,
+      //     name: formState.name,
+      //     expiry: formState.expiry,
+      //     cvv: formState.cvc,
+      //     holderName: formState.name,
+      //     title: formState.cardType,
+      //     default: formState.isDefault,
+      //   },
+      // };
       const data2 = {
         mid: mid,
         updatedCard: {
@@ -163,12 +157,13 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
             `${tssurl}/payments/card/${editedCardId}`,
             data2
           );
-        } else {
-          const response = await axios.post(
-            `${tssurl}/payments/payment/cards`,
-            data
-          );
-        }
+        } 
+        // else {
+        //   const response = await axios.post(
+        //     `${tssurl}/payments/payment/cards`,
+        //     data
+        //   );
+        // }
         setFormState({
           cardType: 'Credit Card',
           mid: mid,
@@ -184,9 +179,9 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
         setShowModal(false);
         setEditMode(false);
         setEditedCardId(null);
-        fetchAllPaymentOptions();
+        // fetchAllPaymentOptions();
       } catch (error) {
-        console.error('Error adding card details:', error.response.data);
+        console.error(error);
       }
     }
   };
@@ -198,7 +193,9 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
         try {
           const resp = await axios.get(`${tssurl}/auth/users/${mid}/addresses`);
           setAllAddress(resp?.data?.addresses);
-        } catch (error) { }
+        } catch (error) { 
+          console.log(error)
+        }
       };
     fetchAllAddressses();
   }, [ mid]);
@@ -211,35 +208,35 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
   }, [allAddress]);
 
   
-  useEffect(() => {
-    const fetchAllPaymentOptions = async () => {
-        try {
-          const resp = await axios.get(`${tssurl}/payments/payment/cards/${mid}`);
-          const filteredPaymentOptions = resp.data.filter(
-            (option) => option.number
-          );
-          setAllPaymentOptions(filteredPaymentOptions);
-        } catch (error) {
-          console.log(error);
-        }
-      };
-    fetchAllPaymentOptions();
-  }, [mid]);
+  // useEffect(() => {
+  //   const fetchAllPaymentOptions = async () => {
+  //       try {
+  //         const resp = await axios.get(`${tssurl}/payments/payment/cards/${mid}`);
+  //         const filteredPaymentOptions = resp.data.filter(
+  //           (option) => option.number
+  //         );
+  //         setAllPaymentOptions(filteredPaymentOptions);
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //     };
+  //   fetchAllPaymentOptions();
+  // }, [mid]);
 
-  const filteredPaymentOptions = allPaymentOptions.filter(
-    (option) => option.title === selectedCardType
-  );
+  // const filteredPaymentOptions = allPaymentOptions.filter(
+  //   (option) => option.title === selectedCardType
+  // );
 
-  const handleCardSelection = (cardNumber) => {
-    if (selectedCard?.number === cardNumber) {
-      setSelectedCard(null);
-    } else {
-      const selectedCard = allPaymentOptions.find(
-        (card) => card.number === cardNumber
-      );
-      setSelectedCard(selectedCard);
-    }
-  };
+  // const handleCardSelection = (cardNumber) => {
+  //   if (selectedCard?.number === cardNumber) {
+  //     setSelectedCard(null);
+  //   } else {
+  //     const selectedCard = allPaymentOptions.find(
+  //       (card) => card.number === cardNumber
+  //     );
+  //     setSelectedCard(selectedCard);
+  //   }
+  // };
 
   const handleChangeAddress = () => {
     setShowAddressModal(true);
@@ -306,26 +303,26 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
 
   const handleHitPayGateway = async () => {
     try {
-      const productPromises = cartItems.map(async (item, index) => {
+      const productPromises = cartItems.map(async (item) => {
         const reward_points = await getProductRewardpoints(item.pid);
         return {
           productName: item.name,
           unitAmount: item.price,
           currency: 'usd',
           quantity: item.Quantity,
-          url: item.url,
+          url: item?.url,
           pid: item.pid,
           reward_points: parseInt(reward_points),
         };
       });
       const products = await Promise.all(productPromises);
-      const data = {
-        products: products,
-        totalPrice: total,
-        customer_email: memData?.email,
-        success_url: 'http://64.227.186.165:3000/Order-History',
-        cancel_url: 'https://example.com/cancel',
-      };
+      // const data = {
+      //   products: products,
+      //   totalPrice: total,
+      //   customer_email: memData?.email,
+      //   success_url: 'http://64.227.186.165:3000/Order-History',
+      //   cancel_url: 'https://example.com/cancel',
+      // };
       // const response = await axios.post(
       //   `${tssurl}/create-checkout-session`,
       //   data
@@ -342,7 +339,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     }
   };
 
-  const storeOrderData = async (products) => {
+  const storeOrderData = async (products:Product) => {
     try {
       const formData = new FormData();
       formData.append("mid", mid);
@@ -421,7 +418,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                     xs={1}
                     className="ps-5 pe-1 d-flex justify-content-end"
                   >
-                    <input class="form-check-input" type="radio" checked />
+                    <input className="form-check-input" type="radio" checked />
                   </Col>
                   <Col md={8} sm={8} xs={8}>
                     {selectedAddress ? (
@@ -465,11 +462,11 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                       >
                         <div className="row g-3">
                           <div className="col-md-3 p-0">
-                            <img
+                            <Image
                               className="img-fluid w-100 object-fit-cover"
                               style={{ maxHeight: '150px' }}
                               src={item?.url}
-                              alt={index}
+                              alt={`${index}`}
                             />
                           </div>
                           <div className="col-md-9">
@@ -560,7 +557,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
               </div>
 
               {/* add card */}
-              <div className="bg-white shadow my-2" data-aos="fade-up">
+              {/* <div className="bg-white shadow my-2" data-aos="fade-up">
                 <div className="px-4 py-2 text-center border-2">
                   <h3>Select Card</h3>
                 </div>
@@ -701,7 +698,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                     </div>
                   </>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

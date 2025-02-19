@@ -66,7 +66,7 @@ const CartPage: React.FC = () => {
       ? promotions.find(p => p.promotion_code === selectedPromotion)?.max_discount_amount || 0
       : 0;
   
-    return (bagTotal - discount + deliveryFee + tax).toFixed(2);
+      return parseFloat((bagTotal - discount + deliveryFee + tax).toFixed(2));
   }, [bagTotal, promoApplied, selectedPromotion, promotions, deliveryFee, tax]);
   
   

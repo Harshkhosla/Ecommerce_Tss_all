@@ -30,12 +30,7 @@ export interface ProductType {
     start: string;
     end: string;
   };
-  SEOArea: {
-    metaTitle: string;
-    metaDescription: string;
-    metaKeywords: string;
-    images1: string;
-  };
+  SEOArea: SEOArea
   desc: string;
   fabric: string;
   fit: string;
@@ -49,4 +44,31 @@ export interface ProductType {
     ThumbImg?: string[];
     GalleryImg?: string[];
   }[];
+}
+
+export interface Product {
+  pid: string;
+  productName: string;
+  unitAmount: number;
+  quantity: number;
+  reward_points: number;
+  url: string;
+}
+
+export interface SEOArea {
+  images1: string;
+  metaDescription: string;
+  metaKeywords: string;
+  metaTitle: string;
+}
+
+export interface Info {
+  _id: string;
+  address: string;
+  contactNo: string;
+  email: string;
+  officeAddress: string;
+  phoneNo: string;
+  SEOArea: SEOArea;
+  __v: number;
 }

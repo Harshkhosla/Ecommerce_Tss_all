@@ -15,7 +15,8 @@ interface Product {
   Quantity: number,
   pid: string,
   name: string,
-  url: string
+  url?: string,
+  price:number
 
 }
 interface Cartprops {
@@ -35,7 +36,7 @@ const CartCard: React.FC<Cartprops> = ({ index, product }) => {
   const productData = useSelector((state: RootState) => state.counter.productDataMap[pid]);
 
 
-  const particularcarddata = cartItems[index] || {};
+  const particularcarddata: Product= cartItems[index] ;
 
   const updateQuantity = (updatedQuantity: number) => {
     dispatch(updateProductQuantityAsync({ data: { ...particularcarddata, Quantity: updatedQuantity }, mid }));

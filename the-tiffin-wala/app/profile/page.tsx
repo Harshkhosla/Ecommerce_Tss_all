@@ -18,7 +18,7 @@ interface Address {
   _id: string;
   latitude: number;
   longitude: number;
-  [key: string]: any;
+  [key: string]: number;
 }
 
 interface User {

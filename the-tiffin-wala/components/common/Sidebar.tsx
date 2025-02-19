@@ -16,11 +16,11 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
   const [footerLinks, setFooterLinks] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [show, setShow] = useState(false);
-  const handleShow = () => setShow(true);
-  useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("authToken"));
-  }, []);
+  // const [show, setShow] = useState(false);
+  // const handleShow = () => setShow(true);
+  // useEffect(() => {
+  //   setIsLoggedIn(!!localStorage.getItem("authToken"));
+  // }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -47,7 +47,7 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
       <div className={showNav ? "sidenav active" : "sidenav"}>
         <div className="sidehead">
           <p className="fs-5 me-5">Shop by Category</p>
-          {!isLoggedIn ? <Login data={show} handleShow={handleShow} /> : null}
+          {!isLoggedIn ? <Login /> : null}
           <FaTimes onClick={() => setShowNav(false)} size="25" />
         </div>
         <hr className="my-0" />
