@@ -1,23 +1,21 @@
-"use client"
+"use client";
+
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
-// import { ProductType } from "@/components/types";
+import { useParams } from "next/navigation";
 import { tssurl } from "@/app/port";
-// import ShopBanner from "@/components/shop/ShopBanner";
 import Filters from "@/components/shop/Filters";
 import ProductSearch from "@/components/shop/ProductSearch";
 import Product from "@/components/shop/Product";
-import { useParams } from "next/navigation";
-
 
 interface ProductType {
   pid: string;
   product_name: string;
   unit_price: number;
   draft: string;
-  sub_category:string;
-  category:string;
+  sub_category: string;
+  category: string;
   size: { name: string }[];
   discount: number;
   discount_type: "Amount" | "Percentage";
@@ -26,21 +24,15 @@ interface ProductType {
   variants?: { ThumbImg?: string[] }[];
 }
 
-// interface ProductsPageProps {
-//   products: ProductType[];
-// }
-
-const SubCategoryPage = () => {
+const SubCategoryPage: React.FC = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
   const [sortOption, setSortOption] = useState<string>("Featured");
   const [likedProducts, setLikedProducts] = useState<string[]>([]);
   const [MID, setMID] = useState<string | null>(null);
 
+  const { subcatagory } = useParams<{ subcatagory: string }>();
   
-    const  {subcatagory}  = useParams<{ subcatagory: string }>();
-console.log(subcatagory,"sdvkjbvsdkbv");
-
   useEffect(() => {
     setMID(localStorage.getItem("MID"));
   }, []);
@@ -83,19 +75,18 @@ console.log(subcatagory,"sdvkjbvsdkbv");
     );
   }, []);
 
-  const sortFunctions = useMemo(
-    () => ({
-      "Name A to Z": (a: ProductType, b: ProductType) => a.product_name.localeCompare(b.product_name),
-      "Name Z to A": (a: ProductType, b: ProductType) => b.product_name.localeCompare(a.product_name),
-      "Price Low to High": (a: ProductType, b: ProductType) => a.unit_price - b.unit_price,
-      "Price High to Low": (a: ProductType, b: ProductType) => b.unit_price - a.unit_price,
-    }),
-    []
-  );
-
+  const sortFunctions: Record<string, (a: ProductType, b: ProductType) => number> = {
+    "Name A to Z": (a, b) => a.product_name.localeCompare(b.product_name),
+    "Name Z to A": (a, b) => b.product_name.localeCompare(a.product_name),
+    "Price Low to High": (a, b) => a.unit_price - b.unit_price,
+    "Price High to Low": (a, b) => b.unit_price - a.unit_price,
+  };
+  
   useEffect(() => {
     setFilteredProducts([...products].sort(sortFunctions[sortOption] || (() => 0)));
-  }, [products, sortOption, sortFunctions]);
+  }, [products, sortOption]);
+  
+
 
   const handleSearch = (searchTerm: string) => {
     setFilteredProducts(
@@ -109,7 +100,6 @@ console.log(subcatagory,"sdvkjbvsdkbv");
 
   return (
     <Container fluid>
-      {/* <ShopBanner /> */}
       <Row className="products">
         <Col md="2">
           <Filters products={products} setFilteredProducts={setFilteredProducts} />
@@ -117,7 +107,7 @@ console.log(subcatagory,"sdvkjbvsdkbv");
         <Col md="10" className="p-2">
           <Row>
             <Col md={9}>
-              <ProductSearch products={products} onSearch={handleSearch} />
+              {/* <ProductSearch products={products} onSearch={handleSearch} /> */}
             </Col>
             <Col md={3} className="proselect">
               <span> Sort: </span>
