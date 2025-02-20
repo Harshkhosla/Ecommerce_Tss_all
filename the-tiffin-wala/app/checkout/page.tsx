@@ -8,29 +8,27 @@ import AddAddressModal from '@/components/common/AddressModal';
 import { tssurl } from '../port';
 import {  useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import Image from 'next/image';
-import { Product } from '@/components/types';
+// import Image from 'next/image';
+import { Address, CartItem, Product, User } from '@/components/types';
 // import { getCartItemsAsync } from '@/redux/counterSlice';
+
+
+
 
 
 
 const CheckoutPgae = () => {
 
-// const dispatch = useDispatch();
 const cartItems = useSelector((state: RootState) => state.counter.items);
 const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
   const mid = localStorage.getItem('MID');
-
-  const [allAddress, setAllAddress] = useState([]);
-  // const [allPaymentOptions, setAllPaymentOptions] = useState([]);
-  // const [selectedCardType, setSelectedCardType] = useState('');
-  // const [selectedCard, setSelectedCard] = useState('');
-  const [selectedAddress, setSelectedAddress] = useState('');
-  const [memData, setMemData] = useState([]);
+  const [allAddress, setAllAddress] = useState<Address[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<Address>();
+  const [memData, setMemData] = useState<User[]>([]);
   const tax = 0 ;
   const deliveryFee = 5;
   console.log(memData, 'lllolo');
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       const resp = await axios.get(`${tssurl}/auth/users/${mid}`);
@@ -247,8 +245,9 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
   const handleToggleAddressModal = () => {
     setShowAddressModal(!showAddressModal);
   };
-
-  const handleAddressSelectionModal = (address) => {
+  
+  
+  const handleAddressSelectionModal = (address:Address) => {
     setSelectedAddress(address);
     setShowAddressModal(false);
   };
@@ -263,6 +262,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     setAddNewAddressModal(false);
   };
   const authToken = localStorage.getItem('authToken');
+  // @ts-expect-error will correct it 
   const handleNewAddAddress = async (addressData) => {
     try {
       addressData.latitude ="position?.position?.latitude";
@@ -288,9 +288,8 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     } catch (error) {
       console.error('Error adding address:', error);
     }
-  };
-
-  const getProductRewardpoints = async (pid) => {
+  }; 
+  const getProductRewardpoints = async (pid :string) => {
     try {
       const resp = await axios.get(`${tssurl}/productDetails/${pid}`);
       return resp.data.reward_points;
@@ -303,7 +302,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
 
   const handleHitPayGateway = async () => {
     try {
-      const productPromises = cartItems.map(async (item) => {
+      const productPromises = (cartItems ?? []).map(async (item)=> {
         const reward_points = await getProductRewardpoints(item.pid);
         return {
           productName: item.name,
@@ -316,6 +315,8 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
         };
       });
       const products = await Promise.all(productPromises);
+      console.log(products ,"sdvjdbsvbvsjvds");
+      
       // const data = {
       //   products: products,
       //   totalPrice: total,
@@ -338,8 +339,9 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
       console.error('Error creating checkout session:', error);
     }
   };
-
-  const storeOrderData = async (products:Product) => {
+  
+  const storeOrderData = async (products:CartItem) => {
+    const bagDiscount = 0
     try {
       const formData = new FormData();
       formData.append("mid", mid);
@@ -452,7 +454,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
               </div>
 
               {/* cartItems */}
-              <div className="">
+              <div className="s">
                 {cartItems ? (
                   cartItems.map((item, index) => (
                     <>
@@ -462,21 +464,22 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                       >
                         <div className="row g-3">
                           <div className="col-md-3 p-0">
-                            <Image
+                            {/* <Image
                               className="img-fluid w-100 object-fit-cover"
                               style={{ maxHeight: '150px' }}
                               src={item?.url}
+                              width={20}
                               alt={`${index}`}
-                            />
+                            /> */}
                           </div>
                           <div className="col-md-9">
                             <div className="d-flex ms-3 justify-content-between gap-3 align-items-center">
                               <h4>Name {item.name}</h4>
                             </div>
-                            <div className="d-flex ms-3 justify-content-between align-items-center">
+                            {/* <div className="d-flex ms-3 justify-content-between align-items-center">
                               <h5>Size: {item.Size}</h5>
-                            </div>
-                            <div className="d-flex ms-3 ">
+                            </div> */}
+                            {/* <div className="d-flex ms-3 ">
                               <h5 className="me-2">Color:</h5>{' '}
                               <span>
                                 <FaCircle
@@ -485,7 +488,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                                   color={item.Colour}
                                 />
                               </span>
-                            </div>
+                            </div> */}
                             <div className="d-flex ms-3 justify-content-between gap-3 align-items-center">
                               <h5>Quantity: {item.Quantity}</h5>
                             </div>
@@ -512,7 +515,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                 <div className="p-4 border-bottom border-2 ">
                   <div className="d-flex justify-content-between">
                     <div className="fs-5">
-                      Bag Total ({cartItems.length} items)
+                      Bag Total ({cartItems?.length} items)
                     </div>
                     <h5 className="fw-bold">
                       $ {bagTotal && bagTotal.toFixed(2)}
@@ -547,7 +550,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                         borderColor: 'orange',
                         transition: 'background-color 0.3s ease',
                       }}
-                      size="large"
+                      size="lg"
                       onClick={handleHitPayGateway} 
                     >
                       Place Order

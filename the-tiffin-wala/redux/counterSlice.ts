@@ -12,6 +12,8 @@ interface CartItem {
   name: string;
   price: number;
   image?: string;
+  url?: string;
+  _id: string;
 }
 
 interface ProductData {
@@ -110,7 +112,6 @@ export const updateProductQuantityAsync = createAsyncThunk(
   }
 );
 
-// ✅ Fetch Cart Items
 export const getCartItemsAsync = createAsyncThunk(
   "cart/getCartItems",
   async (mid: string, { getState, rejectWithValue }) => {

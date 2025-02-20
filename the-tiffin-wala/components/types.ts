@@ -81,3 +81,47 @@ export interface Order {
   delivery_status: string;
   date: string;
 }
+
+export interface Address {
+  addressSelected: boolean;
+  country: string;
+  defaultAddress: boolean;
+  landmark: string;
+  zipcode: string;
+  _id: string;
+}
+
+
+export interface User {
+  address: {
+    landmark: string[]; 
+  };
+  cart: CartItem[]; 
+  cashback_points: number;
+  data: {
+    messages: string[]; 
+  };
+  email: string;
+  likedProducts: Product[]; 
+  mid: string;
+  mobileNo: string;
+  name: string;
+  password: string;
+  payment_history: number;
+  purchased_items: number;
+  reward_points: number;
+  verificationToken: string;
+  verified: boolean;
+}
+
+
+export interface CartItem {
+  mid: string;
+  pid: string;
+  Quantity: number;
+  name: string;
+  price: number;
+  image?: string;
+  url?: string;
+  _id: string;
+}
