@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { tssurl } from "@/app/port";
 import Filters from "@/components/shop/Filters";
-import ProductSearch from "@/components/shop/ProductSearch";
+// import ProductSearch from "@/components/shop/ProductSearch";
 import Product from "@/components/shop/Product";
 
 interface ProductType {
@@ -84,19 +84,19 @@ const SubCategoryPage: React.FC = () => {
   
   useEffect(() => {
     setFilteredProducts([...products].sort(sortFunctions[sortOption] || (() => 0)));
-  }, [products, sortOption]);
+  }, [products ,sortOption]);
   
 
 
-  const handleSearch = (searchTerm: string) => {
-    setFilteredProducts(
-      searchTerm
-        ? products.filter((product) =>
-            product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        : [...products]
-    );
-  };
+  // const handleSearch = (searchTerm: string) => {
+  //   setFilteredProducts(
+  //     searchTerm
+  //       ? products.filter((product) =>
+  //           product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+  //         )
+  //       : [...products]
+  //   );
+  // };
 
   return (
     <Container fluid>

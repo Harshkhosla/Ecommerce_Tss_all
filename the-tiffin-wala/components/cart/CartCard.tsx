@@ -4,68 +4,66 @@ import { FaRegHeart, FaMinus, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   deleteFromCart,
-// } from "../../redux/counterSlice";
 import { tssurl } from "@/app/port";
 import { RootState } from "@/redux/store";
 import { getProductDataByPID, updateProductQuantityAsync } from "@/redux/counterSlice";
 
 interface Product {
-  Quantity: number,
-  pid: string,
-  name: string,
-  url?: string,
-  price:number
-
-}
-interface Cartprops {
-  index: number,
-  product: Product,
+  Quantity: number;
+  pid: string;
+  name: string;
+  url?: string;
+  price: number;
 }
 
-const CartCard: React.FC<Cartprops> = ({ index, product }) => {
+interface CartProps {
+  index: number;
+  product: Product;
+}
+
+const CartCard: React.FC<CartProps> = ({ index, product }) => {
   const { pid, Quantity } = product;
-  const mid = localStorage.getItem("MID");
-  const [likedProducts, setLikedProducts] = useState([]);
-  const [quantity, setQuantity] = useState(Quantity);
+  const mid = localStorage.getItem("MID") ?? ""; // Ensuring `mid` is a string
+  const [likedProducts, setLikedProducts] = useState<string[]>([]); // Explicitly typed state
+  const [quantity, setQuantity] = useState<number>(Quantity);
 
   const dispatch = useDispatch();
 
-  const cartItems = useSelector((state: RootState) => state.counter.items);
-  const productData = useSelector((state: RootState) => state.counter.productDataMap[pid]);
+  const cartItems = useSelector((state: RootState) => state.counter.items) || []; // Ensure it's an array
+  const productData = useSelector((state: RootState) => state.counter.productDataMap?.[pid]); // Optional chaining
 
-
-  const particularcarddata: Product= cartItems[index] ;
+  const particularCardData: Product | undefined = cartItems[index]; // Ensure it's defined
 
   const updateQuantity = (updatedQuantity: number) => {
-    dispatch(updateProductQuantityAsync({ data: { ...particularcarddata, Quantity: updatedQuantity }, mid }));
+    if (particularCardData) {
+      dispatch(updateProductQuantityAsync({ data: { ...particularCardData, Quantity: updatedQuantity }, mid }));
+    }
   };
 
   useEffect(() => {
-    dispatch(getProductDataByPID(pid));
+    if (pid) {
+      dispatch(getProductDataByPID(pid));
+    }
   }, [dispatch, pid]);
 
   const handleIncrease = () => {
     if (quantity < 10) {
-      setQuantity(quantity + 1);
-      updateQuantity(quantity + 1);
+      const newQuantity = quantity + 1;
+      setQuantity(newQuantity);
+      updateQuantity(newQuantity);
     }
-
-
   };
 
   const handleDecrease = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
-      updateQuantity(quantity - 1);
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      updateQuantity(newQuantity);
     }
   };
-
   const handleDelete = () => {
     // dispatch(deleteFromCart({ mid, pid }));
   };
-
   const toggleLike = async () => {
     try {
       if (likedProducts.includes(pid)) {
@@ -74,6 +72,7 @@ const CartCard: React.FC<Cartprops> = ({ index, product }) => {
           data: { mid, pid },
         });
         toast.success("Removed from Wishlist");
+        handleDelete();
       } else {
         setLikedProducts([...likedProducts, pid]);
         await axios.post(`${tssurl}/liked/liked-products/add`, { mid, pid });
@@ -89,7 +88,7 @@ const CartCard: React.FC<Cartprops> = ({ index, product }) => {
       <Row>
         <Col md="3">
           <Image
-            src={particularcarddata.url}
+            src={particularCardData?.url || "/placeholder.jpg"} // Fallback for undefined `url`
             alt="cart"
             fluid
             className="h-100"
@@ -98,26 +97,28 @@ const CartCard: React.FC<Cartprops> = ({ index, product }) => {
         <Col md="8" className="mx-2">
           <Row className="my-2">
             <Col>
-              <h3>{particularcarddata.name}</h3>
+              <h3>{particularCardData?.name || "Unknown Product"}</h3>
             </Col>
           </Row>
           <Row>
-            <h5>₹{particularcarddata.price.toFixed(2)}</h5>
-            <span style={{ textDecoration: "line-through", color: "red" }}>
-              ₹{productData?.unit_price}
-            </span>
+            <h5>₹{particularCardData?.price?.toFixed(2) || "0.00"}</h5>
+            {productData?.unit_price && (
+              <span style={{ textDecoration: "line-through", color: "red" }}>
+                ₹{productData.unit_price}
+              </span>
+            )}
           </Row>
           <Row style={{ margin: "1rem 0" }}>
             <Col md="6" sm="6" className="p-0 d-flex">
               <span style={{ fontSize: "1.1rem", marginRight: "0.5rem" }}>
-                Qty :
+                Qty:
               </span>
               <div className="quantity-selector">
-                <Button variant="light" onClick={handleDecrease}>
+                <Button variant="light" onClick={handleDecrease} disabled={quantity <= 1}>
                   <FaMinus size={10} />
                 </Button>
                 <span className="mx-3">{quantity}</span>
-                <Button variant="light" onClick={handleIncrease}>
+                <Button variant="light" onClick={handleIncrease} disabled={quantity >= 10}>
                   <FaPlus size={10} />
                 </Button>
               </div>
@@ -127,13 +128,11 @@ const CartCard: React.FC<Cartprops> = ({ index, product }) => {
             <Col className="text-end me-4">
               <FaRegHeart
                 className="heart me-1"
-                size="20"
-                onClick={() => {
-                  toggleLike();
-                  handleDelete();
-                }}
+                size={20}
+                onClick={toggleLike}
+                style={{ cursor: "pointer", color: likedProducts.includes(pid) ? "red" : "black" }}
               />
-              <span>Move to wishlist</span>
+              <span>Move to Wishlist</span>
             </Col>
           </Row>
         </Col>
