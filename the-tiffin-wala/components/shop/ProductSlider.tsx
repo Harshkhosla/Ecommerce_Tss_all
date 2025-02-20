@@ -4,8 +4,14 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaChevronLeft, FaChevronRight, } from "react-icons/fa";
 import Link from "next/link";
+import { ProductType } from "../types";
 
-const ProductsSlider = ({ data }) => {
+
+interface ProductDetailsProps {
+  products: ProductType[];
+}
+
+const ProductsSlider : React.FC<ProductDetailsProps> = ({ products }) => {
   const  cardslide = {
     dots: false,
     infinite: true,
@@ -57,7 +63,7 @@ const ProductsSlider = ({ data }) => {
         },
       },
     ],
-    customPaging: function (i) {
+    customPaging: function (i:number) {
       return <div>{i + 1}</div>;
     },
   };
@@ -66,12 +72,12 @@ const ProductsSlider = ({ data }) => {
     <Container fluid>
       <Row className="main-slide">
         <Slider {...cardslide}>
-          {data.map((item, index) => (
+          {products.map((item, index) => (
             <Col key={index} className="mb-4">
               <Card>
                 <Link href={`/productDetails/${item.pid}`}>
                   <Image
-                    src={item?.variants?.[0]?.ThumbImg}
+                     src={item?.variants?.[0]?.ThumbImg?.[0] || "/placeholder.jpg"} 
                     alt={item?.sub_category}
                     className="card-image "
                   />

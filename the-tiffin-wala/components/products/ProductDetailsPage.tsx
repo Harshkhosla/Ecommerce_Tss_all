@@ -164,7 +164,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
 
       <Row>
         <h4 className="ms-2 mt-5 mb-4 fw-bold">Similar Products</h4>
-        <ProductsSlider data={products} />
+        <ProductsSlider products={products} />
       </Row>
       {/* <Reviews productID={product?.pid} /> */}
     </Container>
