@@ -6,11 +6,14 @@ import { Row, Col, Container } from "react-bootstrap";
 import axios from "axios";
 import { tssurl } from "../port";
 import Sidebar from "@/components/profile/Sidebar";
+import { Order } from "@/components/types";
+
+
 
 export default function OrderHistory() {
   const router = useRouter();
-  const [orders, setOrders] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
   const [MID, setMID] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,19 +26,13 @@ export default function OrderHistory() {
 
       try {
         const response = await axios.get(`${tssurl}/auth/orders/${MID}`);
-
-        setOrders(response?.data?.orders || []);
-
-        const filteredOrders = response?.data?.orders?.filter(
-          (order) => order.amount
-        );
-        const total = filteredOrders?.reduce(
-          (acc, curr) => acc + parseFloat(curr.amount),
-          0
-        );
+        const fetchedOrders: Order[] = response?.data?.orders || [];
+        setOrders(fetchedOrders);
+        
+        const total = fetchedOrders.reduce((acc, curr) => acc + curr.amount, 0);
         setTotalAmount(total);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching orders:", error);
       }
     };
 
@@ -43,50 +40,28 @@ export default function OrderHistory() {
   }, [MID]);
 
   const handleClickScroll = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant",
-    });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   };
 
   return (
     <Container fluid>
-      <Row>{/* <ShopTags /> */}</Row>
       <Row>
         <Col md={3}>
           <Sidebar />
         </Col>
-        <Col md={9} className="">
+        <Col md={9}>
           <div className="shadow rounded px-3 bg-white overflow-auto">
-            <div className="text-warning fw-bold fs-2 position-sticky text-center">
-              Transaction History
-            </div>
-            <hr className="text-secondary position-sticky start-0" />
-            <div className="row gx-5 gy-2 position-sticky start-0">
+            <div className="text-warning fw-bold fs-2 text-center">Transaction History</div>
+            <hr className="text-secondary" />
+            <div className="row gx-5 gy-2">
               <div className="col-sm-6">
-                <div className="px-3 shadow-sm bg-pill rounded align-items-center d-flex gap-2 flex-wrap justify-content-between">
-                  <div className="d-flex gap-3">
-                    <div className="">
-                      <p className="my-0 fs-4 fw-bold">
-                        Total Purchase: {orders.length}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="d-flex gap-3">
-                    <div className="">
-                      <p className="my-0 fs-4 fw-bold">
-                        Total Amount: $ {totalAmount}
-                      </p>
-                    </div>
-                  </div>
+                <div className="px-3 shadow-sm bg-pill rounded d-flex gap-2 justify-content-between">
+                  <p className="my-0 fs-4 fw-bold">Total Purchase: {orders.length}</p>
+                  <p className="my-0 fs-4 fw-bold">Total Amount: $ {totalAmount.toFixed(2)}</p>
                 </div>
               </div>
             </div>
-            <table
-              border="1"
-              className="table mt-5 table-responsive rounded text-nowrap"
-            >
+            <table className="table mt-5 table-responsive rounded text-nowrap">
               <thead className="thead-dark">
                 <tr>
                   <th className="bg-black text-white">Order ID</th>
@@ -98,29 +73,26 @@ export default function OrderHistory() {
                 </tr>
               </thead>
               <tbody>
-                {orders
-                  ?.slice()
-                  .reverse()
-                  .map((order, index) => (
-                    <tr style={{ verticalAlign: "middle" }} key={index}>
-                      <td>{order.oid}</td>
-                      <td>{order.amount}</td>
-                      <td>{order.payment_mode}</td>
-                      <td>{order.delivery_status}</td>
-                      <td>{order.date}</td>
-                      <td>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => {
-                            handleClickScroll();
-                            router.push(`/orderDetailPage/${order.oid}`);
-                          }}
-                        >
-                          View Order
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {orders.slice().reverse().map((order) => (
+                  <tr key={order.oid} style={{ verticalAlign: "middle" }}>
+                    <td>{order.oid}</td>
+                    <td>${order.amount.toFixed(2)}</td>
+                    <td>{order.payment_mode}</td>
+                    <td>{order.delivery_status}</td>
+                    <td>{order.date}</td>
+                    <td>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => {
+                          handleClickScroll();
+                          router.push(`/orderDetailPage/${order.oid}`);
+                        }}
+                      >
+                        View Order
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

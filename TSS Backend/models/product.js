@@ -39,9 +39,7 @@ const productSchema = new mongoose.Schema({
   sales:  { type: Number, default: 0 },
   tags: String,
   thumbnail_image:  {
-    
-    url: String,
-
+    url: [{ type: String }]
   },
   unit: String,
   unit_price: Number,

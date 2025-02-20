@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Row, Container, Col, Image } from "react-bootstrap";
-// import ShopTags from "@/components/common/Tags";
 import AddressCard from "@/components/common/AddressCard";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -18,7 +17,6 @@ interface Address {
   _id: string;
   latitude: number;
   longitude: number;
-  [key: string]: number;
 }
 
 interface User {
@@ -69,6 +67,7 @@ const ProfilePage: React.FC = () => {
       setPreviewSource(URL.createObjectURL(file));
     }
   };
+
   const updateAddress = (addressId: string, updatedData: Partial<Address>) => {
     setAddresses((prevAddresses) =>
       prevAddresses.map((address) =>
@@ -76,8 +75,8 @@ const ProfilePage: React.FC = () => {
       )
     );
   };
-  
-  const onDelete = async (addressID: string, mID: string | null) => {
+
+  const onDelete = async (addressID: string) => {
     try {
       const response = await fetch(
         `${tssurl}/auth/users/${mID}/addresses/${addressID}`,
@@ -89,28 +88,22 @@ const ProfilePage: React.FC = () => {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`Failed to delete address: ${response.statusText}`);
       }
-  
-      console.log("Address deleted successfully");
-  
+
       setAddresses((prevAddresses) =>
         prevAddresses.filter((address) => address._id !== addressID)
       );
-  
-      // Instead of full reload, consider showing a toast
+
       toast.success("Address deleted successfully");
-  
     } catch (error) {
       console.error("Error deleting address:", error);
       toast.error("Failed to delete address");
     }
   };
-  
 
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!mID) return;
@@ -172,12 +165,7 @@ const ProfilePage: React.FC = () => {
         <Col md={8}>
           <Slider dots infinite slidesToShow={2} slidesToScroll={1}>
             {addresses.length ? addresses.map((address) => (
-              <AddressCard 
-              key={address._id} 
-              address={address} 
-              onDelete={(id, mID) => onDelete(id, mID)}
-              updateAddress={(id, updatedData) => updateAddress(id, updatedData)}
-            />
+              <AddressCard key={address._id} address={address} onDelete={onDelete} updateAddress={updateAddress} />
             )) : <p>No addresses found.</p>}
           </Slider>
         </Col>

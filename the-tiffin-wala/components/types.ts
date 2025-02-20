@@ -72,3 +72,12 @@ export interface Info {
   SEOArea: SEOArea;
   __v: number;
 }
+
+
+export interface Order {
+  oid: string;
+  amount: number;
+  payment_mode: string;
+  delivery_status: string;
+  date: string;
+}
