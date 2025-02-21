@@ -110,7 +110,7 @@ const Login = () => {
     <>
       <FaUser size={15} style={{ cursor: "pointer" }} onClick={handleShow} />
 
-      <Modal size="md" show={show} onHide={handleClose} centered>
+      <Modal size="sm" show={show} onHide={handleClose} centered>
         <Modal.Header closeButton className="auth">
           <Modal.Title>
             <Row>
