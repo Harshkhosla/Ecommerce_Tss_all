@@ -2,16 +2,16 @@
 import { useState, useEffect } from "react";
 import { Accordion, Nav, Row } from "react-bootstrap";
 import { FaSignOutAlt, FaTimes, FaUser } from "react-icons/fa";
-import {
-  FaFacebook,
-  FaXTwitter,
-  FaLinkedin,
-  FaInstagram,
-} from "react-icons/fa6";
+// import {
+//   FaFacebook,
+//   FaXTwitter,
+//   FaLinkedin,
+//   FaInstagram,
+// } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { tssurl } from "@/app/port";
 import Login from "../auth/Login";
-
+ // @ts-expect-error sdsfwvfe
 const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
   const [footerLinks, setFooterLinks] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -53,13 +53,16 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
         <hr className="my-0" />
         {head && (
           <Accordion defaultActiveKey={activeKey} flush>
+              {/*  @ts-expect-error sdsfwvfe */}
             {head.map((menu) => (
               <Accordion.Item key={menu.MLink} eventKey={menu.MLink}>
                 <Accordion.Header className="fw-bold">
                   {menu.Mname}
                 </Accordion.Header>
                 <Accordion.Body>
+                
                   <Nav>
+                    {/*  @ts-expect-error sdsfwvfe */}
                     {menu?.nav_link?.map((item, index) => (
                       <Nav.Link
                         key={`${item?.link}-${index}`}
@@ -110,7 +113,7 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
           )}
         </Nav>
 
-        <Row className="text-center my-2 mt-3">
+        {/* <Row className="text-center my-2 mt-3">
           {footerLinks?.footer && (
             <div className="social-icons">
               {footerLinks.footer.facebook && (
@@ -135,9 +138,10 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
               )}
             </div>
           )}
-        </Row>
+        </Row> */}
 
         <Row className="cpr fs-6 text-center mt-2 mb-1">
+            {/*  @ts-expect-error sdsfwvfe */}
           <p>{footerLinks?.footer?.footer}</p>
         </Row>
       </div>

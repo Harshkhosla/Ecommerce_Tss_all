@@ -2,14 +2,14 @@
 import { useEffect, useState } from 'react';
 import { Modal, Container, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
-import { FaCircle } from 'react-icons/fa';
+// import { FaCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import AddAddressModal from '@/components/common/AddressModal';
 import { tssurl } from '../port';
 import {  useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 // import Image from 'next/image';
-import { Address, CartItem, Product, User } from '@/components/types';
+import { Address, CartItem, User } from '@/components/types';
 // import { getCartItemsAsync } from '@/redux/counterSlice';
 
 
@@ -21,10 +21,21 @@ const CheckoutPgae = () => {
 
 const cartItems = useSelector((state: RootState) => state.counter.items);
 const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
-  const mid = localStorage.getItem('MID');
+const bagDiscount ="0";
+const [authToken, setAuthToken] = useState<string | null>(null);
+const [mid, setMID] = useState<string | null>(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    setAuthToken(localStorage.getItem("authToken"));
+    setMID(localStorage.getItem("MID"));
+  }
+}, []);
+  // const mid = localStorage.getItem('MID');
+  // const authToken = localStorage.getItem('authToken');
   const [allAddress, setAllAddress] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address>();
-  const [memData, setMemData] = useState<User[]>([]);
+  const [memData, setMemData] = useState<User>();
   const tax = 0 ;
   const deliveryFee = 5;
   console.log(memData, 'lllolo');
@@ -37,22 +48,22 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     fetchUserData();
   }, [mid]);
   const [showModal, setShowModal] = useState(false);
-  const [formState, setFormState] = useState({
-    cardType: 'Credit Card',
-    mid: mid,
-    number: '',
-    name: '',
-    expiry: '',
-    cvc: '',
-    focus: '',
-    cardTitle: '',
-    isDefault: false,
-  });
-  const [formErrors, setFormErrors] = useState({
-    number: '',
-    expiry: '',
-    cvc: '',
-  });
+  // const [formState, setFormState] = useState({
+  //   cardType: 'Credit Card',
+  //   mid: mid,
+  //   number: '',
+  //   name: '',
+  //   expiry: '',
+  //   cvc: '',
+  //   focus: '',
+  //   cardTitle: '',
+  //   isDefault: false,
+  // });
+  // const [formErrors, setFormErrors] = useState({
+  //   number: '',
+  //   expiry: '',
+  //   cvc: '',
+  // });
 
     // useEffect(() => {
     //   if (mid) {
@@ -60,23 +71,23 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     //   }
     // }, [dispatch, mid]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
-    setFormErrors((prev) => ({ ...prev, [name]: '' }));
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormState((prev) => ({ ...prev, [name]: value }));
+  //   setFormErrors((prev) => ({ ...prev, [name]: '' }));
+  // };
 
-  const handleInputFocus = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormState((prev) => ({ ...prev, focus: e.target.name }));
-  };
+  // const handleInputFocus = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   setFormState((prev) => ({ ...prev, focus: e.target.name }));
+  // };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: checked }));
-  };
+  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, checked } = e.target;
+  //   setFormState((prev) => ({ ...prev, [name]: checked }));
+  // };
 
-  const [editMode, setEditMode] = useState(false);
-  const [editedCardId, setEditedCardId] = useState(null);
+  // const [editMode, setEditMode] = useState(false);
+  // const [editedCardId, setEditedCardId] = useState(null);
 
   // const handleEditCard = (cardId) => {
   //   const editedCard = allPaymentOptions.find((card) => card._id === cardId);
@@ -98,91 +109,92 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
   //   }
   // };
 
-  const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //   e.preventDefault();
 
-    let valid = true;
+  //   let valid = true;
 
-    if (formState?.number?.length !== 16) {
-      setFormErrors((prev) => ({
-        ...prev,
-        number: 'Card number must be 16 digits',
-      }));
-      valid = false;
-    }
+  //   if (formState?.number?.length !== 16) {
+  //     setFormErrors((prev) => ({
+  //       ...prev,
+  //       number: 'Card number must be 16 digits',
+  //     }));
+  //     valid = false;
+  //   }
 
-    if (!formState?.expiry?.match(/^\d\d\/\d\d$/)) {
-      setFormErrors((prev) => ({
-        ...prev,
-        expiry: 'Expiry date must be in MM/YY format',
-      }));
-      valid = false;
-    }
+  //   if (!formState?.expiry?.match(/^\d\d\/\d\d$/)) {
+  //     setFormErrors((prev) => ({
+  //       ...prev,
+  //       expiry: 'Expiry date must be in MM/YY format',
+  //     }));
 
-    if (formState?.cvc?.length !== 3) {
-      setFormErrors((prev) => ({ ...prev, cvc: 'CVC must be 3 digits' }));
-      valid = false;
-    }
+  //     valid = false;
+  //   }
 
-    if (valid) {
-      // const data = {
-      //   mid: mid,
-      //   card: {
-      //     number: formState.number,
-      //     name: formState.name,
-      //     expiry: formState.expiry,
-      //     cvv: formState.cvc,
-      //     holderName: formState.name,
-      //     title: formState.cardType,
-      //     default: formState.isDefault,
-      //   },
-      // };
-      const data2 = {
-        mid: mid,
-        updatedCard: {
-          number: formState.number,
-          name: formState.name,
-          expiry: formState.expiry,
-          cvv: formState.cvc,
-          holderName: formState.name,
-          title: formState.cardType,
-          default: formState.isDefault,
-        },
-      };
-      try {
-        if (editMode) {
-          await axios.put(
-            `${tssurl}/payments/card/${editedCardId}`,
-            data2
-          );
-        } 
-        // else {
-        //   const response = await axios.post(
-        //     `${tssurl}/payments/payment/cards`,
-        //     data
-        //   );
-        // }
-        setFormState({
-          cardType: 'Credit Card',
-          mid: mid,
-          number: '',
-          name: '',
-          expiry: '',
-          cvc: '',
-          focus: '',
-          cardTitle: '',
-          isDefault: false,
-        });
+  //   if (formState?.cvc?.length !== 3) {
+  //     setFormErrors((prev) => ({ ...prev, cvc: 'CVC must be 3 digits' }));
+  //     valid = false;
+  //   }
 
-        setShowModal(false);
-        setEditMode(false);
-        setEditedCardId(null);
-        // fetchAllPaymentOptions();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  //   if (valid) {
+  //     // const data = {
+  //     //   mid: mid,
+  //     //   card: {
+  //     //     number: formState.number,
+  //     //     name: formState.name,
+  //     //     expiry: formState.expiry,
+  //     //     cvv: formState.cvc,
+  //     //     holderName: formState.name,
+  //     //     title: formState.cardType,
+  //     //     default: formState.isDefault,
+  //     //   },
+  //     // };
+  //     const data2 = {
+  //       mid: mid,
+  //       updatedCard: {
+  //         number: formState.number,
+  //         name: formState.name,
+  //         expiry: formState.expiry,
+  //         cvv: formState.cvc,
+  //         holderName: formState.name,
+  //         title: formState.cardType,
+  //         default: formState.isDefault,
+  //       },
+  //     };
+  //     try {
+  //       if (editMode) {
+  //         await axios.put(
+  //           `${tssurl}/payments/card/${editedCardId}`,
+  //           data2
+  //         );
+  //       } 
+  //       // else {
+  //       //   const response = await axios.post(
+  //       //     `${tssurl}/payments/payment/cards`,
+  //       //     data
+  //       //   );
+  //       // }
+  //       setFormState({
+  //         cardType: 'Credit Card',
+  //         mid: mid,
+  //         number: '',
+  //         name: '',
+  //         expiry: '',
+  //         cvc: '',
+  //         focus: '',
+  //         cardTitle: '',
+  //         isDefault: false,
+  //       });
+
+  //       setShowModal(false);
+  //       setEditMode(false);
+  //       setEditedCardId(null);
+  //       // fetchAllPaymentOptions();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
 
 
 
@@ -261,7 +273,6 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
   const handleCloseAddNewAddressModal = () => {
     setAddNewAddressModal(false);
   };
-  const authToken = localStorage.getItem('authToken');
   // @ts-expect-error will correct it 
   const handleNewAddAddress = async (addressData) => {
     try {
@@ -305,18 +316,17 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
       const productPromises = (cartItems ?? []).map(async (item)=> {
         const reward_points = await getProductRewardpoints(item.pid);
         return {
-          productName: item.name,
-          unitAmount: item.price,
+          name: item.name,
+          price: item.price,
           currency: 'usd',
-          quantity: item.Quantity,
+          Quantity: item.Quantity,
           url: item?.url,
           pid: item.pid,
           reward_points: parseInt(reward_points),
         };
       });
-      const products = await Promise.all(productPromises);
-      console.log(products ,"sdvjdbsvbvsjvds");
       
+      const products = await Promise.all(productPromises);
       // const data = {
       //   products: products,
       //   totalPrice: total,
@@ -328,6 +338,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
       //   `${tssurl}/create-checkout-session`,
       //   data
       // );
+      // @ts-expect-error sdsfwvfe
       await storeOrderData(products);
       // if (response.status === 200) {
       //   const { url } = response.data;
@@ -340,60 +351,52 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
     }
   };
   
-  const storeOrderData = async (products:CartItem) => {
-    const bagDiscount = 0
+  const storeOrderData = async (products: CartItem[]) => {
+   
     try {
       const formData = new FormData();
-      formData.append("mid", mid);
-      formData.append("amount", total);
-      formData.append("email", memData?.email);
-      formData.append("shipping_addr", selectedAddress?.country);
-      formData.append("contact", memData?.mobileNo);
-      formData.append("uname", memData?.name);
-      formData.append("subtotal", bagTotal);
+      formData.append("mid", mid?.toString() ?? "");
+      formData.append("amount", total?.toString() ?? "0");
+      formData.append("email", memData?.email ?? "");
+      formData.append("shipping_addr", selectedAddress?.country ?? "");
+      formData.append("contact", memData?.mobileNo ?? "");
+      formData.append("uname", memData?.name ?? "");
+      formData.append("subtotal", bagTotal?.toString() ?? "0");
       formData.append("delivery_status", "Pending");
       formData.append("payment_mode", "Card");
       formData.append("payment_status", "un-paid");
-      formData.append("tax", tax);
-      formData.append("shipping", deliveryFee);
+      formData.append("tax", tax?.toString() ?? "0");
+      formData.append("shipping", deliveryFee?.toString() ?? "0");
       formData.append("coupon", bagDiscount);
-
-      products.forEach((product, index) => {
+  
+      products.forEach((product:CartItem, index) => {
         formData.append(`products[${index}][pid]`, product.pid);
-        formData.append(
-          `products[${index}][product_name]`,
-          product.productName
-        );
-        formData.append(`products[${index}][price]`, product.unitAmount);
-        formData.append(`products[${index}][count]`, product.quantity);
+        formData.append(`products[${index}][product_name]`, product.name);
+        formData.append(`products[${index}][price]`, Number(product.price??0).toString());
+        formData.append(`products[${index}][count]`, Number(product.Quantity??0).toString());
         formData.append(
           `products[${index}][reward_points]`,
-          product.reward_points * product.quantity
+          ((product.reward_points ?? 0) * product.Quantity).toString()
         );
-        formData.append(`products[${index}][photo]`, product.url);
+        formData.append(`products[${index}][photo]`, product.url ?? "");
       });
-
-      const response = await axios.post(
-         `${tssurl}/orders`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-
+  
+      const response = await axios.post(`${tssurl}/orders`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
       if (response.status === 201) {
-        toast.success('Order data stored successfully')
-        console.log('Order successfully placed');
+        toast.success("Order data stored successfully");
+        console.log("Order successfully placed");
       } else {
-        toast.error('Failed to store order data')
-        console.error('Failed to Place order');
+        toast.error("Failed to store order data");
+        console.error("Failed to place order");
       }
     } catch (error) {
-      console.error('Error storing order data:', error);
+      console.error("Error storing order data:", error);
     }
   };
+  
 
   return (
     <>
@@ -722,7 +725,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                   focused={formState.focus}
                 /> */}
                 <div className="mt-3">
-                  <form onSubmit={handleSubmit}>
+                  {/* <form onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-md-6 mb-3">
                         <select
@@ -824,7 +827,7 @@ const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
                         Confirm
                       </button>
                     </div>
-                  </form>
+                  </form> */}
                 </div>
               </Col>
             </Row>

@@ -15,8 +15,17 @@ const Contact = () => {
   const [message, setMessage] = useState("");
   const [info, setInfo] = useState<Info>();
 
-  const authToken = localStorage.getItem("authToken");
-  const MID = localStorage.getItem("MID");
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [MID, setMID] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setAuthToken(localStorage.getItem("authToken"));
+      setMID(localStorage.getItem("MID"));
+    }
+  }, []);
+  
+  
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

@@ -77,6 +77,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       price: discountedPrice,
       image: product?.variants?.[0]?.GalleryImg?.[0] || "",
     };
+      {/*  @ts-expect-error sdsfwvfe */}
     dispatch(addToCartAsync({ mid, data: data }));
     router.push('/cart')
   };

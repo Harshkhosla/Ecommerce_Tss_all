@@ -34,7 +34,15 @@ interface Promotion {
 const CartPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter()
-  const mid = localStorage.getItem("MID") || "";
+
+const [mid, setMID] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // setAuthToken(localStorage.getItem("authToken"));
+      setMID(localStorage.getItem("MID"));
+    }
+  }, []);
+  // const mid = localStorage.getItem("MID") || "";
 
   const [selectedPromotion, setSelectedPromotion] = useState<string | null>(null);
   const [promoApplied, setPromoApplied] = useState(false);

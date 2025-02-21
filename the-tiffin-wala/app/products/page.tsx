@@ -26,39 +26,20 @@ const getalltheproducts = async () => {
 }
 
 
-const getLikedProducts = async (MID: string | null): Promise<string[]> => {
-    if (!MID) {
-        console.warn("MID is missing, returning empty liked products.");
-        return [];
-    }
-
-    try {
-        const response = await axios.get<{ likedProducts: string[] }>(`${tssurl}/liked/liked-products/${MID}`);
-        console.log(response, "sdvkjndsvkjnvs");
-
-        return response.data.likedProducts.filter((item) => item !== null);
-    } catch (error) {
-        console.error("Error fetching liked products:", error);
-        return [];
-    }
-};
 
 
 
 export default async function Products() {
 
-    let MID: string | null = null;
-    if (typeof window !== "undefined") {
-        MID = localStorage.getItem("MID");
-    }
-    console.log(MID);
+ 
     
     const products = await getalltheproducts()
-    const getlikedproduct = await getLikedProducts(MID)
+    
+    // const getlikedproduct = await getLikedProducts(MID)
 
     return (
         <div>
-            <ProductsPage products={products} likedProducts={getlikedproduct} />
+            <ProductsPage products={products}  />
         </div>
     )
 }

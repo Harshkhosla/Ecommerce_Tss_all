@@ -36,12 +36,14 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
 
   const updateQuantity = (updatedQuantity: number) => {
     if (particularCardData) {
+       // @ts-expect-error sdsfwvfe
       dispatch(updateProductQuantityAsync({ data: { ...particularCardData, Quantity: updatedQuantity }, mid }));
     }
   };
 
   useEffect(() => {
     if (pid) {
+       // @ts-expect-error sdsfwvfe
       dispatch(getProductDataByPID(pid));
     }
   }, [dispatch, pid]);

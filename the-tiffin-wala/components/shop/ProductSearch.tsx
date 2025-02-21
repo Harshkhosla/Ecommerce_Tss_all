@@ -10,7 +10,7 @@ interface ProductSearchProps {
 
 const ProductSearch: React.FC<ProductSearchProps> = ({ products, onSearch }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-
+console.log(products,"sdcvcdd")
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSearch(searchTerm);
@@ -34,13 +34,13 @@ const ProductSearch: React.FC<ProductSearchProps> = ({ products, onSearch }) => 
           </Form.Group>
         </Form>
       </Col>
-      <Col md="5">
+      {/* <Col md="5">
         <ul>
           {products.map((product) => (
             <li key={product.pid}>{product.product_name}</li>
           ))}
         </ul>
-      </Col>
+      </Col> */}
     </Row>
   );
 };

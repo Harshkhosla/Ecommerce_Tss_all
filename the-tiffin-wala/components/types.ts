@@ -119,6 +119,7 @@ export interface CartItem {
   mid: string;
   pid: string;
   Quantity: number;
+  reward_points:number;
   name: string;
   price: number;
   image?: string;

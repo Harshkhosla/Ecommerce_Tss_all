@@ -4,6 +4,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import Product from "@/components/shop/Product";
 import Filters from "../shop/Filters";
 import ProductSearch from "../shop/ProductSearch";
+import { tssurl } from "@/app/port";
+import axios from "axios";
 
 // Define Types
 interface ProductType {
@@ -11,8 +13,8 @@ interface ProductType {
   product_name: string;
   unit_price: number;
   draft: string;
-  sub_category:string;
-  category:string;
+  sub_category: string;
+  category: string;
   size: { name: string }[];
   discount: number;
   discount_type: "Amount" | "Percentage";
@@ -23,12 +25,41 @@ interface ProductType {
 
 interface ProductsPageProps {
   products: ProductType[];
-  likedProducts: string[];
 }
-const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) => {
+
+const ProductsPage: React.FC<ProductsPageProps> = ({ products }) => {
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
-  const [userLikedProducts, setUserLikedProducts] = useState<string[]>(likedProducts);
+  const [userLikedProducts, setUserLikedProducts] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<string>("Featured");
+
+  useEffect(() => {
+    if (products?.length) {
+      setFilteredProducts(products);
+    }
+  }, [products]);
+
+  useEffect(() => {
+    const fetchLikedProducts = async () => {
+      if (typeof window === "undefined") return; // Ensure this runs only on the client
+
+      const MID = localStorage.getItem("MID");
+      if (!MID) {
+        setUserLikedProducts([]);
+        return;
+      }
+      try {
+        const response = await axios.get<{ likedProducts: string[] }>(
+          `${tssurl}/liked/liked-products/${MID}`
+        );
+        setUserLikedProducts(response.data.likedProducts.filter((item) => item !== null));
+      } catch (error) {
+        console.error("Error fetching liked products:", error);
+        setUserLikedProducts([]);
+      }
+    };
+
+    fetchLikedProducts();
+  }, []);
 
   const handleToggleLike = (productId: string, isLiked: boolean) => {
     setUserLikedProducts((prev) =>
@@ -47,11 +78,11 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) 
   );
 
   useEffect(() => {
-    setFilteredProducts([...products].sort(sortFunctions[sortOption as keyof typeof sortFunctions] || (() => 0)));
+    if (filteredProducts.length) {
+      setFilteredProducts([...products].sort(sortFunctions[sortOption as keyof typeof sortFunctions] || (() => 0)));
+    }
   }, [products, sortOption, sortFunctions]);
-  
 
-  // Search Filter
   const handleSearch = (searchTerm: string) => {
     setFilteredProducts(
       searchTerm
@@ -69,7 +100,8 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) 
         <Col md="10" className="p-2">
           <Row>
             <Col md={9}>
-              <ProductSearch  onSearch={handleSearch} />
+            {/* @ts-expect-error sdsfwvfe */}
+              <ProductSearch products={products} onSearch={handleSearch} />
             </Col>
             <Col md={3} className="proselect">
               <span> Sort: </span>
@@ -82,7 +114,6 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) 
               </select>
             </Col>
           </Row>
-
             <Row>
               {filteredProducts.map((product) => (
                 <Col key={product.pid} sm={6} md={4} lg={4} xl={4}>
@@ -94,7 +125,6 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products, likedProducts }) 
                 </Col>
               ))}
             </Row>
-
         </Col>
       </Row>
     </Container>

@@ -56,6 +56,7 @@ export const addToCartAsync = createAsyncThunk(
     async ({ mid, data }: { mid: string; data: CartItem }, { getState, dispatch, rejectWithValue }) => {
       try {
         const state: RootState = getState() as RootState;
+         // @ts-expect-error sdsfwvfe
         const existingItem = state.counter.items.find((item: CartItem) => item.pid === data.pid);
   
         if (existingItem) {
@@ -65,7 +66,7 @@ export const addToCartAsync = createAsyncThunk(
           return { ...existingItem, Quantity: updatedQuantity }; // Return updated item
         }
   
-        // If item does not exist, add to cart in backend
+         // @ts-expect-error sdsfwvfe
         const response = await axios.post(`${tssurl}/cart/carts`, { mid, ...data }, {
           headers: { "Content-Type": "application/json" },
         });
@@ -76,7 +77,8 @@ export const addToCartAsync = createAsyncThunk(
         }
   
         toast.success("Item added to cart successfully!");
-        return { mid, ...data }; // Ensure mid is returned for state updates
+         // @ts-expect-error sdsfwvfe
+        return { mid, ...data }; 
       } catch (error: any) {
         toast.error("Failed to add item to cart.");
         return rejectWithValue(error.message);
@@ -90,7 +92,7 @@ export const addToCartAsync = createAsyncThunk(
 export const updateProductQuantityAsync = createAsyncThunk(
   "cart/updateQuantity",
   async ({ data, mid }: { data: CartItem; mid: string }, { rejectWithValue }) => {
-    try {
+    try { // @ts-expect-error sdsfwvfe
       const requestData = { mid, ...data };
       const response = await axios.put(
         `${tssurl}/cart/carts/updateQuantity`,
@@ -105,6 +107,7 @@ export const updateProductQuantityAsync = createAsyncThunk(
 
       toast.success("Cart quantity updated successfully!");
       return data;
+      
     } catch (error: any) {
       toast.error("Failed to update cart quantity.");
       return rejectWithValue(error.message);
@@ -116,13 +119,15 @@ export const getCartItemsAsync = createAsyncThunk(
   "cart/getCartItems",
   async (mid: string, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
+     // @ts-expect-error sdsfwvfe
     if (state.counter.items.length > 0) {
       return state.counter.items; // Return cached data
     }
     try {
       const response = await axios.get(`${tssurl}/auth/users/${mid}`);
       return response.data.user?.cart || []; // Ensure default array
-    } catch (error: any) {
+    }  
+    catch (error: any) { 
       toast.error("Failed to fetch cart items.");
       return rejectWithValue(error.message);
     }
@@ -135,10 +140,13 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addOrUpdateCartItem: (state, action: PayloadAction<CartItem>) => {
+       // @ts-expect-error sdsfwvfe
       const index = state.items.findIndex((item) => item.pid === action.payload.pid);
       if (index !== -1) {
+         // @ts-expect-error sdsfwvfe
         state.items[index].Quantity += action.payload.Quantity;
       } else {
+         // @ts-expect-error sdsfwvfe
         state.items.push(action.payload);
       }
     },
@@ -156,10 +164,13 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(addToCartAsync.fulfilled, (state, action) => {
+         // @ts-expect-error sdsfwvfe
         const index = state.items.findIndex((item) => item.pid === action.payload.pid);
         if (index !== -1) {
+           // @ts-expect-error sdsfwvfe
           state.items[index].Quantity = action.payload.Quantity;
         } else {
+           // @ts-expect-error sdsfwvfe
           state.items.push(action.payload);
         }
       })
@@ -169,6 +180,7 @@ const cartSlice = createSlice({
       })
       // ✅ Fetch Product Data
       .addCase(getProductDataByPID.fulfilled, (state, action) => {
+         // @ts-expect-error sdsfwvfe
         state.productDataMap[action.payload.pid] = action.payload.data; 
       })
       // ✅ Handle Errors

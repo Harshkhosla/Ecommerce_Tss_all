@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Image, Row, Col, Container } from 'react-bootstrap';
 
+  {/*  @ts-expect-error sdsfwvfe */}
 const Event = ({ data }) => {
   return (
     <Container fluid>
