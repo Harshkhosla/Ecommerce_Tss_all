@@ -57,5 +57,6 @@ export default function RootLayout({
         </ReduxProvider>
       </body>
     </html>
+    
   );
 }
