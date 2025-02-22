@@ -10,6 +10,7 @@ interface ProductSearchProps {
 
 const ProductSearch: React.FC<ProductSearchProps> = ({ products, onSearch }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  console.log(products)
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSearch(searchTerm);
