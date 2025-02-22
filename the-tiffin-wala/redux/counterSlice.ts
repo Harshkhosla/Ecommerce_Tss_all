@@ -50,6 +50,7 @@ export const getProductDataByPID = createAsyncThunk(
   }
 );
 
+
 export const addToCartAsync = createAsyncThunk(
     "cart/addToCart",
     async ({ mid, data }: { mid: string; data: CartItem }, { getState, dispatch, rejectWithValue }) => {
