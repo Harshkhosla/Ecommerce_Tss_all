@@ -49,7 +49,7 @@ const Subheader: React.FC<Headers> = ({ header }) => {
     localStorage.removeItem('jwt');
     localStorage.removeItem('MID');
     setIsLoggedIn(false);
-    router.push("/")
+    router.refresh();
   };
 
   const activeKey = () => {

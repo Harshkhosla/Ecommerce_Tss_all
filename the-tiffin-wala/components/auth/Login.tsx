@@ -60,11 +60,7 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("sdvjhsbvdjbh");
-
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (!validateEmail(email)) {
       toast.error("Invalid email format");
       return;
@@ -83,7 +79,8 @@ const Login = () => {
         toast.success("Login Successful");
         localStorage.setItem("authToken", authToken);
         localStorage.setItem("MID", mID);
-
+        handleClose();
+        router.refresh();
         const lastApiCallLoginDate = localStorage.getItem("lastApiCallLoginDate");
         const today = new Date().toISOString().slice(0, 10);
 
@@ -91,12 +88,9 @@ const Login = () => {
           await axios.post(`${tssurl}/user/chit`, { mid: mID });
           localStorage.setItem("lastApiCallLoginDate", today);
         }
-        router.prefetch('/');
-
       } else {
         toast.error(response.data.message || "Operation Unsuccessful");
       }
-      handleClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Error occurred");
@@ -135,7 +129,7 @@ const Login = () => {
         {authMode === "signin" ? (
           <>
             <Modal.Body className="pb-0 mb-0"> 
-              <Form onClick={handleSubmit} >
+              <Form   >
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email Address</Form.Label>
                   <Form.Control
@@ -144,6 +138,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
                   />
                 </Form.Group>
 
@@ -156,6 +151,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
                     />
                     <InputGroup.Text
                       className="password-toggle-icon"
@@ -175,7 +171,7 @@ const Login = () => {
                 </Form.Text>
 
                 <Modal.Footer className="flex">
-                  <Button className="loginbtn" variant="dark" type="submit">
+                  <Button className="loginbtn" variant="dark" type="button" onClick={handleSubmit} >
                     Log In
                   </Button>
                 </Modal.Footer>
@@ -185,7 +181,7 @@ const Login = () => {
 
           </>
         ) : (
-          <Register  />
+          <Register  setShow={setShow} />
         )}
       </Modal>
 

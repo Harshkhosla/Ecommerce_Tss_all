@@ -9,8 +9,12 @@ import { tssurl } from "@/app/port";
 import { useRouter } from "next/navigation";
 
 
+interface Modalshow{
+setShow: (show: boolean) => void;
+}
 
-const Register = () => {
+
+const Register :React.FC<Modalshow>= ({setShow}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -21,6 +25,8 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
   const router = useRouter();
+
+
 
   const validateEmail = (email:string) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,9 +60,7 @@ const Register = () => {
     }[strength] || "";
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (!validateEmail(email)) {
       toast.error("Invalid email format");
       return;
@@ -78,11 +82,9 @@ const Register = () => {
         setPassword("");
         setMobileNo("");
         setConfirmPassword("");
-
-        setTimeout(() => {
+          setShow(false)
           router.push("/");
-          window.location.reload();
-        }, 1000);
+          router.refresh();
       } else {
         toast.error(response.data.message || "Operation Unsuccessful");
       }
@@ -98,7 +100,7 @@ const Register = () => {
   return (
     <>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form >
           <Form.Group controlId="formBasicName">
             <Form.Label>Full Name</Form.Label>
             <Form.Control
@@ -181,7 +183,7 @@ const Register = () => {
           </Form.Group>
 
           <Modal.Footer className="d-flex justify-content-center mt-4">
-            <Button className="loginbtn" variant="dark" type="submit">
+            <Button className="loginbtn" variant="dark" type="button" onClick={handleSubmit}>
               Sign Up
             </Button>
           </Modal.Footer>
