@@ -65,7 +65,7 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
   };
 
   const addToCartHandler = () => {
-    if (!mid) { 
+    if (!mid) {
       toast.error("User Account has not been created. Please Login");
       return;
     }
@@ -77,9 +77,9 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       price: discountedPrice,
       image: product?.variants?.[0]?.GalleryImg?.[0] || "",
     };
-      {/*  @ts-expect-error sdsfwvfe */}
+    {/*  @ts-expect-error sdsfwvfe */ }
     dispatch(getCartItemsAsync(mid))
-      {/*  @ts-expect-error sdsfwvfe */}
+    {/*  @ts-expect-error sdsfwvfe */ }
     dispatch(addToCartAsync({ mid, data: data }));
     router.push('/cart')
   };
@@ -103,83 +103,90 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
   };
 
   return (
-  <>
-<Head>
-          <title>{product?.SEOArea.metaTitle || "Best Sellers"}</title>
-          <meta name="description" content={product?.SEOArea.metaDescription || "Check out our best-selling products!"} />
-          <meta name="keywords" content={product?.SEOArea.metaKeywords || "bestsellers, products, tiffin"} />
-          <meta property="og:title" content={product?.SEOArea.metaTitle || "Best Sellers"} />
-          <meta property="og:description" content={product?.SEOArea.metaDescription || "Check out our best-selling products!"} />
-          <meta property="og:image" content={product?.SEOArea.images1 || "/default-image.jpg"} />
-        </Head>
-    <Container>
-      <p className="breadcrumb">
-        <Link href="/" className="me-1">Home</Link> /
-        <Link href="/products" className="mx-1">Products</Link> /
-        <strong className="ms-1">{product?.product_name}</strong>
-      </p>
+    <>
+      <Head>
+        <title>{product?.SEOArea.metaTitle || "Best Sellers"}</title>
+        <meta name="description" content={product?.SEOArea.metaDescription || "Check out our best-selling products!"} />
+        <meta name="keywords" content={product?.SEOArea.metaKeywords || "bestsellers, products, tiffin"} />
+        <meta property="og:title" content={product?.SEOArea.metaTitle || "Best Sellers"} />
+        <meta property="og:description" content={product?.SEOArea.metaDescription || "Check out our best-selling products!"} />
+        <meta property="og:image" content={product?.SEOArea.images1 || "/default-image.jpg"} />
+      </Head>
+      <Container>
+        <p className="breadcrumb">
+          <Link href="/" className="me-1">Home</Link> /
+          <Link href="/products" className="mx-1">Products</Link> /
+          <strong className="ms-1">{product?.product_name}</strong>
+        </p>
 
-      <Row className="product-details">
-        <Col md={6}>
-          {product ? <ProductGallery product={product} /> : <p>Loading...</p>}
-        </Col>
-        <Col md={6}>
-          <h3>{product?.product_name}</h3>
-          <Row className="mt-2">
-            <Col md={3}>
-              <h5>₹{discountedPrice}</h5>
-              <span style={{ textDecoration: "line-through", color: "red" }}>₹{product?.unit_price}</span>
-            </Col>
-            <Col md={3}>
-              <Ratings value={Number(product?.rating) || 0} />
-            </Col>
-          </Row>
+        <Row className="product-details">
+          <Col md={6}>
+            {product ? <ProductGallery product={product} /> : <p>Loading...</p>}
+          </Col>
+          <Col md={6}>
+            <h3>{product?.product_name}</h3>
+            <Row className="mt-2">
+              <Col md={3}>
+                <h5>₹{discountedPrice}</h5>
+                <span style={{ textDecoration: "line-through", color: "red" }}>₹{product?.unit_price}</span>
+              </Col>
+              <Col md={3}>
+                <Ratings value={Number(product?.rating) || 0} />
+              </Col>
+            </Row>
 
-          <Row>
-            <Col md={6}>
-              <h6 style={{ color: "green" }}>Type of food: {product?.category}</h6>
-              <h6>Rewards Points: {product?.reward_points}</h6>
-            </Col>
-            <Col md={4}>
-              <h6>Quantity</h6>
-              <div className="quantity-selector">
-                <Button variant="light" onClick={() => handleQtyChange(-1)}><FaMinus size={10} /></Button>
-                <span className="mx-4">{qty}</span>
-                <Button variant="light" onClick={() => handleQtyChange(1)}><FaPlus size={10} /></Button>
-              </div>
-            </Col>
-          </Row>
+            <Row>
+              <Col md={6}>
+                <h6 style={{ color: "green" }}>Type of food: {product?.category}</h6>
+                <h6>Rewards Points: {product?.reward_points}</h6>
+              </Col>
+              <Col md={4}>
+                <h6>Quantity</h6>
+                <div className="quantity-selector">
+                  <Button variant="light" onClick={() => handleQtyChange(-1)}><FaMinus size={10} /></Button>
+                  <span className="mx-4">{qty}</span>
+                  <Button variant="light" onClick={() => handleQtyChange(1)}><FaPlus size={10} /></Button>
+                </div>
+              </Col>
+            </Row>
 
-          <Row className="cart-list">
-            <Col md={5}>
-              <Button variant="dark" className="btn-block p-2 w-100" onClick={addToCartHandler}>
-                Add to Cart
-              </Button>
-            </Col>
-            <Col md={2}>
-              <Button variant="light" className="btn-block py-2 w-75">
-                {likedProducts.includes(product?.pid ?? "") ? (
-                  <FaHeart size="24" color="red" onClick={toggleLike} />
-                ) : (
-                  <FaRegHeart size="24" color="black" onClick={toggleLike} />
-                )}
-              </Button>
-            </Col>
-          </Row>
+            <Row className="cart-list">
+              <Col md={5}>
+                <Button variant="dark" className="btn-block p-2 w-100" onClick={addToCartHandler}>
+                  Add to Cart
+                </Button>
+              </Col>
+              <Col md={2}>
+                <Button variant="light" className="btn-block py-2 w-75">
+                  {likedProducts.includes(product?.pid ?? "") ? (
+                    <FaHeart size="24" color="red" onClick={toggleLike} />
+                  ) : (
+                    <FaRegHeart size="24" color="black" onClick={toggleLike} />
+                  )}
+                </Button>
+              </Col>
+            </Row>
 
-          <Tabs defaultActiveKey="details" className="mt-3 mb-2">
-            <Tab eventKey="details" title="Details">{product?.product_detail}</Tab>
-            <Tab eventKey="about" title="About">{product?.about}</Tab>
-          </Tabs>
-        </Col>
-      </Row>
+            <Tabs defaultActiveKey="details" className="mt-3 mb-2">
+              <Tab eventKey="details" title="Details">
+                {/* @ts-expect-error efeff */}
+                <div dangerouslySetInnerHTML={{ __html: product?.product_detail }} />
+              </Tab>
+              <Tab eventKey="about" title="About">
+                {/* @ts-expect-error efeff */}
+                <div dangerouslySetInnerHTML={{ __html: product?.about }} />
+              </Tab>
+            </Tabs>
 
-      <Row>
-        <h4 className="ms-2 mt-5 mb-4 fw-bold">Similar Products</h4>
-        <ProductsSlider products={products} />
-      </Row>
-      {/* <Reviews productID={product?.pid} /> */}
-    </Container>
+          </Col>
+        </Row>
+
+        <Row>
+          <h4 className="ms-2 mt-5 mb-4 fw-bold">Similar Products</h4>
+          <ProductsSlider products={products} />
+        </Row>
+        {/* <Reviews productID={product?.pid} /> */}
+      </Container>
 
 
     </>
