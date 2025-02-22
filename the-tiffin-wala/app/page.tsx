@@ -67,6 +67,7 @@ export default async function Home() {
         <meta property="og:description" content={homeData.SEOArea.MetaDescription || homeData.SEOArea.MetaDescription} />
         <meta property="og:image" content={homeData.SEOArea.images.url || "/default-image.jpg"} />
       </Head>
+      sdvjsbvsvdsv
       < Slider bannerdata={banners}/>/
       <Offer offerArea={homeData?.OfferArea} />
       <Collection collectionArea={homeData?.CollectionArea} />

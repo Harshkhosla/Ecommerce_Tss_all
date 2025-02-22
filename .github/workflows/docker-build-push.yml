@@ -1,9 +1,9 @@
-name: Build and Push Docker Image
+name: Build, Push, and Deploy Docker Image
 
 on:
   push:
     branches:
-      - main  # Change to your default branch if needed
+      - main  # Trigger on push to main branch
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
@@ -20,10 +20,39 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Build Docker image
+      - name: Build Docker image with commit SHA
         run: |
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/the-clothing:latest .
+          IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/the-clothing
+          TAG=${{ github.sha }}
+          docker build -t $IMAGE_NAME:$TAG .
 
-      - name: Push Docker image
+      - name: Push Docker image with commit SHA
         run: |
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/the-clothing:latest
+          IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/the-clothing
+          TAG=${{ github.sha }}
+          docker push $IMAGE_NAME:$TAG
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push  # Deploy only after the image is built
+
+    steps:
+      - name: SSH into EC2 and deploy specific commit SHA
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/the-clothing
+            TAG=${{ github.sha }}
+
+            # Pull the latest image with the commit SHA
+            docker pull $IMAGE_NAME:$TAG
+
+            # Stop and remove any existing container
+            docker stop the-clothing-container || true
+            docker rm the-clothing-container || true
+
+            # Run the new container on port 3000 with the specific SHA-tagged image
+            docker run -d --name the-clothing-container -p 3000:3000 $IMAGE_NAME:$TAG
+          EOF
