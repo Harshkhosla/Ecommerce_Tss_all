@@ -6,7 +6,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { tssurl } from "@/app/port";
 import { RootState } from "@/redux/store";
-import { getProductDataByPID, updateProductQuantityAsync } from "@/redux/counterSlice";
+import { addQuantity, decreaseQuantity, getProductDataByPID, updateProductQuantityAsync } from "@/redux/counterSlice";
 
 interface Product {
   Quantity: number;
@@ -23,16 +23,20 @@ interface CartProps {
 
 const CartCard: React.FC<CartProps> = ({ index, product }) => {
   const { pid, Quantity } = product;
-  const mid = localStorage.getItem("MID") ?? ""; // Ensuring `mid` is a string
-  const [likedProducts, setLikedProducts] = useState<string[]>([]); // Explicitly typed state
+  const mid = localStorage.getItem("MID") ?? ""; 
+  const [likedProducts, setLikedProducts] = useState<string[]>([]); 
   const [quantity, setQuantity] = useState<number>(Quantity);
 
   const dispatch = useDispatch();
+  // useEffect(()=>{
+  //   setQuantity((prevQuantity) => prevQuantity + Quantity)
+  // },[])
 
-  const cartItems = useSelector((state: RootState) => state.counter.items) || []; // Ensure it's an array
-  const productData = useSelector((state: RootState) => state.counter.productDataMap?.[pid]); // Optional chaining
+  const cartItems = useSelector((state: RootState) => state.counter.items) || []; 
+  const productData = useSelector((state: RootState) => state.counter.productDataMap?.[pid]);
 
-  const particularCardData: Product | undefined = cartItems[index]; // Ensure it's defined
+  const particularCardData: Product | undefined = cartItems[index]; 
+
 
   const updateQuantity = (updatedQuantity: number) => {
     if (particularCardData) {
@@ -53,6 +57,7 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
       updateQuantity(newQuantity);
+      dispatch(addQuantity({pid,newQuantity}))
     }
   };
 
@@ -61,6 +66,7 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
       const newQuantity = quantity - 1;
       setQuantity(newQuantity);
       updateQuantity(newQuantity);
+      dispatch(decreaseQuantity({pid,newQuantity}))
     }
   };
   const handleDelete = () => {
@@ -116,11 +122,11 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
                 Qty:
               </span>
               <div className="quantity-selector">
-                <Button variant="light" onClick={handleDecrease} disabled={quantity <= 1}>
+                <Button variant="light" onClick={handleDecrease} disabled={Quantity <= 1}>
                   <FaMinus size={10} />
                 </Button>
-                <span className="mx-3">{quantity}</span>
-                <Button variant="light" onClick={handleIncrease} disabled={quantity >= 10}>
+                <span className="mx-3">{Quantity}</span>
+                <Button variant="light" onClick={handleIncrease} disabled={Quantity >= 10}>
                   <FaPlus size={10} />
                 </Button>
               </div>

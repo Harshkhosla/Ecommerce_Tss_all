@@ -38,8 +38,6 @@ useEffect(() => {
   const [memData, setMemData] = useState<User>();
   const tax = 0 ;
   const deliveryFee = 5;
-  console.log(memData, 'lllolo');
-
   useEffect(() => {
     const fetchUserData = async () => {
       const resp = await axios.get(`${tssurl}/auth/users/${mid}`);

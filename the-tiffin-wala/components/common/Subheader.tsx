@@ -30,16 +30,14 @@ interface Headers {
 }
 
 const Subheader: React.FC<Headers> = ({ header }) => {
-  const [head, setHead] = useState<Menu[]>([]);
-  const [logo, setLogo] = useState<string>('');
+  const [head] = useState<Menu[]>(JSON.parse(header.header));
+  const [logo] = useState<string>(header.brand_logo.url);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showNav, setShowNav] = useState(false);
   const router = useRouter()
 
 
   useEffect(() => {
-    setLogo(header.brand_logo.url)
-    setHead(JSON.parse(header.header))
     setIsLoggedIn(!!localStorage.getItem('authToken'));
   }, [header])
 

@@ -52,8 +52,6 @@ const [mid, setMID] = useState<string | null>(null);
 
   const cartItems = useSelector((state: RootState) => state.counter.items);
 
-  
- 
   useEffect(() => {
     if (mid) {
       dispatch(getCartItemsAsync(mid));

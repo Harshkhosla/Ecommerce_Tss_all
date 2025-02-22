@@ -14,7 +14,7 @@ import Ratings from "@/components/common/Ratings";
 import { tssurl } from "@/app/port";
 import { ProductType } from "../types";
 import { useDispatch } from "react-redux";
-import { addToCartAsync } from "@/redux/counterSlice";
+import { addToCartAsync, getCartItemsAsync } from "@/redux/counterSlice";
 
 
 
@@ -50,7 +50,6 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
 
     fetchLikedProducts();
   }, [productId, mid]);
-  console.log(product, "sdjvhbvjsbvdshvhjvb");
 
   const discountedPrice =
     product
@@ -77,6 +76,8 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       price: discountedPrice,
       image: product?.variants?.[0]?.GalleryImg?.[0] || "",
     };
+      {/*  @ts-expect-error sdsfwvfe */}
+    dispatch(getCartItemsAsync(mid))
       {/*  @ts-expect-error sdsfwvfe */}
     dispatch(addToCartAsync({ mid, data: data }));
     router.push('/cart')

@@ -37,7 +37,6 @@ const initialState: CartState = {
   status: "idle",
 };
 
-// ✅ Fetch Product Details
 export const getProductDataByPID = createAsyncThunk(
   "cart/getProductDataByPID",
   async (pid: string, { rejectWithValue }) => {
@@ -58,12 +57,14 @@ export const addToCartAsync = createAsyncThunk(
         const state: RootState = getState() as RootState;
          // @ts-expect-error sdsfwvfe
         const existingItem = state.counter.items.find((item: CartItem) => item.pid === data.pid);
-  
+     
+        const pid = existingItem?.pid
         if (existingItem) {
-          // If item exists, increase the quantity in the backend and update the state
-          const updatedQuantity = existingItem.Quantity + data.Quantity;
-          await dispatch(updateProductQuantityAsync({ data: { ...existingItem, Quantity: updatedQuantity }, mid })).unwrap();
-          return { ...existingItem, Quantity: updatedQuantity }; // Return updated item
+          const newQuantity = existingItem.Quantity + data.Quantity;
+          // @ts-expect-error dschsdvb
+           dispatch(addQuantity({pid,newQuantity}))
+          await dispatch(updateProductQuantityAsync({ data: { ...existingItem, Quantity: newQuantity }, mid })).unwrap();
+          return { ...existingItem, Quantity: newQuantity }; 
         }
   
          // @ts-expect-error sdsfwvfe
@@ -88,7 +89,6 @@ export const addToCartAsync = createAsyncThunk(
   
   
 
-// ✅ Update Product Quantity
 export const updateProductQuantityAsync = createAsyncThunk(
   "cart/updateQuantity",
   async ({ data, mid }: { data: CartItem; mid: string }, { rejectWithValue }) => {
@@ -121,11 +121,11 @@ export const getCartItemsAsync = createAsyncThunk(
     const state = getState() as RootState;
      // @ts-expect-error sdsfwvfe
     if (state.counter.items.length > 0) {
-      return state.counter.items; // Return cached data
+      return state.counter.items; 
     }
     try {
       const response = await axios.get(`${tssurl}/auth/users/${mid}`);
-      return response.data.user?.cart || []; // Ensure default array
+      return response.data.user?.cart || []; 
     }  
     catch (error: any) { 
       toast.error("Failed to fetch cart items.");
@@ -154,6 +154,29 @@ const cartSlice = createSlice({
       // state.cartItems = action.payload.cartItems;
       state.bagTotal = action.payload.bagTotal;
       state.total = action.payload.total;
+    },
+
+    addQuantity: (state, action: PayloadAction<{ pid: string; newQuantity: number }>) => {
+      // @ts-expect-error sdsfwvfe
+      const item = state?.items.find((item) => item.pid === action.payload.pid);
+      if (item) {
+        item.Quantity = action.payload.newQuantity;
+      }
+      // @ts-expect-error sdsfwvfe
+      state.bagTotal = state?.items.reduce((total, item) => total + item.Quantity, 0);
+      // @ts-expect-error sdsfwvfe
+      state.total = state?.items.reduce((total, item) => total + item.Quantity * item.price, 0);
+    },
+    decreaseQuantity: (state, action: PayloadAction<{ pid: string; newQuantity: number }>) => {
+      // @ts-expect-error sdsfwvfe
+      const item = state?.items.find((item) => item.pid === action.payload.pid);
+      if (item) {
+        item.Quantity = action.payload.newQuantity;
+      }
+      // @ts-expect-error sdsfwvfe
+      state.bagTotal = state?.items.reduce((total, item) => total - item.Quantity, 0);
+      // @ts-expect-error sdsfwvfe
+      state.total = state?.items.reduce((total, item) => total - item.Quantity * item.price, 0);
     },
     clearCartData: (state) => {
       // state.cartItems = [];
@@ -194,5 +217,5 @@ const cartSlice = createSlice({
 });
 
 // ✅ Export Actions & Reducer
-export const { addOrUpdateCartItem , setCartData } = cartSlice.actions;
+export const { addOrUpdateCartItem ,decreaseQuantity, addQuantity ,setCartData } = cartSlice.actions;
 export default cartSlice.reducer;

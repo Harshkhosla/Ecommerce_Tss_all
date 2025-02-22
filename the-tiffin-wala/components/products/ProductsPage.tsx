@@ -40,7 +40,7 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products }) => {
 
   useEffect(() => {
     const fetchLikedProducts = async () => {
-      if (typeof window === "undefined") return; // Ensure this runs only on the client
+      if (typeof window === "undefined") return; 
 
       const MID = localStorage.getItem("MID");
       if (!MID) {
