@@ -6,6 +6,7 @@ import Filters from "../shop/Filters";
 import ProductSearch from "../shop/ProductSearch";
 import { tssurl } from "@/app/port";
 import axios from "axios";
+import ShopBanner from "../shop/ShopBanner";
 
 // Define Types
 interface ProductType {
@@ -93,6 +94,7 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products }) => {
 
   return (
     <Container fluid>
+       <ShopBanner />
       <Row className="products">
         <Col md="2">
           <Filters products={products} setFilteredProducts={setFilteredProducts} />

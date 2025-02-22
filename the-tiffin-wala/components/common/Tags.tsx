@@ -14,7 +14,7 @@ interface TagData {
   page3: string;
 }
 
-const Tags: React.FC = () => {
+const Tags: React.FC= () => {
   const [tagData, setTagData] = useState<TagData | null>(null);
 
   useEffect(() => {

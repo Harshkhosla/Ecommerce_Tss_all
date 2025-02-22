@@ -1,15 +1,25 @@
 import { Row } from 'react-bootstrap';
-// import banner1 from '../../assets/images/Tiffin5.jpeg';
-// import ShopTags from '../common/Tags';
+import ImageComponent from '../common/ImageComponent';
+import ShopTags from '../common/Tags';
 
-const ShopBanner = async() => {
+
+// const getpromocode = async () => {
+//       try {
+//         const response = await fetch(`${tssurl}/auth/promocode`);
+//         const result = await response.json();
+//         return result;
+//       } catch (error) {
+//         console.log("error", error);
+//       }
+//     };
+const ShopBanner = () => {
   // const data = await  getpromocode()
 
   return (
 
     <Row className="shopban">
-      {/* <ShopTags data={data} /> */}
-      {/* <Image src={banner1} alt="shopbanner" className="w-100 p-0" /> */}
+      <ShopTags/>
+      <ImageComponent url="/images/banner.png"  />
     </Row>
   );
 };

@@ -96,8 +96,8 @@ const Subheader: React.FC<Headers> = ({ header }) => {
           <Container className="navbar-tabs">
             {head.length > 0 && (
               <Tabs defaultActiveKey={activeKey()} id="controlled-tab" className="mt-1">
-                {head.map((menu) => (
-                  <Tab key={menu.MLink} eventKey={menu.MLink} title={menu.Mname}>
+                {head.map((menu,index) => (
+                  <Tab key={menu.MLink || `menu-${index}`} eventKey={menu.MLink} title={menu.Mname}>
                     <Nav className="flex-row">
                       {menu?.nav_link?.map((item, index) => (
                         <Nav.Link

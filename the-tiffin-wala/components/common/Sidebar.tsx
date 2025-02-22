@@ -55,7 +55,7 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
           <Accordion defaultActiveKey={activeKey} flush>
               {/*  @ts-expect-error sdsfwvfe */}
             {head.map((menu) => (
-              <Accordion.Item key={menu.MLink} eventKey={menu.MLink}>
+              <Accordion.Item key={menu.MLink || `menu-${menu.index}`} eventKey={menu.MLink}>
                 <Accordion.Header className="fw-bold">
                   {menu.Mname}
                 </Accordion.Header>

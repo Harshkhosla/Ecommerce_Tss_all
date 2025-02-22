@@ -8,6 +8,7 @@ import { tssurl } from "@/app/port";
 import Filters from "@/components/shop/Filters";
 // import ProductSearch from "@/components/shop/ProductSearch";
 import Product from "@/components/shop/Product";
+import ShopBanner from "@/components/shop/ShopBanner";
 
 interface ProductType {
   pid: string;
@@ -100,6 +101,7 @@ const SubCategoryPage: React.FC = () => {
 
   return (
     <Container fluid>
+       <ShopBanner />
       <Row className="products">
         <Col md="2">
           <Filters products={products} setFilteredProducts={setFilteredProducts} />
