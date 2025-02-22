@@ -6,6 +6,7 @@ import Offer from "@/components/home/Offer";
 import axios from "axios";
 import { tssurl } from "./port";
 import Slider from "@/components/home/Slider";
+import Head from "next/head";
 
 
 const fetchData = async () => {
@@ -57,7 +58,15 @@ export default async function Home() {
   const banners = await fetchBanners()
   
   return (
-    < >
+    <>
+     <Head>
+        <title>{homeData.SEOArea.MetaTitle || "Default Title"}</title>
+        <meta name="description" content={homeData.SEOArea.MetaDescription || "Default description"} />
+        <meta name="keywords" content={homeData.SEOArea.MetaKeywords || "default, keywords"} />
+        <meta property="og:title" content={homeData.SEOArea.MetaTitle || homeData.SEOArea.MetaTitle} />
+        <meta property="og:description" content={homeData.SEOArea.MetaDescription || homeData.SEOArea.MetaDescription} />
+        <meta property="og:image" content={homeData.SEOArea.images.url || "/default-image.jpg"} />
+      </Head>
       < Slider bannerdata={banners}/>/
       <Offer offerArea={homeData?.OfferArea} />
       <Collection collectionArea={homeData?.CollectionArea} />

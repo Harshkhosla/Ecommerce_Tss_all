@@ -15,6 +15,7 @@ import { tssurl } from "@/app/port";
 import { ProductType } from "../types";
 import { useDispatch } from "react-redux";
 import { addToCartAsync, getCartItemsAsync } from "@/redux/counterSlice";
+import Head from "next/head";
 
 
 
@@ -102,6 +103,15 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
   };
 
   return (
+  <>
+<Head>
+          <title>{product?.SEOArea.metaTitle || "Best Sellers"}</title>
+          <meta name="description" content={product?.SEOArea.metaDescription || "Check out our best-selling products!"} />
+          <meta name="keywords" content={product?.SEOArea.metaKeywords || "bestsellers, products, tiffin"} />
+          <meta property="og:title" content={product?.SEOArea.metaTitle || "Best Sellers"} />
+          <meta property="og:description" content={product?.SEOArea.metaDescription || "Check out our best-selling products!"} />
+          <meta property="og:image" content={product?.SEOArea.images1 || "/default-image.jpg"} />
+        </Head>
     <Container>
       <p className="breadcrumb">
         <Link href="/" className="me-1">Home</Link> /
@@ -170,6 +180,9 @@ const ProductDetailsPage: React.FC<ProductDetailsProps> = ({ products }) => {
       </Row>
       {/* <Reviews productID={product?.pid} /> */}
     </Container>
+
+
+    </>
   );
 };
 

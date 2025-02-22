@@ -20,7 +20,7 @@ const getAllProducts = async (): Promise<ProductType[]> => {
 
 export default async function ProductDetail() {
   const products = await getAllProducts();
-
+  
   return (
     <div>
       <ProductDetailsPage products={products} />

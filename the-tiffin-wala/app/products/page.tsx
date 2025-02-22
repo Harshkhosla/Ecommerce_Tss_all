@@ -30,13 +30,7 @@ const getalltheproducts = async () => {
 
 
 export default async function Products() {
-
- 
-    
     const products = await getalltheproducts()
-    
-    // const getlikedproduct = await getLikedProducts(MID)
-
     return (
         <div>
             <ProductsPage products={products}  />

@@ -7,6 +7,7 @@ import axios from "axios";
 import { tssurl } from "../port";
 import Sidebar from "@/components/profile/Sidebar";
 import { Info } from "@/components/types";
+import Head from "next/head";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -14,7 +15,6 @@ const Contact = () => {
   const [phn, setPhn] = useState("");
   const [message, setMessage] = useState("");
   const [info, setInfo] = useState<Info>();
-
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [MID, setMID] = useState<string | null>(null);
 
@@ -72,7 +72,14 @@ const Contact = () => {
 
   return (
     <>
-
+  <Head>
+        <title>{info?.SEOArea?.metaTitle || "Contact Us"}</title>
+        <meta name="description" content={info?.SEOArea?.metaDescription || "Get in touch with us for any queries!"} />
+        <meta name="keywords" content={info?.SEOArea?.metaKeywords || "contact, support, customer service"} />
+        <meta property="og:title" content={info?.SEOArea?.metaTitle || "Contact Us"} />
+        <meta property="og:description" content={info?.SEOArea?.metaDescription || "Get in touch with us for any queries!"} />
+        <meta property="og:image" content={info?.SEOArea?.images1 || "/default-image.jpg"} />
+      </Head>
       <Container fluid>
         <Row>
           {/* <ShopTags /> */}
