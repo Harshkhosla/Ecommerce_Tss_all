@@ -10,6 +10,7 @@ const Home = require('../../models/home');
 router.get('/header', async (req, res) => {
   try {
     const header = await Header.findOne();
+//  await new Promise(s=>setTimeout(s,10000))
     if (!header) {
       return res.status(404).json({ message: 'Header not found' });
     }

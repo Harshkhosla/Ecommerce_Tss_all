@@ -66,55 +66,56 @@ app.use(cors(corsOptions));
 const server = http.createServer(app);
 
 app.use(express.json());
+app.use(timeMiddleware);
 
-app.use("/admin/user",timeMiddleware, userRoutes);
-app.use("/admin/admin",timeMiddleware, adminRoutes);
-app.use("/admin/user_management",timeMiddleware, userManagementRoutes);
-app.use("/admin/departments",timeMiddleware, departmentRoutes);
-app.use("/admin/roles",timeMiddleware, roleRoutes);
-app.use("/admin/settings",timeMiddleware, settingRoutes);
-app.use("/admin/cms",timeMiddleware, cmsRoutes);
-app.use("/admin/footer",timeMiddleware, footerRoutes);
-app.use("/admin/pages",timeMiddleware, pagesRoutes);
-app.use("/admin/home", timeMiddleware,homeRoutes);
-app.use("/admin/about", timeMiddleware,aboutRoutes);
-app.use("/admin/contact",timeMiddleware, contactRoutes);
-app.use("/admin/promo-code",timeMiddleware, promoCodeRoutes);
-app.use("/admin/general-config",timeMiddleware, generalConfigRoutes);
-app.use("/admin/catalog",timeMiddleware, catalogRoutes);
-app.use("/admin/product",timeMiddleware, productRoutes);
-app.use("/admin/promotion",timeMiddleware, promotionRoutes);
-app.use("/admin/categories",timeMiddleware, categoryRoutes);
-app.use("/admin/productCategory",timeMiddleware, productCategoryRoutes);
-app.use("/admin/banner",timeMiddleware, bannerRoutes);
-app.use("/admin/oders",timeMiddleware, OrderRoutes);
-app.use("/admin/review",timeMiddleware, reviewRoutes);
-app.use("/admin/transactions",timeMiddleware, transactionRoutes);
-app.use("/admin/looks",timeMiddleware, looksRoutes);
-app.use("/admin/page",timeMiddleware, pageController);
+app.use("/admin/user", userRoutes);
+app.use("/admin/admin", adminRoutes);
+app.use("/admin/user_management", userManagementRoutes);
+app.use("/admin/departments", departmentRoutes);
+app.use("/admin/roles", roleRoutes);
+app.use("/admin/settings", settingRoutes);
+app.use("/admin/cms", cmsRoutes);
+app.use("/admin/footer", footerRoutes);
+app.use("/admin/pages", pagesRoutes);
+app.use("/admin/home", homeRoutes);
+app.use("/admin/about", aboutRoutes);
+app.use("/admin/contact", contactRoutes);
+app.use("/admin/promo-code", promoCodeRoutes);
+app.use("/admin/general-config", generalConfigRoutes);
+app.use("/admin/catalog", catalogRoutes);
+app.use("/admin/product", productRoutes);
+app.use("/admin/promotion", promotionRoutes);
+app.use("/admin/categories", categoryRoutes);
+app.use("/admin/productCategory", productCategoryRoutes);
+app.use("/admin/banner", bannerRoutes);
+app.use("/admin/oders", OrderRoutes);
+app.use("/admin/review", reviewRoutes);
+app.use("/admin/transactions", transactionRoutes);
+app.use("/admin/looks", looksRoutes);
+app.use("/admin/page", pageController);
 
 //clients-Routes
-app.use("/client",timeMiddleware, ClientHome);
-app.use("/client/auth",timeMiddleware, Clientlogin);
-app.use("/client/productcat",timeMiddleware, productcat);
-app.use("/client/productDetails",timeMiddleware, productDetails);
-app.use("/client/catalog",timeMiddleware, catalogClientRoutes);
-app.use("/client/cart", timeMiddleware,CartRoutes);
-app.use("/client/visitors", timeMiddleware,visitorsRouter);
-app.use("/client/review", timeMiddleware,review);
-app.use("/client/liked",timeMiddleware, liked);
-app.use("/client/About",timeMiddleware, about);
-app.use("/client/payments",timeMiddleware, payment);
-app.use("/client/contacts",timeMiddleware, contact);
+app.use("/client", ClientHome);
+app.use("/client/auth", Clientlogin);
+app.use("/client/productcat", productcat);
+app.use("/client/productDetails", productDetails);
+app.use("/client/catalog", catalogClientRoutes);
+app.use("/client/cart", CartRoutes);
+app.use("/client/visitors", visitorsRouter);
+app.use("/client/review", review);
+app.use("/client/liked", liked);
+app.use("/client/About", about);
+app.use("/client/payments", payment);
+app.use("/client/contacts", contact);
 app.use("/client", Stripe);
-app.use("/client/orders",timeMiddleware, Orders);
-app.use("/client",timeMiddleware, promotions);
+app.use("/client/orders", Orders);
+app.use("/client", promotions);
 
 
 
 
 
-app.get('/metrics', async (req, res) => {
+app.use('/metrics', async (req, res) => {
   const metrices = await client.register.metrics()
   res.set('Content-Type', client.register.contentType);
   res.end(metrices);
@@ -122,10 +123,10 @@ app.get('/metrics', async (req, res) => {
 
 
 
-app.use("/admin/imageupload",timeMiddleware, ImageRoute);
+app.use("/admin/imageupload", ImageRoute);
 
 
-app.use('/admin/ticket',timeMiddleware, TicketSupport)
+app.use('/admin/ticket', TicketSupport)
 
 
 // app.use("/client/liked",liked)

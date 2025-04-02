@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # nodejs-app:
+  #   build: ./
+  #   ports:
+  #     - "5200:5200"
+  #   networks:
+  #     - monitoring
+  # removing the direct build of the node application and directly adding the ip[ inthe yml file and getting data]
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./:/etc/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    networks:
+      - monitoring
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+networks:
+  monitoring:
