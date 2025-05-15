@@ -171,6 +171,11 @@ const cartSlice = createSlice({
     decreaseQuantity: (state, action: PayloadAction<{ pid: string; newQuantity: number }>) => {
       // @ts-expect-error sdsfwvfe
       const item = state?.items.find((item) => item.pid === action.payload.pid);
+      if(item && item.Quantity == 1) {
+        item.Quantity = 0;
+         // @ts-expect-error sdsfwvfe
+        state.items = state.items.filter((item) => item.Quantity > 0);
+      }
       if (item) {
         item.Quantity = action.payload.newQuantity;
       }
