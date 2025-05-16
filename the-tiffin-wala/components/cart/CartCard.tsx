@@ -6,7 +6,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { tssurl } from "@/app/port";
 import { RootState } from "@/redux/store";
-import { addQuantity, decreaseQuantity, getProductDataByPID, updateProductQuantityAsync } from "@/redux/counterSlice";
+import { addQuantity, decreaseQuantity, getProductDataByPID, updateProductQuantityAsync, deleteFromCartApi } from "@/redux/counterSlice";
 
 interface Product {
   Quantity: number;
@@ -45,6 +45,11 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
     }
   };
 
+  const deleteFromCart =(mid:string, pid:string)=>{
+     // @ts-expect-error sdsfwvfe
+    dispatch(deleteFromCartApi({mid ,pid}))
+  }
+
   useEffect(() => {
     if (pid) {
       // @ts-expect-error sdsfwvfe
@@ -69,20 +74,12 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
       dispatch(decreaseQuantity({ pid, newQuantity }))
     }
   };
-  const handleDelete = () => {
-    // dispatch(deleteFromCart({ mid, pid }));
-  
-    // const newQuantity = 0;
-    // setQuantity(newQuantity);
-    // updateQuantity(newQuantity);
-    // dispatch(decreaseQuantity({ pid, newQuantity }))
-  };
   const removeFromCart = async () => {
     try {
       if(quantity === 1) {
       const newQuantity = 0;
       setQuantity(newQuantity);
-      updateQuantity(newQuantity);
+      deleteFromCart(mid ,pid)
       dispatch(decreaseQuantity({ pid, newQuantity }))
       }
     } catch (error) {
@@ -97,7 +94,7 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
             data: { mid, pid },
           });
           toast.success("Removed from Wishlist");
-          handleDelete();
+          removeFromCart()
         } else {
           setLikedProducts([...likedProducts, pid]);
           await axios.post(`${tssurl}/liked/liked-products/add`, { mid, pid });
@@ -166,9 +163,9 @@ const CartCard: React.FC<CartProps> = ({ index, product }) => {
                   className="heart me-1"
                   size={20}
                   onClick={removeFromCart}
-                  style={{ cursor: "pointer", color: likedProducts.includes(pid) ? "red" : "black" }}
+                  style={{opacity: quantity !==1 ? 0.5 : 1  , color: likedProducts.includes(pid) ? "red" : "black" }}
                 />
-                <span>Delete</span>
+                <span  style={{ opacity: quantity !==1 ? 0.5 : 1  , color: likedProducts.includes(pid) ? "red" : "black" }}>Delete</span>
               </Col>
             </Row>
           </Col>

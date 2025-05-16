@@ -95,6 +95,7 @@ export const updateProductQuantityAsync = createAsyncThunk(
   async ({ data, mid }: { data: CartItem; mid: string }, { rejectWithValue }) => {
     try { // @ts-expect-error sdsfwvfe
       const requestData = { mid, ...data };
+      console.log("Request Data:", requestData);
       const response = await axios.put(
         `${tssurl}/cart/carts/updateQuantity`,
         requestData,
@@ -111,6 +112,21 @@ export const updateProductQuantityAsync = createAsyncThunk(
       
     } catch (error: any) {
       toast.error("Failed to update cart quantity.");
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
+export const deleteFromCartApi = createAsyncThunk(
+  'cart/deleteCart',
+  async({mid , pid}:{mid:string , pid:string}, { rejectWithValue })=>{
+    try{
+      const response = await axios.delete(`${tssurl}/cart/carts/delete`, {data: { mid, pid } });
+      console.log("Response:", response);
+      toast.success("Product removed from Cart successfully!");
+    }catch(error:any){
+      toast.error("Failed to remove cart quantity.");
       return rejectWithValue(error.message);
     }
   }
@@ -218,7 +234,13 @@ const cartSlice = createSlice({
       })
       .addCase(getCartItemsAsync.rejected, (state) => {
         state.status = "failed";
-      });
+      })
+      .addCase(deleteFromCartApi.fulfilled, (state, action) => {
+        state.items = action.payload || state.items;
+      })
+      .addCase(deleteFromCartApi.rejected, (state) => {
+        state.status = "failed";
+      })
   },
 });
 
