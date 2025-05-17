@@ -14,7 +14,7 @@ interface TagData {
   page3: string;
 }
 
-const Tags: React.FC= () => {
+const Tags: React.FC = () => {
   const [tagData, setTagData] = useState<TagData | null>(null);
 
   useEffect(() => {
@@ -35,9 +35,9 @@ const Tags: React.FC= () => {
   }
 
   return (
-    <Container fluid className="tags">
+    <Container className="tags">
       <Row className="scrolling-row">
-        <Col md={4}>
+        <Col md={4} xs={12} className=" d-md-none">
           <div style={{ fontSize: '1.2em' }}>
             {tagData.Title1}&nbsp;&nbsp;--&nbsp;&nbsp;
             <Link href={tagData.page1} style={{ textDecoration: 'underline' }}>
@@ -46,7 +46,7 @@ const Tags: React.FC= () => {
           </div>
         </Col>
 
-        <Col md={4}>
+        <Col md={4} className="d-none d-md-block">
           <div style={{ fontSize: '1.2em' }}>
             {tagData.Title2}&nbsp;&nbsp;--&nbsp;&nbsp;
             <Link href={tagData.page2} style={{ textDecoration: 'underline' }}>
@@ -55,7 +55,7 @@ const Tags: React.FC= () => {
           </div>
         </Col>
 
-        <Col md={4}>
+        <Col md={4} className="d-none d-md-block">
           <div style={{ fontSize: '1.2em' }}>
             {tagData.Title3}&nbsp;&nbsp;--&nbsp;&nbsp;
             <Link href={tagData.page3} style={{ textDecoration: 'underline' }}>

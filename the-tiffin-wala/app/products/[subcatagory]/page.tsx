@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Dropdown, Button } from "react-bootstrap";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { tssurl } from "@/app/port";
@@ -9,6 +9,7 @@ import Filters from "@/components/shop/Filters";
 // import ProductSearch from "@/components/shop/ProductSearch";
 import Product from "@/components/shop/Product";
 import ShopBanner from "@/components/shop/ShopBanner";
+import { FaFilter } from "react-icons/fa"; // Importing an icon from react-icons
 
 interface ProductType {
   pid: string;
@@ -31,6 +32,7 @@ const SubCategoryPage: React.FC = () => {
   const [sortOption, setSortOption] = useState<string>("Featured");
   const [likedProducts, setLikedProducts] = useState<string[]>([]);
   const [MID, setMID] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false); // State to manage dropdown visibility
 
   const { subcatagory } = useParams<{ subcatagory: string }>();
   
@@ -99,13 +101,35 @@ const SubCategoryPage: React.FC = () => {
   //   );
   // };
 
+  const toggleFilters = () => {
+    setShowFilters((prev) => !prev);
+  };
+
   return (
     <Container fluid>
        <ShopBanner />
       <Row className="products">
-        <Col md="2">
+        <Col md="2" className="d-none d-md-block">
           <Filters products={products} setFilteredProducts={setFilteredProducts} />
         </Col>
+
+        <Col xs="12" className="d-md-none mb-3">
+          <Dropdown show={showFilters} onToggle={toggleFilters}>
+            <Dropdown.Toggle
+              variant="light"
+              className="w-100 d-flex align-items-center justify-content-center"
+              onClick={toggleFilters} 
+            >
+              <FaFilter className="me-2" />
+              Filters
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="w-100 p-3">
+              <Filters products={products} setFilteredProducts={setFilteredProducts} />
+            </Dropdown.Menu>
+          </Dropdown>
+        </Col>
+
+        {/* Product list */}
         <Col md="10" className="p-2">
           <Row>
             <Col md={9}>
