@@ -1,15 +1,16 @@
 "use client"
 import { useEffect, useState } from 'react';
-import { Modal, Container, Row, Col, Button } from 'react-bootstrap';
+import { Modal, Container, Row, Col, Button ,Image} from 'react-bootstrap';
 import axios from 'axios';
 // import { FaCircle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import AddAddressModal from '@/components/common/AddressModal';
 import { tssurl } from '../port';
-import {  useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import {  useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
 // import Image from 'next/image';
 import { Address, CartItem, User } from '@/components/types';
+import { getCartItemsAsync } from '@/redux/counterSlice';
 // import { getCartItemsAsync } from '@/redux/counterSlice';
 
 
@@ -19,6 +20,7 @@ import { Address, CartItem, User } from '@/components/types';
 
 const CheckoutPgae = () => {
 
+  const dispatch = useDispatch<AppDispatch>();
 const cartItems = useSelector((state: RootState) => state.counter.items);
 const {bagTotal ,total} = useSelector((state: RootState) => state.counter);
 const bagDiscount ="0";
@@ -46,6 +48,13 @@ useEffect(() => {
     fetchUserData();
   }, [mid]);
   const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+      if (mid) {
+        dispatch(getCartItemsAsync(mid));
+      }
+    }, [dispatch, mid]);
+
   // const [formState, setFormState] = useState({
   //   cardType: 'Credit Card',
   //   mid: mid,
@@ -200,6 +209,7 @@ useEffect(() => {
     const fetchAllAddressses = async () => {
         try {
           const resp = await axios.get(`${tssurl}/auth/users/${mid}/addresses`);
+          // const resp = await axios.get(`http://localhost:5200/client/auth/users/${mid}/addresses`);
           setAllAddress(resp?.data?.addresses);
         } catch (error) { 
           console.log(error)
@@ -274,9 +284,10 @@ useEffect(() => {
   // @ts-expect-error will correct it 
   const handleNewAddAddress = async (addressData) => {
     try {
-      addressData.latitude ="position?.position?.latitude";
-      addressData.longitude = "position?.position?.longitude";
+      // addressData.latitude ="position?.position?.latitude";
+      // addressData.longitude = "position?.position?.longitude";
       const response = await fetch(`${tssurl}/auth/users/${mid}/addresses`, {
+      // const response = await fetch(`http://localhost:5200/client/auth/users/${mid}/addresses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -465,13 +476,12 @@ useEffect(() => {
                       >
                         <div className="row g-3">
                           <div className="col-md-3 p-0">
-                            {/* <Image
-                              className="img-fluid w-100 object-fit-cover"
-                              style={{ maxHeight: '150px' }}
-                              src={item?.url}
-                              width={20}
-                              alt={`${index}`}
-                            /> */}
+                             <Image
+                              src={item?.url || "/placeholder.jpg"} // Fallback for undefined `url`
+                              alt="cart"
+                              fluid
+                              className="h-20"
+                            />
                           </div>
                           <div className="col-md-9">
                             <div className="d-flex ms-3 justify-content-between gap-3 align-items-center">

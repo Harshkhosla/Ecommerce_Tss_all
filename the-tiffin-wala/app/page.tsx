@@ -69,8 +69,8 @@ export default async function Home() {
       </Head> 
       < Slider bannerdata={banners}/>
       <Offer offerArea={homeData?.OfferArea} />
-      <Collection collectionArea={homeData?.CollectionArea} />
       <BestSellers bestseller={productData} />
+      <Collection collectionArea={homeData?.CollectionArea} />
       <Grid data={homeData.GridArea} />
       <NewsLetter data={footerData} />
     </>

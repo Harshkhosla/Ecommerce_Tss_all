@@ -36,10 +36,14 @@ const BestSellers = ({ bestseller }:BestsellerProps) => {
 
     return bestseller.map((card, i) => (
       <Carousel.Item key={i} style={{ height: '35rem' }}>
-        <Image src={card.variants[0].ThumbImg?.[0]} fluid alt='tiffin'/>
-        <p>{card.product_name}</p>
-        <Link href={`/productDetails/${card.pid}`}>Shop Now</Link>
-      </Carousel.Item>
+      <Link href={`/productDetails/${card.pid}`} passHref>
+        <div style={{ cursor: 'pointer', height: '100%' }}>
+          <Image src={card.variants[0].ThumbImg?.[0]} fluid alt='tiffin' />
+          <p className="underline-none">{card.product_name}</p>
+          <div>Shop Now</div>
+        </div>
+      </Link>
+    </Carousel.Item>
     ));
   };
 
@@ -51,9 +55,11 @@ const BestSellers = ({ bestseller }:BestsellerProps) => {
           {Array.isArray(bestseller) &&
             bestseller.map((card, index) => (
               <Col md={4} key={index}>
+                 <Link href={`/productDetails/${card.pid}`} passHref>
                 <Image src={card.variants[0].ThumbImg?.[0]} fluid alt='tiffin'/>
-                <p>{card.product_name}</p>
-                <Link href={`/productDetails/${card.pid}`}>Shop Now</Link>
+                <p className="underline-none">{card.product_name}</p>
+                <div>Shop Now</div>
+                </Link>
               </Col>
             ))}
         </Row>
