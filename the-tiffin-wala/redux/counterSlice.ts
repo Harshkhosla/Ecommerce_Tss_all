@@ -56,13 +56,10 @@ export const addToCartAsync = createAsyncThunk(
     async ({ mid, data }: { mid: string; data: CartItem }, { getState, dispatch, rejectWithValue }) => {
       try {
         const state: RootState = getState() as RootState;
-         // @ts-expect-error sdsfwvfe
-        const existingItem = state.counter.items.find((item: CartItem) => item.pid === data.pid);
-     
-        const pid = existingItem?.pid
+       const existingItem = state?.counter?.items?.find((item: CartItem) => item.pid === data.pid);
         if (existingItem) {
+          const pid = existingItem.pid
           const newQuantity = existingItem.Quantity + data.Quantity;
-          // @ts-expect-error dschsdvb
            dispatch(addQuantity({pid,newQuantity}))
           await dispatch(updateProductQuantityAsync({ data: { ...existingItem, Quantity: newQuantity }, mid })).unwrap();
           return { ...existingItem, Quantity: newQuantity }; 
@@ -174,15 +171,13 @@ const cartSlice = createSlice({
     },
 
     addQuantity: (state, action: PayloadAction<{ pid: string; newQuantity: number }>) => {
-      // @ts-expect-error sdsfwvfe
-      const item = state?.items.find((item) => item.pid === action.payload.pid);
+
+      const item = state?.items?.find((item) => item.pid === action.payload.pid);
       if (item) {
         item.Quantity = action.payload.newQuantity;
       }
-      // @ts-expect-error sdsfwvfe
-      state.bagTotal = state?.items.reduce((total, item) => total + item.Quantity, 0);
-      // @ts-expect-error sdsfwvfe
-      state.total = state?.items.reduce((total, item) => total + item.Quantity * item.price, 0);
+      state.bagTotal = state?.items?.reduce((total, item) => total + item.Quantity, 0);
+      state.total = state?.items?.reduce((total, item) => total + item.Quantity * item.price, 0);
     },
     decreaseQuantity: (state, action: PayloadAction<{ pid: string; newQuantity: number }>) => {
       // @ts-expect-error sdsfwvfe
