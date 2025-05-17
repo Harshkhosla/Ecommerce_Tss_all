@@ -41,7 +41,7 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
     }
     fetchData();
   }, []);
-
+  
   return (
     <div className="section">
       <div className={showNav ? "sidenav active" : "sidenav"}>
@@ -54,8 +54,8 @@ const Sidebar = ({ showNav, setShowNav, head, activeKey }) => {
         {head && (
           <Accordion defaultActiveKey={activeKey} flush>
               {/*  @ts-expect-error sdsfwvfe */}
-            {head.map((menu) => (
-              <Accordion.Item key={menu.MLink || `menu-${menu.index}`} eventKey={menu.MLink}>
+            {head.map((menu,index) => (
+              <Accordion.Item key={index || `menu-${index}`} eventKey={menu.MLink}>
                 <Accordion.Header className="fw-bold">
                   {menu.Mname}
                 </Accordion.Header>
