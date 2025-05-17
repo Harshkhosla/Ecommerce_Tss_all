@@ -82,7 +82,7 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ products }) => {
     if (filteredProducts.length) {
       setFilteredProducts([...products].sort(sortFunctions[sortOption as keyof typeof sortFunctions] || (() => 0)));
     }
-  }, [products, sortOption, sortFunctions]);
+  }, [products, sortOption, sortFunctions ,filteredProducts.length]);
 
   const handleSearch = (searchTerm: string) => {
     setFilteredProducts(
